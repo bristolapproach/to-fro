@@ -132,3 +132,5 @@ dmypy.json
 
 # Node modules
 /node_modules
+# Django static files
+static/
