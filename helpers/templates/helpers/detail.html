@@ -1,0 +1,15 @@
+<a href=".">Back</a>
+<h1>Help with {{task.type}}</h1>
+{% if task.id >= 4 %}
+  Complete details of the task go here
+  <a href="#">
+    All done!
+  </a>
+{% else %}
+  Partial details for the task go here
+  <button>
+    I can help!
+  </button>
+{% endif %}
+
+

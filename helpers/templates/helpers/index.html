@@ -7,9 +7,11 @@
 </nav>
 <ul>
   {% for task in tasks %}
+  <a href="{% url 'helpers:detail' task.id %}">
   <li>
     {{task.type}}
     {{task.ward}}
     {{task.date|naturaltime}}
+  </a>
   {% endfor %}
 </ul>
