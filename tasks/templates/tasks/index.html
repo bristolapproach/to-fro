@@ -1,0 +1,17 @@
+{% load humanize %}
+<h1>Tasks dashboard</h1>
+<nav>
+  <a href="{% url 'tasks:available' %}" >Available</a>
+  <a href="{% url 'tasks:index' %}">My tasks</a>
+  <a href="{% url 'tasks:completed'%}">Completed</a>
+</nav>
+<ul>
+  {% for task in tasks %}
+  <a href="{% url 'tasks:detail' task.id %}">
+  <li>
+    {{task.type}}
+    {{task.ward}}
+    {{task.date|naturaltime}}
+  </a>
+  {% endfor %}
+</ul>

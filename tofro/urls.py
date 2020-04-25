@@ -7,7 +7,7 @@ from django.contrib import admin
 from django.urls import include, path
 
 urlpatterns = [
-    path('helpers/', include('helpers.urls')),
+    path('tasks/', include('tasks.urls')),
     path('', include('polls.urls')),
     path('admin/', admin.site.urls),
 ]

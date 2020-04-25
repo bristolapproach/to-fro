@@ -48,23 +48,23 @@ def index(request):
   context = {
     'tasks': filter(mineFilter, tasks)
   }
-  return render(request, 'helpers/index.html', context)
+  return render(request, 'tasks/index.html', context)
 
 def available(request):
   context = {
     'tasks': filter(availableFilter, tasks)
   }
-  return render(request, 'helpers/index.html', context)
+  return render(request, 'tasks/index.html', context)
 
 def completed(request):
   context = {
     'tasks': filter(completedFilter, tasks)
   }
-  return render(request, 'helpers/index.html', context)
+  return render(request, 'tasks/index.html', context)
 
 def detail(request, task_id):
   task = filter(lambda t: t['id'] == task_id, tasks)
   context = {
     'task': next(task)
   }
-  return render(request, 'helpers/detail.html', context)
+  return render(request, 'tasks/detail.html', context)
