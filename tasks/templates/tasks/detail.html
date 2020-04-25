@@ -16,9 +16,12 @@
   {% endif %}
 {% else %}
   Partial details for the task go here
-  <button>
+  <form method="POST">
+  {% csrf_token %}
+  <button name="accept_help">
     I can help!
   </button>
+  </form>
 {% endif %}
 
 

@@ -68,6 +68,10 @@ def detail(request, task_id):
   context = {
     'task': next(task)
   }
+
+  if request.method == "POST":
+    messages.success(request, 'Thanks for volunteering!')
+
   return render(request, 'tasks/detail.html', context)
 
 def complete(request, task_id):
