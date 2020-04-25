@@ -1,0 +1,15 @@
+{% load humanize %}
+<h1>Helpers dashboard</h1>
+<nav>
+  <a href="{% url 'helpers:available' %}" >Available</a>
+  <a href="{% url 'helpers:index' %}">My tasks</a>
+  <a href="{% url 'helpers:completed'%}">Completed</a>
+</nav>
+<ul>
+  {% for task in tasks %}
+  <li>
+    {{task.type}}
+    {{task.ward}}
+    {{task.date|naturaltime}}
+  {% endfor %}
+</ul>
