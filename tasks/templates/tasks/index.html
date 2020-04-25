@@ -3,8 +3,6 @@
 {% load humanize %}
 
 {% block 'content' %}
-<h1 class="text-center">Tasks dashboard</h1>
-
 <nav class="d-flex justify-content-center space-x-3">
 
   <a href="{% url 'tasks:available' %}" class="btn {% if currentListType == 'available' %} btn-dark{%endif%}"

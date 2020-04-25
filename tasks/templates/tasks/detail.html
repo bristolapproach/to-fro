@@ -1,23 +1,34 @@
 {% extends 'layouts/application.html' %}
 
 {% block 'content' %}
-<h1 class="text-center">Help with {{task.type}}</h1>
-<div class="space-3">
-  {% if task.id >= 4 %}
-  Complete details of the task go here
-  {% if task.id == 4%}
-  <a class="btn d-table mx-auto btn-primary" href="{% url 'tasks:complete' task.id%}">
-    All done!
-  </a>
-  {% endif %}
-  {% else %}
-  Partial details for the task go here
-  <form method="POST">
-    {% csrf_token %}
-    <button class="btn d-table mx-auto btn-primary" name="accept_help">
-      I can help!
-    </button>
-  </form>
-  {% endif %}
+<div class="card">
+  <div class="card-body space-3">
+    <div>
+      Partial details for the job. {% lorem 25 w%}
+    </div>
+    {% if task.id >= 4 %}
+    <div class="border-top mt-3 pt-3">
+      Complete details for the job. {% lorem 25 w%}
+    </div>
+    {% endif %}
+  </div>
+  <div class="card-footer">
+    {% if task.id < 4 %}
+    <form method="POST">
+      {% csrf_token %}
+      <button class="btn d-table mx-auto btn-primary" name="accept_help">
+        I'll help!
+      </button>
+    </form>
+    {% else %}
+    {% if task.id == 4%}
+    <a class="btn d-table mx-auto btn-primary" href="{% url 'tasks:complete' task.id%}">
+      All done!
+    </a>
+    {% else %}
+    Thanks for helping!
+    {% endif %}
+    {% endif %}
+  </div>
 </div>
 {% endblock %}

@@ -40,6 +40,7 @@ ALLOWED_HOSTS = DJANGO_ALLOWED_HOSTS
 
 # Application definition
 INSTALLED_APPS = [
+    'markup-help',
     'assets',
     'tasks',
     'django.contrib.admin',

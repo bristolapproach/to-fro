@@ -8,3 +8,24 @@
 .container--small {
   max-width: (600rem / 16);
 }
+
+.btn-icon-only {
+  > svg,
+  > img {
+    display: block;
+  }
+
+  height: auto;
+  padding: map-get($spacers, 2);
+}
+
+.card-footer [class*="btn-outline"] {
+  background-color: white;
+
+  .btn-outline-danger {
+    &:hover {
+      color: theme-color(danger);
+      text-decoration: underline;
+    }
+  }
+}

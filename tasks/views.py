@@ -50,6 +50,7 @@ def index(request):
     'currentListType': 'mine',
     'tasks': filter(mineFilter, tasks),
     'title': 'My jobs',
+    'heading': 'My jobs',
   }
   return render(request, 'tasks/index.html', context)
 
@@ -57,7 +58,8 @@ def available(request):
   context = {
     'currentListType': 'available',
     'tasks': filter(availableFilter, tasks),
-    'title': 'Available jobs'
+    'title': 'Available jobs',
+    'heading': 'Available jobs',
   }
   return render(request, 'tasks/index.html', context)
 
@@ -66,14 +68,17 @@ def completed(request):
     'currentListType': 'completed',
     'tasks': filter(completedFilter, tasks),
     'title': 'Completed jobs',
+    'heading': 'Completed jobs',
   }
   return render(request, 'tasks/index.html', context)
 
 def detail(request, task_id):
-  task = filter(lambda t: t['id'] == task_id, tasks)
+  task = next(filter(lambda t: t['id'] == task_id, tasks))
   context = {
-    'task': next(task),
-    'backUrl': '.'
+    'task': task,
+    'backUrl': '.',
+    'title': "How you can help",
+    'heading': f'Help with {task["type"]}<br>in {task["ward"]}'
   }
 
   if request.method == "POST":
@@ -85,7 +90,9 @@ def complete(request, task_id):
   task = filter(lambda t: t['id'] == task_id, tasks)
   context = {
     'task': next(task),
-    'backUrl': '..'
+    'backUrl': '..',
+    'title': 'How did it go?',
+    'heading': 'How did it go?'
   }
 
   if request.method == "POST":
