@@ -2,9 +2,11 @@
 <h1>Help with {{task.type}}</h1>
 {% if task.id >= 4 %}
   Complete details of the task go here
-  <a href="#">
+  {% if task.id == 4%}
+  <a href="{% url 'tasks:complete' task.id%}">
     All done!
   </a>
+  {% endif %}
 {% else %}
   Partial details for the task go here
   <button>

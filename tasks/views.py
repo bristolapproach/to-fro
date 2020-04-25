@@ -68,3 +68,10 @@ def detail(request, task_id):
     'task': next(task)
   }
   return render(request, 'tasks/detail.html', context)
+
+def complete(request, task_id):
+  task = filter(lambda t: t['id'] == task_id, tasks)
+  context = {
+    'task': next(task)
+  }
+  return render(request, 'tasks/complete.html', context)
