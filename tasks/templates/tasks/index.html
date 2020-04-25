@@ -5,33 +5,36 @@
 {% block 'content' %}
 <h1 class="text-center">Tasks dashboard</h1>
 
-  <nav class="d-flex justify-content-center space-x-3">
+<nav class="d-flex justify-content-center space-x-3">
 
-    <a href="{% url 'tasks:available' %}" 
-       class="btn {% if currentListType == 'available' %} btn-dark{%endif%}"
-       {% if currentListType == 'available' %} aria-current {%endif%}>
-       Available
-    </a>
-    <a href="{% url 'tasks:index' %}" 
-       class="btn {% if currentListType == 'mine' %} btn-dark{%endif%}"
-       {% if currentListType == 'mine' %} aria-current {%endif%}>
-       My tasks
-    </a>
-    <a href="{% url 'tasks:completed' %}" 
-       class="btn {% if currentListType == 'completed' %} btn-dark {%endif%}"
-       {% if currentListType == 'completed' %} aria-current {%endif%}>
-       Completed
-    </a>
-  </nav>
-  <ul class="list-group">
-    {% for task in tasks %}
-    <a href="{% url 'tasks:detail' task.id %}" class="list-group-item list-group-item-action">
-    <li class="list-unstyled">
-      {{task.type}}
-      {{task.ward}}
-      {{task.date|naturaltime}}</li>
-    </a>
-    {% endfor %}
-  </ul>
+  <a href="{% url 'tasks:available' %}" class="btn {% if currentListType == 'available' %} btn-dark{%endif%}"
+    {% if currentListType == 'available' %} aria-current {%endif%}>
+    Available
+  </a>
+  <a href="{% url 'tasks:index' %}" class="btn {% if currentListType == 'mine' %} btn-dark{%endif%}"
+    {% if currentListType == 'mine' %} aria-current {%endif%}>
+    My tasks
+  </a>
+  <a href="{% url 'tasks:completed' %}" class="btn {% if currentListType == 'completed' %} btn-dark {%endif%}"
+    {% if currentListType == 'completed' %} aria-current {%endif%}>
+    Completed
+  </a>
+</nav>
+<ul class="list-group bg-white">
+  {% for task in tasks %}
+  <a href="{% url 'tasks:detail' task.id %}" class="list-group-item list-group-item-action">
+    <li class="list-unstyled d-flex justify-content-between">
+      <div>
+        <strong class="d-block">{{task.type}}</strong>
+        <span class="d-block">{{task.ward}}</span>
+      </div>
+      <time class="text-right">
+        <span>{{task.date|date:"d M"}}</span>
+        <span class="text-muted text-small d-block">{{task.date|naturaltime}}</span>
+      </time>
+    </li>
+  </a>
+  {% endfor %}
+</ul>
 </div>
 {% endblock %}

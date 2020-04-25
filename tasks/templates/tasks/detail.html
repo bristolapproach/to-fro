@@ -1,26 +1,23 @@
 {% extends 'layouts/application.html' %}
 
 {% block 'content' %}
-<a href=".">Back</a>
 <h1 class="text-center">Help with {{task.type}}</h1>
 <div class="space-3">
-{% if task.id >= 4 %}
+  {% if task.id >= 4 %}
   Complete details of the task go here
   {% if task.id == 4%}
   <a class="btn d-table mx-auto btn-primary" href="{% url 'tasks:complete' task.id%}">
     All done!
   </a>
   {% endif %}
-{% else %}
+  {% else %}
   Partial details for the task go here
   <form method="POST">
-  {% csrf_token %}
-  <button class="btn d-table mx-auto btn-primary" name="accept_help">
-    I can help!
-  </button>
+    {% csrf_token %}
+    <button class="btn d-table mx-auto btn-primary" name="accept_help">
+      I can help!
+    </button>
   </form>
-{% endif %}
+  {% endif %}
 </div>
 {% endblock %}
-
-

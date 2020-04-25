@@ -69,7 +69,8 @@ def completed(request):
 def detail(request, task_id):
   task = filter(lambda t: t['id'] == task_id, tasks)
   context = {
-    'task': next(task)
+    'task': next(task),
+    'backUrl': '.'
   }
 
   if request.method == "POST":
@@ -80,7 +81,8 @@ def detail(request, task_id):
 def complete(request, task_id):
   task = filter(lambda t: t['id'] == task_id, tasks)
   context = {
-    'task': next(task)
+    'task': next(task),
+    'backUrl': '..'
   }
 
   if request.method == "POST":
