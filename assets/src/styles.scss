@@ -4,3 +4,7 @@
 // Generic styles
 @import 'styles/generic/bootstrap';
 @import 'styles/generic/space';
+
+.container--small {
+  max-width: (600rem / 16);
+}

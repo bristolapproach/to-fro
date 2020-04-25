@@ -3,11 +3,17 @@
 {% block 'content' %}
 <form url="{% url 'tasks:complete' task.id %}" method="POST">
   {% csrf_token %}
-  <label for="duration">It took me:</label>
-  <input name="duration" id="duration" >
-  <label for="notes">Notes</label>
-  <textarea name="notes" id="notes"></textarea>
-  <button name="outcome" value="ko">Couldn't do it all</button>
-  <button name="outcome" value="ok">All went fine</button>
+  <div class="form-group">
+    <label for="duration">It took me:</label>
+    <input name="duration" id="duration" class="form-control" >
+  </div>
+  <div class="form-group">
+    <label for="notes">Notes</label>
+    <textarea name="notes" id="notes" class="form-control"></textarea>
+  </div>
+  <div class="text-center">
+    <button name="outcome" value="ko" class="btn btn-outline-danger">Couldn't do it all</button>
+    <button name="outcome" value="ok" class="btn btn-primary">All went fine</button>
+  </div>
 </form>
 {% endblock %}

@@ -10,10 +10,12 @@
     <script src="{% static "app.js" %}" defer></script>
   </head>
   <body>
-    <header>
-      <a href="/">To/Fro</a>
+    <header class="navbar navbar-dark bg-dark">
+      <a class="navbar-brand" href="/">To/Fro</a>
     </header>
     {% include './_messages.html' %}
-    {% block 'content'%}{% endblock %}
+    <div class="container container--small py-5 space-4">
+      {% block 'content'%}{% endblock %}
+    </div>
   </body>
 </html>

@@ -47,18 +47,21 @@ def completedFilter(task):
 # Create your views here.
 def index(request):
   context = {
+    'currentListType': 'mine',
     'tasks': filter(mineFilter, tasks)
   }
   return render(request, 'tasks/index.html', context)
 
 def available(request):
   context = {
+    'currentListType': 'available',
     'tasks': filter(availableFilter, tasks)
   }
   return render(request, 'tasks/index.html', context)
 
 def completed(request):
   context = {
+    'currentListType': 'completed',
     'tasks': filter(completedFilter, tasks)
   }
   return render(request, 'tasks/index.html', context)

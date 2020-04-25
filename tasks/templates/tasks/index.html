@@ -3,20 +3,35 @@
 {% load humanize %}
 
 {% block 'content' %}
-<h1>Tasks dashboard</h1>
-<nav>
-  <a href="{% url 'tasks:available' %}" >Available</a>
-  <a href="{% url 'tasks:index' %}">My tasks</a>
-  <a href="{% url 'tasks:completed'%}">Completed</a>
-</nav>
-<ul>
-  {% for task in tasks %}
-  <a href="{% url 'tasks:detail' task.id %}">
-  <li>
-    {{task.type}}
-    {{task.ward}}
-    {{task.date|naturaltime}}
-  </a>
-  {% endfor %}
-</ul>
+<h1 class="text-center">Tasks dashboard</h1>
+
+  <nav class="d-flex justify-content-center space-x-3">
+
+    <a href="{% url 'tasks:available' %}" 
+       class="btn {% if currentListType == 'available' %} btn-dark{%endif%}"
+       {% if currentListType == 'available' %} aria-current {%endif%}>
+       Available
+    </a>
+    <a href="{% url 'tasks:index' %}" 
+       class="btn {% if currentListType == 'mine' %} btn-dark{%endif%}"
+       {% if currentListType == 'mine' %} aria-current {%endif%}>
+       My tasks
+    </a>
+    <a href="{% url 'tasks:completed' %}" 
+       class="btn {% if currentListType == 'completed' %} btn-dark {%endif%}"
+       {% if currentListType == 'completed' %} aria-current {%endif%}>
+       Completed
+    </a>
+  </nav>
+  <ul class="list-group">
+    {% for task in tasks %}
+    <a href="{% url 'tasks:detail' task.id %}">
+    <li class="list-group-item list-group-item-action">
+      {{task.type}}
+      {{task.ward}}
+      {{task.date|naturaltime}}</li>
+    </a>
+    {% endfor %}
+  </ul>
+</div>
 {% endblock %}
