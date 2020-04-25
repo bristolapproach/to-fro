@@ -1,3 +1,6 @@
-body {
-  background: red;
-}
+// Abstract elements like functions, variables and mixins
+@import 'styles/abstract/index';
+
+// Generic styles
+@import 'styles/generic/bootstrap';
+@import 'styles/generic/space';
