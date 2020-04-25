@@ -1,5 +1,6 @@
 import datetime
-from django.shortcuts import render
+from django.shortcuts import render,redirect
+from django.contrib import messages
 
 tasks = [{
   'id': 1,
@@ -74,4 +75,9 @@ def complete(request, task_id):
   context = {
     'task': next(task)
   }
+
+  if request.method == "POST":
+    messages.success(request, 'Success')
+    return redirect('tasks:detail', task_id = task_id)
+
   return render(request, 'tasks/complete.html', context)

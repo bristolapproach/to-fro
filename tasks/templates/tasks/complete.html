@@ -1,9 +1,9 @@
 <form url="{% url 'tasks:complete' task.id %}" method="POST">
   {% csrf_token %}
-  <label>It took me:</label>
-  <input />
-  <label>Notes</label>
-  <textarea></textarea>
-  <button>Couldn't do it all</button>
-  <button>All went fine</button>
+  <label for="duration">It took me:</label>
+  <input name="duration" id="duration" >
+  <label for="notes">Notes</label>
+  <textarea name="notes" id="notes"></textarea>
+  <button name="outcome" value="ko">Couldn't do it all</button>
+  <button name="outcome" value="ok">All went fine</button>
 </form>
