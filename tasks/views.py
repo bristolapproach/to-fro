@@ -48,21 +48,24 @@ def completedFilter(task):
 def index(request):
   context = {
     'currentListType': 'mine',
-    'tasks': filter(mineFilter, tasks)
+    'tasks': filter(mineFilter, tasks),
+    'title': 'My jobs',
   }
   return render(request, 'tasks/index.html', context)
 
 def available(request):
   context = {
     'currentListType': 'available',
-    'tasks': filter(availableFilter, tasks)
+    'tasks': filter(availableFilter, tasks),
+    'title': 'Available jobs'
   }
   return render(request, 'tasks/index.html', context)
 
 def completed(request):
   context = {
     'currentListType': 'completed',
-    'tasks': filter(completedFilter, tasks)
+    'tasks': filter(completedFilter, tasks),
+    'title': 'Completed jobs',
   }
   return render(request, 'tasks/index.html', context)
 
