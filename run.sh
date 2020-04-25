@@ -7,6 +7,10 @@ while ! nc -z ${DATABASE_HOST} ${DATABASE_PORT}; do
     sleep 1
 done
 
+# Build the front-end assets
+npm install
+npm run build
+
 # Set up the data migrations.
 python3 manage.py makemigrations
 python3 manage.py migrate

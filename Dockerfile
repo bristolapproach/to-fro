@@ -1,8 +1,13 @@
 # Base Python3 image.
 FROM python:3
 
+# Add NodeJS apt repository
+RUN \
+  echo "deb https://deb.nodesource.com/node_12.x buster main" > /etc/apt/sources.list.d/nodesource.list && \
+  wget -qO- https://deb.nodesource.com/gpgkey/nodesource.gpg.key | apt-key add -
+
 # Install OS dependencies.
-RUN apt-get update && apt-get install binutils libproj-dev gdal-bin netcat -y
+RUN apt-get update && apt-get install binutils libproj-dev gdal-bin netcat nodejs -y
 
 # Install Python requirements.
 COPY requirements.txt /requirements.txt
