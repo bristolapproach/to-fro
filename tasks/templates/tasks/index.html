@@ -25,8 +25,8 @@
   </nav>
   <ul class="list-group">
     {% for task in tasks %}
-    <a href="{% url 'tasks:detail' task.id %}">
-    <li class="list-group-item list-group-item-action">
+    <a href="{% url 'tasks:detail' task.id %}" class="list-group-item list-group-item-action">
+    <li class="list-unstyled">
       {{task.type}}
       {{task.ward}}
       {{task.date|naturaltime}}</li>
