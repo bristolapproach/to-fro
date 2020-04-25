@@ -1,3 +1,6 @@
+{% extends 'layouts/application.html' %}
+
+{% block 'content' %}
 <form url="{% url 'tasks:complete' task.id %}" method="POST">
   {% csrf_token %}
   <label for="duration">It took me:</label>
@@ -7,3 +10,4 @@
   <button name="outcome" value="ko">Couldn't do it all</button>
   <button name="outcome" value="ok">All went fine</button>
 </form>
+{% endblock %}

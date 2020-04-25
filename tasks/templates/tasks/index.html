@@ -1,4 +1,8 @@
+{% extends 'layouts/application.html' %}
+
 {% load humanize %}
+
+{% block 'content' %}
 <h1>Tasks dashboard</h1>
 <nav>
   <a href="{% url 'tasks:available' %}" >Available</a>
@@ -15,3 +19,4 @@
   </a>
   {% endfor %}
 </ul>
+{% endblock %}
