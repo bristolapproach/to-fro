@@ -80,6 +80,9 @@ def complete(request, task_id):
         'heading': 'How did it go?'
     }
 
+    if job.job_status.name != 'helper_assigned':
+        return redirect('tasks:detail', task_id=job.id)
+
     if request.method == "POST":
         # the duration field expects seconds, but we ask for an input in hours
         job.timeTaken = datetime.timedelta(
