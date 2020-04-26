@@ -81,6 +81,10 @@ def complete(request, task_id):
     }
 
     if request.method == "POST":
+        # the duration field expects seconds, but we ask for an input in hours
+        job.timeTaken = datetime.timedelta(
+            hours=float(request.POST['timeTaken']))
+        job.notes = request.POST['notes']
         if (request.POST['outcome'] == 'ok'):
             job.job_status = JobStatus.objects.get(name='completed')
             job.save()

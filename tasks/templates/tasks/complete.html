@@ -5,13 +5,14 @@
   {% csrf_token %}
   <div class="card-body">
     <div class="form-group">
-      <label for="duration">It took me:</label>
+      <label for="timeTaken">It took me:</label>
       <div class="input-group">
-        <input name="duration" id="duration" type="number" class="form-control" aria-describedby="duration-description">
+        <input name="timeTaken" id="timeTaken" type="number" step="0.01" class="form-control"
+          aria-describedby="timeTaken-description">
         <div class="input-group-append">
           <div class="input-group-text">
             h
-            <div hidden id="duration-description">
+            <div hidden id="timeTaken-description">
               in hours
             </div>
           </div>
