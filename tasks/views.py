@@ -7,7 +7,7 @@ from core.models import Job, Helper
 
 def index(request):
     helper = Helper.objects.get()
-    jobs = Job.objects.filter(Q(helper=helper)).exclude(
+    jobs = helper.job_set.exclude(
         Q(job_status__name='completed') | Q(job_status__name='couldnt_complete'))
     context = {
         'currentListType': 'mine',
@@ -31,7 +31,7 @@ def available(request):
 
 def completed(request):
     helper = Helper.objects.get()
-    jobs = Job.objects.filter(Q(helper=helper)).filter(
+    jobs = helper.job_set.filter(
         Q(job_status__name='completed') | Q(job_status__name='couldnt_complete'))
     context = {
         'currentListType': 'completed',
@@ -43,12 +43,14 @@ def completed(request):
 
 
 def detail(request, task_id):
+    helper = Helper.objects.get()
     job = get_object_or_404(Job, pk=task_id)
     context = {
         'job': job,
         'backUrl': '.',
         'title': "How you can help",
-        'heading': job.description
+        'heading': job.description,
+        'helper': helper
     }
 
     if request.method == "POST":

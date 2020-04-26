@@ -182,7 +182,7 @@ class Job(models.Model):
     requested_datetime = models.DateTimeField(
         null=True, help_text="When do they need the help by?")
     helper = models.ForeignKey(
-        Helper, on_delete=models.PROTECT, null=True, help_text="Who will help?")
+        Helper, on_delete=models.PROTECT, null=True, blank=True, help_text="Who will help?")
     job_status = models.ForeignKey(
         JobStatus, on_delete=models.PROTECT, null=True, help_text="What's the status of the help?")
     job_priority = models.ForeignKey(
