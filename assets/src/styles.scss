@@ -5,6 +5,10 @@
 @import 'styles/generic/bootstrap';
 @import 'styles/generic/space';
 
+:last-child {
+  margin-bottom: 0;
+}
+
 .container--small {
   max-width: (600rem / 16);
 }

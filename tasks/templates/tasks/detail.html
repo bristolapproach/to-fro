@@ -4,30 +4,34 @@
 <div class="card">
   <div class="card-body space-3">
     <div>
-      Partial details for the job. {% lorem 25 w%}
+      {{job.public_description}}
     </div>
-    {% if task.id >= 4 %}
+    {% if job.helper == helper and job.job_status.name != 'pending_help' and job.job_status.name != 'helper_interest' %}
     <div class="border-top mt-3 pt-3">
-      Complete details for the job. {% lorem 25 w%}
+      {{job.private_description}}
     </div>
     {% endif %}
   </div>
   <div class="card-footer">
-    {% if task.id < 4 %}
+    {% if job.job_status.name == 'pending_help' %}
     <form method="POST">
       {% csrf_token %}
-      <button class="btn d-table mx-auto btn-primary" name="accept_help">
+      <button class="btn d-table mx-auto btn-primary" name="action" value="accept_help">
         I'll help!
       </button>
     </form>
+    {% elif job.job_status.name == 'helper_interest' %}
+    {% if job.helper == helper %}
+    <p class="text-center">Thanks for volunteering! We'll be back in touch soon!</p>
     {% else %}
-    {% if task.id == 4%}
-    <a class="btn d-table mx-auto btn-primary" href="{% url 'tasks:complete' task.id%}">
+    <p class="text-center">Someone's on it, but thanks for thinking of it!</p>
+    {% endif %}
+    {% elif job.job_status.name == 'helper_assigned' %}
+    <a class="btn d-table mx-auto btn-primary" href="{% url 'tasks:complete' job.id%}">
       All done!
     </a>
     {% else %}
-    Thanks for helping!
-    {% endif %}
+    <p>Thanks for helping!</p>
     {% endif %}
   </div>
 </div>
