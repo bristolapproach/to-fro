@@ -78,7 +78,15 @@ def complete(request, task_id):
     }
 
     if request.method == "POST":
-        messages.success(request, 'Success')
+        if (request.POST['outcome'] == 'ok'):
+            job.job_status = JobStatus.objects.get(name='completed')
+            job.save()
+            messages.success(request, 'Nice work! Thanks for helping out!')
+        else:
+            job.job_status = JobStatus.objects.get(name='couldnt_complete')
+            job.save()
+            messages.success(
+                request, 'Thanks for helping out! Sorry it did not all go smoothly')
         return redirect('tasks:detail', task_id=job.id)
 
     return render(request, 'tasks/complete.html', context)
