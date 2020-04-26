@@ -19,16 +19,17 @@
   </a>
 </nav>
 <ul class="list-group bg-white">
-  {% for task in tasks %}
-  <a href="{% url 'tasks:detail' task.id %}" class="list-group-item list-group-item-action">
+  {% for job in jobs %}
+  <a aria-label="{{job.descriptionWithDate}}" href="{% url 'tasks:detail' job.id %}"
+    class="list-group-item list-group-item-action">
     <li class="list-unstyled d-flex justify-content-between">
       <div>
-        <strong class="d-block">{{task.type}}</strong>
-        <span class="d-block">{{task.ward}}</span>
+        <strong class="d-block">{{job.help_type}}</strong>
+        <span class="d-block">{{job.ward}}</span>
       </div>
-      <time class="text-right">
-        <span>{{task.date|date:"d M"}}</span>
-        <span class="text-muted text-small d-block">{{task.date|naturaltime}}</span>
+      <time datetime="{{job.requested_datetime|date:"c"}}" class="text-right">
+        <span>{{job.requested_datetime|date:"d M"}}</span>
+        <span class="text-muted text-small d-block">{{job.requested_datetime|naturaltime}}</span>
       </time>
     </li>
   </a>

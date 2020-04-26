@@ -53,7 +53,7 @@ class Ward(models.Model):
     name = models.CharField(max_length=50, null=True)
 
     def __str__(self):
-        return f"Ward: {self.name}"
+        return f"{self.name}"
 
 
 class Requester(User):
@@ -141,7 +141,7 @@ class HelpType(models.Model):
     name = models.CharField(max_length=50, null=True)
 
     def __str__(self):
-        return f"HelpType: {self.name}"
+        return f"{self.name}"
 
 
 class HelpPreference(models.Model):
@@ -158,14 +158,14 @@ class JobPriority(models.Model):
     name = models.CharField(max_length=50)
 
     def __str__(self):
-        return f"JobPriority: {self.name}"
+        return f"{self.name}"
 
 
 class JobStatus(models.Model):
     name = models.CharField(max_length=50)
 
     def __str__(self):
-        return f"JobStatus: {self.name}"
+        return f"{self.name}"
 
 
 class Job(models.Model):
@@ -201,6 +201,14 @@ class Job(models.Model):
     @property
     def ward(self):
         return self.requester.ward
+
+    @property
+    def description(self):
+        return f"Help with {self.help_type} around {self.ward}"
+
+    @property
+    def descriptionWithDate(self):
+        return f"{self.description} by {self.requested_datetime.strftime('%d %b')}"
 
     def __str__(self):
         return f"Job: {self.id}"
