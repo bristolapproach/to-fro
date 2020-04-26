@@ -8,7 +8,7 @@ from core.models import Job, Helper, JobStatus
 
 
 def index(request):
-    helper = Helper.objects.get()
+    helper = Helper.objects.first()
     jobs = helper.job_set.exclude(
         Q(job_status__name='completed') | Q(job_status__name='couldnt_complete'))
     context = {
@@ -21,7 +21,7 @@ def index(request):
 
 
 def available(request):
-    helper = Helper.objects.get()
+    helper = Helper.objects.first()
     jobs = Job.objects.filter(
         job_status__name='pending_help').filter(requester__ward__in=helper.wards.all()).filter(help_type__in=helper.help_types.all())
     context = {
@@ -34,7 +34,7 @@ def available(request):
 
 
 def completed(request):
-    helper = Helper.objects.get()
+    helper = Helper.objects.first()
     jobs = helper.job_set.filter(
         Q(job_status__name='completed') | Q(job_status__name='couldnt_complete'))
     context = {
@@ -47,7 +47,7 @@ def completed(request):
 
 
 def detail(request, task_id):
-    helper = Helper.objects.get()
+    helper = Helper.objects.first()
     job = get_object_or_404(Job, pk=task_id)
     context = {
         'job': job,
@@ -72,6 +72,7 @@ def detail(request, task_id):
 
 
 def complete(request, task_id):
+    helper = Helper.objects.first()
     job = get_object_or_404(Job, pk=task_id)
     context = {
         'job': job,
@@ -80,7 +81,7 @@ def complete(request, task_id):
         'heading': 'How did it go?'
     }
 
-    if job.job_status.name != 'helper_assigned':
+    if job.job_status.name != 'helper_assigned' or job.helper != helper:
         return redirect('tasks:detail', task_id=job.id)
 
     if request.method == "POST":

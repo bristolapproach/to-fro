@@ -1,6 +1,7 @@
 {% extends 'layouts/application.html' %}
 
 {% block 'content' %}
+{{helper.id}}
 <div class="card">
   <div class="card-body space-3">
     <div>
@@ -20,11 +21,15 @@
         I'll help!
       </button>
     </form>
-    {% elif job.job_status.name == 'helper_interest' %}
+    {%else %}
+    {% if job.helper != helper %}
+    <p class="text-center">Someone's on it, but thanks for thinking of it!</p>
+    {% else %}
+    {% if job.job_status.name == 'helper_interest' %}
     {% if job.helper == helper %}
     <p class="text-center">Thanks for volunteering! We'll be back in touch soon!</p>
     {% else %}
-    <p class="text-center">Someone's on it, but thanks for thinking of it!</p>
+
     {% endif %}
     {% elif job.job_status.name == 'helper_assigned' %}
     <a class="btn d-table mx-auto btn-primary" href="{% url 'tasks:complete' job.id%}">
@@ -32,6 +37,8 @@
     </a>
     {% else %}
     <p>Thanks for helping!</p>
+    {% endif %}
+    {% endif %}
     {% endif %}
   </div>
 </div>
