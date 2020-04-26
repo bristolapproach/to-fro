@@ -21,7 +21,11 @@
       </button>
     </form>
     {% elif job.job_status.name == 'helper_interest' %}
+    {% if job.helper == helper %}
     <p class="text-center">Thanks for volunteering! We'll be back in touch soon!</p>
+    {% else %}
+    <p class="text-center">Someone's on it, but thanks for thinking of it!</p>
+    {% endif %}
     {% elif job.job_status.name == 'helper_assigned' %}
     <a class="btn d-table mx-auto btn-primary" href="{% url 'tasks:complete' job.id%}">
       All done!
