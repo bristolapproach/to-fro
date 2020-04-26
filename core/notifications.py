@@ -41,4 +41,5 @@ class EmailSender:
 
     @staticmethod
     def send(subject, message, recipients):
-        send_mail(subject, message, from_email, recipients, fail_silently=False)
+        print("Sending message to", recipients)
+        send_mail(subject, message, from_email, recipients)

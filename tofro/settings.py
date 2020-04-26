@@ -26,10 +26,15 @@ DEBUG = os.environ.get("DEBUG", True)
 
 
 # Email settings.
-EMAIL_HOST = os.getenv("EMAIL_HOST", "localhost")
 EMAIL_PORT = os.getenv("EMAIL_PORT", 587)
+EMAIL_HOST = os.getenv("EMAIL_HOST", "localhost")
 EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER", "test")
 EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD", "test")
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+SERVER_EMAIL = DEFAULT_FROM_EMAIL
+EMAIL_USE_SSL = False
+EMAIL_USE_TLS = True
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
