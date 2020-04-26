@@ -3,7 +3,7 @@
 {% load humanize %}
 
 {% block 'content' %}
-<nav class="d-flex justify-content-center space-x-3">
+<nav aria-label="Job types" class="d-flex justify-content-center space-x-3">
   <a href="{% url 'tasks:available' %}" class="btn {% if currentListType == 'available' %} btn-dark{%endif%}"
     {% if currentListType == 'available' %} aria-current {%endif%}>
     Available
