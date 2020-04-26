@@ -1,0 +1,23 @@
+// Spacer utility
+@each $spacer-name, $space in $spacers {
+  .space-#{$spacer-name},
+  .space-y-#{$spacer-name} {
+    > * {
+      margin-bottom: 0;
+    }
+
+    > * + * {
+      margin-top: $space;
+    }
+  }
+
+  .space-x-#{$spacer-name} {
+    > * {
+      margin-right: 0;
+    }
+
+    > * + * {
+      margin-left: $space;
+    }
+  }
+}

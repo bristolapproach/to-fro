@@ -1,0 +1,39 @@
+{% load static %}
+{% load svg %}
+
+<!doctype html>
+<html lang="en_UK">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% if title %} {{title}} | {% endif %}To/Fro</title>
+  <link rel="stylesheet" href="{% static 'styles.css' %}">
+  <script src="{% static "app.js" %}" defer></script>
+</head>
+
+<body>
+  <header class="navbar navbar-dark bg-dark">
+    <a class="navbar-brand" href="/">To/Fro</a>
+  </header>
+  {% include './_messages.html' %}
+  <div class="container container--small py-5 space-4">
+    <div class="heading-container d-flex justify-content-between">
+      {% if backUrl %}
+      <a href="{{backUrl}}" class="btn btn-icon-only rounded-circle align-self-start mt-2">
+        {% embed_svg 'node_modules/@fortawesome/fontawesome-free/svgs/solid/arrow-left.svg' %}
+        <span class="sr-only">Back</span>
+      </a>
+      {% endif %}
+      <h1 class="text-center mx-auto">{{heading|safe}}</h1>
+      {% if backUrl %}
+      <a class="invisible btn btn-icon-only rounded-circle" role="presentation">
+        {% embed_svg 'node_modules/@fortawesome/fontawesome-free/svgs/solid/arrow-left.svg' %}
+      </a>
+      {% endif %}
+    </div>
+    {% block 'content'%}{% endblock %}
+  </div>
+</body>
+
+</html>

@@ -1,0 +1,48 @@
+version: '3'
+services:
+
+  # PostgreSQL database, with GIS extension.
+  db:
+    image: mdillon/postgis
+    container_name: tofro-db
+    restart: unless-stopped
+    ports:
+      - "${DATABASE_PORT}:${DATABASE_PORT}"
+    environment:
+      - POSTGRES_DB=${POSTGRES_DB}
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+    volumes:
+      - data_volume:/var/lib/postgresql/data
+
+  # Django Python Backend.
+  server:
+    build:
+      context: ./
+    container_name: tofro-django
+    restart: unless-stopped
+    ports:
+      - "${DJANGO_PORT}:${DJANGO_PORT}"
+    environment:
+      - POSTGRES_DB=${POSTGRES_DB}
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - DATABASE_PORT=${DATABASE_PORT}
+      - DATABASE_HOST=${DATABASE_HOST}
+      - DJANGO_ALLOWED_HOSTS=${DJANGO_ALLOWED_HOSTS}
+
+      - DJANGO_PORT=${DJANGO_PORT}
+      - DJANGO_ADMIN=${DJANGO_ADMIN}
+      - DJANGO_PASSWORD=${DJANGO_PASSWORD}
+      - DJANGO_SECRET_KEY=${DJANGO_SECRET_KEY}
+      - DEBUG=${DEBUG}
+
+      - ADMIN_SITE_TITLE=${ADMIN_SITE_TITLE}
+      - SITE_URL=${SITE_URL}
+    volumes:
+      - "./:/code"
+    depends_on:
+      - db
+
+volumes:
+  data_volume:

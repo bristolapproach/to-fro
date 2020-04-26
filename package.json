@@ -1,0 +1,28 @@
+{
+  "name": "to-fro",
+  "version": "0.1.0",
+  "description": "We're working on a system that can be used by different communities to help self organise, keep track of need and effectively deploy help.",
+  "main": "front-end/index.js",
+  "scripts": {
+    "dev": "parcel assets/src/* -d assets/static",
+    "build": "parcel build assets/src/* -d assets/static"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/cgillions/to-fro.git"
+  },
+  "author": "Romaric Pascal <hello@romaricpascal.is> (https://romaricpascal.is)",
+  "license": "GPL-3.0-or-later",
+  "bugs": {
+    "url": "https://github.com/cgillions/to-fro/issues"
+  },
+  "homepage": "https://github.com/cgillions/to-fro#readme",
+  "devDependencies": {
+    "bootstrap": "^4.4.1",
+    "parcel": "^1.12.4",
+    "sass": "^1.26.5"
+  },
+  "dependencies": {
+    "@fortawesome/fontawesome-free": "^5.13.0"
+  }
+}
