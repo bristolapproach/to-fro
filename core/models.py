@@ -56,6 +56,13 @@ class Ward(models.Model):
         return f"{self.name}"
 
 
+class HelpType(models.Model):
+    name = models.CharField(max_length=50, null=True)
+
+    def __str__(self):
+        return f"{self.name}"
+
+
 class Requester(User):
     user_type = models.CharField(
         max_length=20, null=True, default="requester", blank=True)
@@ -101,6 +108,7 @@ class Helper(User):
     id_received = models.BooleanField(
         null=True, help_text="Have we received a copy of their ID?")
     wards = models.ManyToManyField(Ward, related_name="helpers")
+    help_types = models.ManyToManyField(HelpType, related_name="helpers")
     reference_details = models.CharField(max_length=250, null=True)
     available_mon_morning = models.BooleanField(null=True, default=False)
     available_mon_afternoon = models.BooleanField(null=True, default=False)
@@ -136,13 +144,6 @@ class HelperWard(models.Model):
 
     def __str__(self):
         return f"{self.helper.first_name} {self.helper.last_name} can help in {self.ward.name}"
-
-
-class HelpType(models.Model):
-    name = models.CharField(max_length=50, null=True)
-
-    def __str__(self):
-        return f"{self.name}"
 
 
 class HelpPreference(models.Model):
