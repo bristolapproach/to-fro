@@ -1,6 +1,8 @@
 import datetime
 from django.shortcuts import render,redirect
 from django.contrib import messages
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import permission_required
 
 tasks = [{
   'id': 1,
@@ -45,6 +47,7 @@ def completedFilter(task):
 
 
 # Create your views here.
+@login_required
 def index(request):
   context = {
     'currentListType': 'mine',
