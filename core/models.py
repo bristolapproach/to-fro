@@ -100,6 +100,7 @@ class Helper(User):
         null=True, help_text="Have we received their key worker letter?")
     id_received = models.BooleanField(
         null=True, help_text="Have we received a copy of their ID?")
+    wards = models.ManyToManyField(Ward, related_name="helpers")
     reference_details = models.CharField(max_length=250, null=True)
     available_mon_morning = models.BooleanField(null=True, default=False)
     available_mon_afternoon = models.BooleanField(null=True, default=False)

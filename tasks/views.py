@@ -21,8 +21,9 @@ def index(request):
 
 
 def available(request):
+    helper = Helper.objects.get()
     jobs = Job.objects.filter(
-        helper__isnull=True, job_status__name='pending_help')
+        job_status__name='pending_help').filter(requester__ward__in=helper.wards.all())
     context = {
         'currentListType': 'available',
         'title': 'Available jobs',
