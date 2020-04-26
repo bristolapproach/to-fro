@@ -11,6 +11,5 @@ from django.conf.urls.static import static
 
 urlpatterns = [
     path('tasks/', include('tasks.urls')),
-    path('', include('polls.urls')),
     path('admin/', admin.site.urls),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
