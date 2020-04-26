@@ -1,57 +1,14 @@
 import datetime
 from django.shortcuts import render, redirect
 from django.contrib import messages
-
-from core.models import Job
-
-tasks = [{
-    'id': 1,
-    'type': 'shopping',
-    'ward': 'KW',
-    'date': datetime.datetime.now() + datetime.timedelta(days=1),
-}, {
-    'id': 2,
-    'type': 'prescription',
-    'ward': 'KW',
-    'date': datetime.datetime.now() + datetime.timedelta(days=3)
-}, {
-    'id': 3,
-    'type': 'callback',
-    'ward': 'KW',
-    'date': datetime.datetime.now() + datetime.timedelta(days=5)
-}, {
-    'id': 4,
-    'type': 'shopping',
-    'ward': 'KW',
-    'date': datetime.datetime.now() + datetime.timedelta(days=1)
-}, {
-    'id': 5,
-    'type': 'prescription',
-    'ward': 'KW',
-    'date': datetime.datetime.now() + datetime.timedelta(days=-5)
-}, {
-    'id': 6,
-    'type': 'prescription',
-    'ward': 'KW',
-    'date': datetime.datetime.now() + datetime.timedelta(days=-8)
-}]
+from django.db.models import Q
+from core.models import Job, Helper
 
 
-def availableFilter(task):
-    return task["id"] < 4
-
-
-def mineFilter(task):
-    return task["id"] == 4
-
-
-def completedFilter(task):
-    return task["id"] > 4
-
-
-# Create your views here.
 def index(request):
-    jobs = Job.objects.all()
+    helper = Helper.objects.get()
+    jobs = Job.objects.filter(Q(helper=helper)).exclude(
+        Q(job_status__name='completed') | Q(job_status__name='couldnt_complete'))
     context = {
         'currentListType': 'mine',
         'title': 'My jobs',
@@ -62,7 +19,7 @@ def index(request):
 
 
 def available(request):
-    jobs = Job.objects.all()
+    jobs = Job.objects.filter(helper__isnull=True)
     context = {
         'currentListType': 'available',
         'title': 'Available jobs',
@@ -73,7 +30,9 @@ def available(request):
 
 
 def completed(request):
-    jobs = Job.objects.all()
+    helper = Helper.objects.get()
+    jobs = Job.objects.filter(Q(helper=helper)).filter(
+        Q(job_status__name='completed') | Q(job_status__name='couldnt_complete'))
     context = {
         'currentListType': 'completed',
         'title': 'Completed jobs',
