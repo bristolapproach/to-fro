@@ -1,5 +1,5 @@
 import datetime
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from django.db.models import Q
 from core.models import Job, Helper
@@ -43,12 +43,12 @@ def completed(request):
 
 
 def detail(request, task_id):
-    task = next(filter(lambda t: t['id'] == task_id, tasks))
+    job = get_object_or_404(Job, pk=task_id)
     context = {
-        'task': task,
+        'job': job,
         'backUrl': '.',
         'title': "How you can help",
-        'heading': f'Help with {task["type"]}<br>in {task["ward"]}'
+        'heading': job.description
     }
 
     if request.method == "POST":
@@ -58,9 +58,9 @@ def detail(request, task_id):
 
 
 def complete(request, task_id):
-    task = filter(lambda t: t['id'] == task_id, tasks)
+    job = get_object_or_404(Job, pk=task_id)
     context = {
-        'task': next(task),
+        'job': job,
         'backUrl': '..',
         'title': 'How did it go?',
         'heading': 'How did it go?'

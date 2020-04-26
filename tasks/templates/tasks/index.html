@@ -17,6 +17,7 @@
     Completed
   </a>
 </nav>
+{% if jobs %}
 <ul class="list-group bg-white">
   {% for job in jobs %}
   <a aria-label="{{job.descriptionWithDate}}" href="{% url 'tasks:detail' job.id %}"
@@ -34,5 +35,8 @@
   </a>
   {% endfor %}
 </ul>
+{% else %}
+<p class="text-center">Sorry, there's nothing available at the moment.</p>
+{% endif %}
 </div>
 {% endblock %}
