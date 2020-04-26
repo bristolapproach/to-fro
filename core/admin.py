@@ -1,7 +1,7 @@
 from django.contrib import admin
 from .models import EventType, Event, Relationship, Ward, Requester, \
                     Helper, HelperWard, HelpType, HelpPreference, \
-                    JobPriority, JobStatus, Job
+                    JobPriority, JobStatus, Job, Notification
 
 # Register our models with the admin site.
 admin.site.register(EventType)
@@ -16,3 +16,4 @@ admin.site.register(HelpPreference)
 admin.site.register(JobPriority)
 admin.site.register(JobStatus)
 admin.site.register(Job)
+admin.site.register(Notification)

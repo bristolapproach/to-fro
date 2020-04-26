@@ -25,6 +25,13 @@ DATABASE_PORT = os.getenv('DATABASE_PORT', '5432')
 DEBUG = os.environ.get("DEBUG", True)
 
 
+# Email settings.
+EMAIL_HOST = os.getenv("EMAIL_HOST", "localhost")
+EMAIL_PORT = os.getenv("EMAIL_PORT", 587)
+EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER", "test")
+EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD", "test")
+
+
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 

@@ -16,7 +16,7 @@ class User(models.Model):
                              help_text="Any other notes?", blank=True)
 
     def __str__(self):
-        return f"User {self.id}: {self.first_name} {self.last_name}"
+        return f"{self.first_name} {self.last_name} ({self.id})"
 
 
 class EventType(models.Model):
@@ -81,13 +81,13 @@ class Requester(User):
         null=True, help_text="Is this person sheilded?")
 
     def __str__(self):
-        return f"Requester {self.id}: {self.first_name} {self.last_name}"
+        return f"{self.first_name} {self.last_name} ({self.id})"
 
 
 class Helper(User):
     user_type = models.CharField(max_length=20, null=True, default="helper")
     dbs_number = models.CharField(
-        max_length=12, null=True, help_text="The user's DBS certificate number, if they have one.")
+        max_length=12, null=True, blank=True, help_text="The user's DBS certificate number, if they have one.")
     access_to_car = models.BooleanField(
         null=True, help_text="Does this person have access to a car?")
     driving_license = models.BooleanField(
@@ -100,7 +100,7 @@ class Helper(User):
         null=True, help_text="Have we received their key worker letter?")
     id_received = models.BooleanField(
         null=True, help_text="Have we received a copy of their ID?")
-    reference_details = models.CharField(max_length=250, null=True)
+    reference_details = models.CharField(max_length=250, null=True, blank=True)
     available_mon_morning = models.BooleanField(null=True, default=False)
     available_mon_afternoon = models.BooleanField(null=True, default=False)
     available_mon_evening = models.BooleanField(null=True, default=False)
@@ -124,7 +124,7 @@ class Helper(User):
     available_sun_evening = models.BooleanField(null=True, default=False)
 
     def __str__(self):
-        return f"Helper {self.id}: {self.first_name} {self.last_name}"
+        return f"{self.first_name} {self.last_name} ({self.id})"
 
 
 class HelperWard(models.Model):
@@ -151,7 +151,7 @@ class HelpPreference(models.Model):
         Helper, on_delete=models.PROTECT, null=True, help_text="The associated user.")
 
     def __str__(self):
-        return f"HelpPreference: {self.id}"
+        return f"{self.helper.first_name} {self.helper.last_name}: {self.help_type.name}"
 
 
 class JobPriority(models.Model):
@@ -176,7 +176,7 @@ class Job(models.Model):
     call_datetime = models.DateTimeField(
         null=True, help_text="What time did you receive the call about the help requested?")
     call_duration = models.DurationField(
-        null=True, help_text="How long was the call?")
+        null=True, blank=True, help_text="How long was the call?")
     requester = models.ForeignKey(
         Requester, on_delete=models.PROTECT, null=True, help_text="Who made the request?")
     requested_datetime = models.DateTimeField(
@@ -189,7 +189,7 @@ class Job(models.Model):
         JobPriority, on_delete=models.PROTECT, null=True, help_text="What's the priority of the help?")
     timeTaken = models.DurationField(
         null=True, help_text="How long did it take to help?")
-    notes = models.TextField(max_length=500, null=True,
+    notes = models.TextField(max_length=500, null=True, blank=True, 
                              help_text="Any other notes?")
     public_description = models.TextField(
         max_length=500, null=True, help_text="Text that gets displayed to helpers.")
@@ -212,3 +212,17 @@ class Job(models.Model):
 
     def __str__(self):
         return f"Job: {self.id}"
+
+class Notification(models.Model):
+    job = models.ForeignKey(Job, null=True, on_delete=models.PROTECT, help_text="The job the notification is about.")
+    subject = models.CharField(
+        max_length=100, null=True, help_text="The notification subject.")
+    message = models.TextField(
+        max_length=1000, null=True, help_text="What's your name?")
+    delivered = models.BooleanField(default=False, help_text="This field is updated automatically.")
+    sent_by = models.CharField(max_length=50, help_text="Who's sending the notification?")
+    user_query = models.CharField(max_length=250, null=True, blank=True, help_text="The user selection query. Syntax TBC.")
+    recipients = models.ManyToManyField(User, related_name='notificationrecipient', default=[], help_text="This field is updated automatically.")
+    created_date_time = models.DateTimeField(null=True, help_text="This field is updated automatically.")
+    delivered_date_time = models.DateTimeField(null=True, help_text="This field is updated automatically.")
+

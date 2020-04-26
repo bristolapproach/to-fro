@@ -19,6 +19,8 @@ services:
   server:
     build:
       context: ./
+    env_file:
+      - ./.email.env
     container_name: tofro-django
     restart: unless-stopped
     ports:
