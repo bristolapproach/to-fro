@@ -4,46 +4,53 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.decorators import permission_required
 from django.db.models import Q
+from django.core.paginator import Paginator
 from core.models import Job, Helper, JobStatus
+from django.views import generic
 
-
-def index(request):
-    helper = Helper.objects.first()
-    jobs = helper.job_set.exclude(
-        Q(job_status__name='completed') | Q(job_status__name='couldnt_complete'))
-    context = {
-        'currentListType': 'mine',
-        'title': 'My jobs',
-        'heading': 'My jobs',
-        'jobs': jobs
-    }
-    return render(request, 'tasks/index.html', context)
-
-
-def available(request):
-    helper = Helper.objects.first()
-    jobs = Job.objects.filter(
-        job_status__name='pending_help').filter(requester__ward__in=helper.wards.all()).filter(help_type__in=helper.help_types.all())
-    context = {
-        'currentListType': 'available',
+LIST_DEFINITIONS = {
+    'available': {
         'title': 'Available jobs',
         'heading': 'Available jobs',
-        'jobs': jobs
+        'queryset': lambda helper:
+            Job.objects.filter(
+                job_status__name='pending_help').filter(requester__ward__in=helper.wards.all()).filter(help_type__in=helper.help_types.all())
+    },
+    'completed': {
+        'title': 'Completed',
+        'heading': 'Heading',
+        'queryset': lambda helper:
+            helper.job_set.filter(
+                Q(job_status__name='completed') | Q(job_status__name='couldnt_complete'))
+    },
+    'mine': {
+        'title': 'My tasks',
+        'heading': 'Heading',
+        'queryset': lambda helper:
+            helper.job_set.exclude(
+                Q(job_status__name='completed') | Q(job_status__name='couldnt_complete'))
     }
-    return render(request, 'tasks/index.html', context)
+}
 
 
-def completed(request):
-    helper = Helper.objects.first()
-    jobs = helper.job_set.filter(
-        Q(job_status__name='completed') | Q(job_status__name='couldnt_complete'))
-    context = {
-        'currentListType': 'completed',
-        'title': 'Completed jobs',
-        'heading': 'Completed jobs',
-        'jobs': jobs
-    }
-    return render(request, 'tasks/index.html', context)
+class JobsListView(generic.ListView):
+    template_name = 'tasks/index.html'
+    context_object_name = 'jobs'
+    paginate_by = 1
+    list_type = 'available'
+
+    def get_queryset(self):
+        helper = Helper.objects.first()
+        return LIST_DEFINITIONS[self.list_type]['queryset'](helper)
+
+    def get_context_data(self, **kwargs):
+        # Call the base implementation first to get a context
+        context = super().get_context_data(**kwargs)
+        # Add in a QuerySet of all the books
+        context['current_list'] = self.list_type
+        context['title'] = LIST_DEFINITIONS[self.list_type]['title']
+        context['heading'] = LIST_DEFINITIONS[self.list_type]['heading']
+        return context
 
 
 def detail(request, task_id):

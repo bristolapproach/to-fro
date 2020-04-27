@@ -35,6 +35,7 @@
   </a>
   {% endfor %}
 </ul>
+{% include 'layouts/_page_links.html' with page=page_obj %}
 {% else %}
 <p class="text-center">Sorry, there's nothing available at the moment.</p>
 {% endif %}
