@@ -5,9 +5,19 @@
 @import 'styles/generic/bootstrap';
 @import 'styles/generic/space';
 
+input[type=number] {
+  -moz-appearance: textfield;
+}
+
 :last-child {
   margin-bottom: 0;
 }
+
+.appearance-none {
+  appearance:none;
+}
+
+// Components
 
 .container--small {
   max-width: (600rem / 16);
