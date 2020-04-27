@@ -33,13 +33,18 @@ input[type=number] {
   padding: map-get($spacers, 2);
 }
 
-.card-footer [class*="btn-outline"] {
-  background-color: white;
+.card-footer {
+  
+  [class*="btn-outline"] {
+    background-color: white;
+  }
 
-  .btn-outline-danger {
-    &:hover {
-      color: theme-color(danger);
-      text-decoration: underline;
+  @each $color-name,$color-value in $theme-colors {
+    .btn-outline-#{$color-name} {
+      &:hover {
+        color: $color-value;
+        text-decoration: underline;
+      }
     }
   }
 }
