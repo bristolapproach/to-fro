@@ -135,6 +135,10 @@ class Helper(User):
     def __str__(self):
         return f"Helper {self.id}: {self.first_name} {self.last_name}"
 
+    @property
+    def full_name(self):
+        return f"{self.first_name} {self.last_name}"
+
 
 class HelperWard(models.Model):
     ward = models.ForeignKey(Ward, on_delete=models.PROTECT,
