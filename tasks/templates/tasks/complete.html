@@ -3,6 +3,7 @@
 {% block 'content' %}
 <form class="card" method="POST">
   {% csrf_token %}
+  {{ form.as_p }}
   <div class="card-body">
     <div class="form-group">
       <label for="timeTaken">It took me:</label>

@@ -81,30 +81,35 @@ def detail(request, task_id):
 def complete(request, task_id):
     helper = Helper.objects.first()
     job = get_object_or_404(Job, pk=task_id)
-    context = {
-        'job': job,
-        'backUrl': '..',
-        'title': 'How did it go?',
-        'heading': 'How did it go?'
-    }
 
     if job.job_status.name != 'helper_assigned' or job.helper != helper:
         return redirect('tasks:detail', task_id=job.id)
 
     if request.method == "POST":
-        # the duration field expects seconds, but we ask for an input in hours
-        job.timeTaken = datetime.timedelta(
-            hours=float(request.POST['timeTaken']))
-        job.notes = request.POST['notes']
-        if (request.POST['outcome'] == 'ok'):
-            job.job_status = JobStatus.objects.get(name='completed')
-            job.save()
-            messages.success(request, 'Nice work! Thanks for helping out!')
-        else:
-            job.job_status = JobStatus.objects.get(name='couldnt_complete')
-            job.save()
-            messages.success(
-                request, 'Thanks for helping out! Sorry it did not all go smoothly')
-        return redirect('tasks:detail', task_id=job.id)
+        try:
+            # the duration field expects seconds, but we ask for an input in hours
+            job.timeTaken = datetime.timedelta(
+                hours=float(request.POST['timeTaken']))
+            job.notes = request.POST['notes']
+            if (request.POST['outcome'] == 'ok'):
+                job.job_status = JobStatus.objects.get(name='completed')
+                job.save()
+                messages.success(request, 'Nice work! Thanks for helping out!')
+            else:
+                job.job_status = JobStatus.objects.get(name='couldnt_complete')
+                job.save()
+                messages.success(
+                    request, 'Thanks for helping out! Sorry it did not all go smoothly')
+            return redirect('tasks:detail', task_id=job.id)
+        except:
+            messages.error(
+                request, 'Sorry, we could not save your information. Please double check the form.')
+
+    context = {
+        'job': job,
+        'backUrl': '..',
+        'title': 'How did it go?',
+        'heading': 'How did it go?',
+    }
 
     return render(request, 'tasks/complete.html', context)
