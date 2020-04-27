@@ -47,7 +47,7 @@ class JobsListView(generic.ListView):
         # Call the base implementation first to get a context
         context = super().get_context_data(**kwargs)
         # Add in a QuerySet of all the books
-        context['current_list'] = self.list_type
+        context['current_list_type'] = self.list_type
         context['title'] = LIST_DEFINITIONS[self.list_type]['title']
         context['heading'] = LIST_DEFINITIONS[self.list_type]['heading']
         return context
