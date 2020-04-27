@@ -35,7 +35,9 @@
   </a>
   {% endfor %}
 </ul>
+{% if page_obj.has_other_pages %}
 {% include 'layouts/_page_links.html' with page=page_obj %}
+{% endif %}
 {% else %}
 <p class="text-center">Sorry, there's nothing available at the moment.</p>
 {% endif %}

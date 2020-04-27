@@ -36,7 +36,7 @@ LIST_DEFINITIONS = {
 class JobsListView(generic.ListView):
     template_name = 'tasks/index.html'
     context_object_name = 'jobs'
-    paginate_by = 1
+    paginate_by = 20
     list_type = 'available'
 
     def get_queryset(self):
