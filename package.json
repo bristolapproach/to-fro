@@ -23,6 +23,7 @@
     "sass": "^1.26.5"
   },
   "dependencies": {
-    "@fortawesome/fontawesome-free": "^5.13.0"
+    "@fortawesome/fontawesome-free": "^5.13.0",
+    "postcss-preset-env": "^6.7.0"
   }
 }
