@@ -63,7 +63,7 @@ admin.site.register(JobPriority)
 
 
 class JobAdmin(admin.ModelAdmin):
-    list_filter = ('requester', 'helper', 'requested_datetime')
+    list_filter = ('requester', 'helper', 'requested_datetime', 'job_status')
     fieldsets = (
         (None, {
             'fields': ('requester', 'requested_datetime', 'help_type', 'job_priority')
