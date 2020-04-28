@@ -7,6 +7,8 @@ from django.db.models import Q
 from django.core.paginator import Paginator
 from core.models import Job, Helper, JobStatus
 from django.views import generic
+from django.urls import reverse
+
 
 LIST_DEFINITIONS = {
     'available': {
@@ -53,16 +55,22 @@ class JobsListView(generic.ListView):
         return context
 
 
+def back_url(job, helper):
+    if (job.helper != helper):
+        return reverse('tasks:available')
+
+    if (job.job_status.name == 'helper_interest' or job.job_status.name == 'helper_assigned'):
+        return reverse('tasks:index')
+
+    if (job.job_status.name == 'couldnt_complete' or job.job_status.name == 'completed'):
+        return reverse('tasks:completed')
+
+    return reverse('tasks:available')
+
+
 def detail(request, task_id):
     helper = Helper.objects.first()
     job = get_object_or_404(Job, pk=task_id)
-    context = {
-        'job': job,
-        'backUrl': '.',
-        'title': "How you can help",
-        'heading': job.description,
-        'helper': helper
-    }
 
     if request.method == "POST":
         if (job.job_status.name != 'pending_help'):
@@ -74,6 +82,14 @@ def detail(request, task_id):
             job.save()
             messages.success(request, 'Thanks for volunteering!')
         return redirect('tasks:detail', task_id=job.id)
+
+    context = {
+        'job': job,
+        'back_url': back_url(job, helper),
+        'title': "How you can help",
+        'heading': job.description,
+        'helper': helper
+    }
 
     return render(request, 'tasks/detail.html', context)
 
@@ -107,7 +123,7 @@ def complete(request, task_id):
 
     context = {
         'job': job,
-        'backUrl': '..',
+        'back_url': reverse('tasks:detail', kwargs={'task_id': job.id}),
         'title': 'How did it go?',
         'heading': 'How did it go?',
     }
