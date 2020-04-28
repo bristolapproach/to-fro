@@ -8,7 +8,28 @@ from .models import EventType, Event, Relationship, Ward, Requester, \
 # admin.site.register(Event)
 admin.site.register(Relationship)
 admin.site.register(Ward)
-admin.site.register(Requester)
+
+
+class RequesterAdmin(admin.ModelAdmin):
+    exclude = ('user_type',)
+    fieldsets = ((None, {
+        'fields': ('first_name', 'last_name', 'shielded')
+    }),
+        ('Contact details', {
+            'fields': ('phone_number_primary', 'phone_number_secondary', 'email_primary', 'email_secondary')
+        }),
+        ('Address', {
+            'fields': ('address_line_1', 'address_line_2', 'address_line_3', 'postcode', 'ward')
+        }),
+        ('Status', {
+            'fields': ('internet_access', 'smart_device', 'confident_online_shopping', 'confident_online_comms')
+        }),
+        (None, {
+            'fields': ('notes',)
+        }))
+
+
+admin.site.register(Requester, RequesterAdmin)
 
 
 class HelperAdmin(admin.ModelAdmin):

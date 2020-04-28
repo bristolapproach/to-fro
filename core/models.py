@@ -77,15 +77,15 @@ class Requester(User):
     ward = models.ForeignKey(Ward, on_delete=models.PROTECT,
                              null=True, help_text="Which ward is this address in")
     internet_access = models.BooleanField(
-        null=True, help_text="Does this person have internet access?")
+        help_text="Does this person have internet access?")
     smart_device = models.BooleanField(
-        null=True, help_text="Does this person have a smart device?")
+        help_text="Does this person have a smart device?")
     confident_online_shopping = models.BooleanField(
-        null=True, help_text="Is this person confident online shopping?")
+        help_text="Is this person confident online shopping?")
     confident_online_comms = models.BooleanField(
-        null=True, help_text="Is this person confident communicating online?")
+        help_text="Is this person confident communicating online?")
     shielded = models.BooleanField(
-        null=True, help_text="Is this person sheilded?")
+        help_text="Is this person shielded?")
 
     def __str__(self):
         return f"{self.first_name} {self.last_name}"
