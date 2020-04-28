@@ -136,26 +136,6 @@ class Helper(User):
         return f"{self.first_name} {self.last_name} ({self.id})"
 
 
-class HelperWard(models.Model):
-    ward = models.ForeignKey(Ward, on_delete=models.PROTECT,
-                             null=True, help_text="A ward that the user can help in.")
-    helper = models.ForeignKey(
-        Helper, on_delete=models.PROTECT, null=True, help_text="The associated user.")
-
-    def __str__(self):
-        return f"{self.helper.first_name} {self.helper.last_name} can help in {self.ward.name}"
-
-
-class HelpPreference(models.Model):
-    help_type = models.ForeignKey(HelpType, on_delete=models.PROTECT,
-                                  null=True, help_text="The type of help they're happy to do.")
-    helper = models.ForeignKey(
-        Helper, on_delete=models.PROTECT, null=True, help_text="The associated user.")
-
-    def __str__(self):
-        return f"{self.helper.first_name} {self.helper.last_name}: {self.help_type.name}"
-
-
 class JobPriority(models.Model):
     name = models.CharField(max_length=50)
 
@@ -223,7 +203,6 @@ class Notification(models.Model):
         max_length=1000, null=True, help_text="What's your name?")
     delivered = models.BooleanField(default=False, help_text="This field is updated automatically.")
     sent_by = models.CharField(max_length=50, help_text="Who's sending the notification?")
-    user_query = models.CharField(max_length=250, null=True, blank=True, help_text="The user selection query. Syntax TBC.")
     recipients = models.ManyToManyField(User, related_name='notificationrecipient', default=[], help_text="This field is updated automatically.")
     created_date_time = models.DateTimeField(null=True, help_text="This field is updated automatically.")
     delivered_date_time = models.DateTimeField(null=True, help_text="This field is updated automatically.")

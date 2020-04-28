@@ -34,7 +34,10 @@ DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 SERVER_EMAIL = DEFAULT_FROM_EMAIL
 EMAIL_USE_SSL = False
 EMAIL_USE_TLS = True
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+
+# Send emails in prod, print to console in development.
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend' if DEBUG else \
+                'django.core.mail.backends.smtp.EmailBackend'
 
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
