@@ -39,4 +39,24 @@ admin.site.register(Helper, HelperAdmin)
 # admin.site.register(HelperWard)
 admin.site.register(HelpType)
 admin.site.register(JobPriority)
-admin.site.register(Job)
+
+
+class JobAdmin(admin.ModelAdmin):
+    fieldsets = (
+        (None, {
+            'fields': ('requester', 'requested_datetime', 'help_type', 'job_priority')
+        }),
+        ('Description', {
+            'fields': ('public_description', 'private_description')
+        }),
+        ('Help received', {
+            'fields': ('job_status', 'helper', 'designated_coordinator', 'timeTaken', 'notes')
+        }),
+        ('Call details', {
+            'fields': ('added_by', 'call_datetime', 'call_duration')
+        })
+    )
+    pass
+
+
+admin.site.register(Job, JobAdmin)

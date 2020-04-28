@@ -217,11 +217,11 @@ class Job(models.Model):
     job_priority = models.ForeignKey(
         JobPriority, on_delete=models.PROTECT, null=True, help_text="What's the priority of the help?")
     timeTaken = models.DurationField(
-        null=True, help_text="How long did it take to help?")
-    notes = models.TextField(max_length=500, null=True,
+        null=True, help_text="How long did it take to help?", blank=True)
+    notes = models.TextField(max_length=500, null=True, blank=True,
                              help_text="Any other notes?")
     public_description = models.TextField(
-        max_length=500, null=True, help_text="Text that gets displayed to helpers.")
+        max_length=500, null=True, blank=True, help_text="Text that gets displayed to helpers.")
     private_description = models.TextField(
         null=True, blank=True, help_text="Text that'll only get displayed to the helpers after they did the job")
     help_type = models.ForeignKey(
@@ -240,4 +240,4 @@ class Job(models.Model):
         return f"{self.description} by {self.requested_datetime.strftime('%d %b')}"
 
     def __str__(self):
-        return f"{self.id}"
+        return f"{self.requester}: Help with {self.help_type} around {self.ward}"
