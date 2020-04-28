@@ -1,14 +1,14 @@
 from django.contrib import admin
-from .models import EventType, Event, Relationship, Ward, Requester, \
-    Helper, HelperWard, HelpType, HelpPreference, \
-    JobPriority, JobStatus, Job
+
+from core.models import EventType, Event, Relationship, Ward, Requester, Helper, \
+                    HelpType, JobPriority, JobStatus, Job, Notification
+
 
 # Register our models with the admin site.
 # admin.site.register(EventType)
 # admin.site.register(Event)
 admin.site.register(Relationship)
 admin.site.register(Ward)
-
 
 class RequesterAdmin(admin.ModelAdmin):
     exclude = ('user_type',)
@@ -27,7 +27,6 @@ class RequesterAdmin(admin.ModelAdmin):
         (None, {
             'fields': ('notes',)
         }))
-
 
 admin.site.register(Requester, RequesterAdmin)
 
@@ -53,13 +52,10 @@ class HelperAdmin(admin.ModelAdmin):
             )
         })
     )
-    pass
-
 
 admin.site.register(Helper, HelperAdmin)
-# admin.site.register(HelperWard)
-admin.site.register(HelpType)
 admin.site.register(JobPriority)
+admin.site.register(HelpType)
 
 
 class JobAdmin(admin.ModelAdmin):
@@ -78,7 +74,6 @@ class JobAdmin(admin.ModelAdmin):
             'fields': ('added_by', 'call_datetime', 'call_duration')
         })
     )
-    pass
-
 
 admin.site.register(Job, JobAdmin)
+admin.site.register(Notification)

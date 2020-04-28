@@ -25,6 +25,21 @@ DATABASE_PORT = os.getenv('DATABASE_PORT', '5432')
 DEBUG = os.environ.get("DEBUG", True)
 
 
+# Email settings.
+EMAIL_PORT = os.getenv("EMAIL_PORT", 587)
+EMAIL_HOST = os.getenv("EMAIL_HOST", "localhost")
+EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER", "test")
+EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD", "test")
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+SERVER_EMAIL = DEFAULT_FROM_EMAIL
+EMAIL_USE_SSL = False
+EMAIL_USE_TLS = True
+
+# Send emails in prod, print to console in development.
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend' if DEBUG else \
+                'django.core.mail.backends.smtp.EmailBackend'
+
+
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
