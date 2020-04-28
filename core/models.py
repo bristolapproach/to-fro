@@ -76,16 +76,16 @@ class Requester(User):
         max_length=100, null=True, help_text="Address postcode.")
     ward = models.ForeignKey(Ward, on_delete=models.PROTECT,
                              null=True, help_text="Which ward is this address in")
-    internet_access = models.BooleanField(
-        help_text="Does this person have internet access?")
-    smart_device = models.BooleanField(
-        help_text="Does this person have a smart device?")
-    confident_online_shopping = models.BooleanField(
-        help_text="Is this person confident online shopping?")
-    confident_online_comms = models.BooleanField(
-        help_text="Is this person confident communicating online?")
-    shielded = models.BooleanField(
-        help_text="Is this person shielded?")
+    internet_access = models.BooleanField(default=False,
+                                          help_text="Does this person have internet access?")
+    smart_device = models.BooleanField(default=False,
+                                       help_text="Does this person have a smart device?")
+    confident_online_shopping = models.BooleanField(default=False,
+                                                    help_text="Is this person confident online shopping?")
+    confident_online_comms = models.BooleanField(default=False,
+                                                 help_text="Is this person confident communicating online?")
+    shielded = models.BooleanField(default=False,
+                                   help_text="Is this person shielded?")
 
     def __str__(self):
         return f"{self.first_name} {self.last_name}"
@@ -95,18 +95,18 @@ class Helper(User):
     user_type = models.CharField(max_length=20, null=True, default="helper")
     dbs_number = models.CharField(
         max_length=12, null=True, blank=True, help_text="The user's DBS certificate number, if they have one.")
-    access_to_car = models.BooleanField(
-        verbose_name="Has access to a car")
-    driving_license = models.BooleanField(
-        verbose_name="Has a driving license")
-    ts_and_cs_confirmed = models.BooleanField(
-        verbose_name="Has agreed to terms and conditions")
-    health_checklist_received = models.BooleanField(
-        verbose_name="Has received their health checklist")
-    key_worker = models.BooleanField(
-        verbose_name="Has received key worker letter from council")
-    id_received = models.BooleanField(
-        verbose_name="Has sent a copy of their ID")
+    access_to_car = models.BooleanField(default=False,
+                                        verbose_name="Has access to a car")
+    driving_license = models.BooleanField(default=False,
+                                          verbose_name="Has a driving license")
+    ts_and_cs_confirmed = models.BooleanField(default=False,
+                                              verbose_name="Has agreed to terms and conditions")
+    health_checklist_received = models.BooleanField(default=False,
+                                                    verbose_name="Has received their health checklist")
+    key_worker = models.BooleanField(default=False,
+                                     verbose_name="Has received key worker letter from council")
+    id_received = models.BooleanField(default=False,
+                                      verbose_name="Has sent a copy of their ID")
     wards = models.ManyToManyField(Ward, related_name="helpers")
     help_types = models.ManyToManyField(HelpType, related_name="helpers")
     reference_details = models.CharField(max_length=250, null=True)
