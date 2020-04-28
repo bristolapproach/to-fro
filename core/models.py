@@ -16,14 +16,14 @@ class User(models.Model):
                              help_text="Any other notes?", blank=True)
 
     def __str__(self):
-        return f"User {self.id}: {self.first_name} {self.last_name}"
+        return f"{self.first_name} {self.last_name}"
 
 
 class EventType(models.Model):
     name = models.CharField(max_length=50, null=True)
 
     def __str__(self):
-        return f"EventType: {self.name}"
+        return f"{self.name}"
 
 
 class Event(models.Model):
@@ -34,7 +34,7 @@ class Event(models.Model):
     datetime = models.DateTimeField(null=True, help_text="When was the event?")
 
     def __str__(self):
-        return f"Event: {self.id}"
+        return f"{self.id}"
 
 
 class Relationship(models.Model):
@@ -46,7 +46,7 @@ class Relationship(models.Model):
         null=True, help_text="When did they first make contact?")
 
     def __str__(self):
-        return f"Relationship: {self.id} (between {self.user_1} and {self.user_2}"
+        return f"{self.id} (between {self.user_1} and {self.user_2}"
 
 
 class Ward(models.Model):
@@ -88,52 +88,73 @@ class Requester(User):
         null=True, help_text="Is this person sheilded?")
 
     def __str__(self):
-        return f"Requester {self.id}: {self.first_name} {self.last_name}"
+        return f"{self.first_name} {self.last_name}"
 
 
 class Helper(User):
     user_type = models.CharField(max_length=20, null=True, default="helper")
     dbs_number = models.CharField(
-        max_length=12, null=True, help_text="The user's DBS certificate number, if they have one.")
+        max_length=12, null=True, blank=True, help_text="The user's DBS certificate number, if they have one.")
     access_to_car = models.BooleanField(
-        null=True, help_text="Does this person have access to a car?")
+        verbose_name="Has access to a car")
     driving_license = models.BooleanField(
-        null=True, help_text="Does this person have a driving license?")
+        verbose_name="Has a driving license")
     ts_and_cs_confirmed = models.BooleanField(
-        null=True, help_text="Has this person agreed to the terms and conditions?")
+        verbose_name="Has agreed to terms and conditions")
     health_checklist_received = models.BooleanField(
-        null=True, help_text="Have we received their health checklist?")
+        verbose_name="Has received their health checklist")
     key_worker = models.BooleanField(
-        null=True, help_text="Have we received their key worker letter?")
+        verbose_name="Has received key worker letter from council")
     id_received = models.BooleanField(
-        null=True, help_text="Have we received a copy of their ID?")
+        verbose_name="Has sent a copy of their ID")
     wards = models.ManyToManyField(Ward, related_name="helpers")
     help_types = models.ManyToManyField(HelpType, related_name="helpers")
     reference_details = models.CharField(max_length=250, null=True)
-    available_mon_morning = models.BooleanField(null=True, default=False)
-    available_mon_afternoon = models.BooleanField(null=True, default=False)
-    available_mon_evening = models.BooleanField(null=True, default=False)
-    available_tues_morning = models.BooleanField(null=True, default=False)
-    available_tues_afternoon = models.BooleanField(null=True, default=False)
-    available_tues_evening = models.BooleanField(null=True, default=False)
-    available_wed_morning = models.BooleanField(null=True, default=False)
-    available_wed_afternoon = models.BooleanField(null=True, default=False)
-    available_wed_evening = models.BooleanField(null=True, default=False)
-    available_thur_morning = models.BooleanField(null=True, default=False)
-    available_thur_afternoon = models.BooleanField(null=True, default=False)
-    available_thur_evening = models.BooleanField(null=True, default=False)
-    available_fri_morning = models.BooleanField(null=True, default=False)
-    available_fri_afternoon = models.BooleanField(null=True, default=False)
-    available_fri_evening = models.BooleanField(null=True, default=False)
-    available_sat_morning = models.BooleanField(null=True, default=False)
-    available_sat_afternoon = models.BooleanField(null=True, default=False)
-    available_sat_evening = models.BooleanField(null=True, default=False)
-    available_sun_morning = models.BooleanField(null=True, default=False)
-    available_sun_afternoon = models.BooleanField(null=True, default=False)
-    available_sun_evening = models.BooleanField(null=True, default=False)
+    available_mon_morning = models.BooleanField(
+        default=False, verbose_name="Monday morning")
+    available_mon_afternoon = models.BooleanField(
+        default=False, verbose_name="Monday afternoon")
+    available_mon_evening = models.BooleanField(
+        default=False, verbose_name="Monday evening")
+    available_tues_morning = models.BooleanField(
+        default=False, verbose_name="Tuesday morning")
+    available_tues_afternoon = models.BooleanField(
+        default=False, verbose_name="Tuesday afternoon")
+    available_tues_evening = models.BooleanField(
+        default=False, verbose_name="Tuesday evening")
+    available_wed_morning = models.BooleanField(
+        default=False, verbose_name="Wednesday morning")
+    available_wed_afternoon = models.BooleanField(
+        default=False, verbose_name="Wednesday afternoon")
+    available_wed_evening = models.BooleanField(
+        default=False, verbose_name="Wednesday evening")
+    available_thur_morning = models.BooleanField(
+        default=False, verbose_name="Thursday morning")
+    available_thur_afternoon = models.BooleanField(
+        default=False, verbose_name="Thursday afternoon")
+    available_thur_evening = models.BooleanField(
+        default=False, verbose_name="Thursday evening")
+    available_fri_morning = models.BooleanField(
+        default=False, verbose_name="Friday morning")
+    available_fri_afternoon = models.BooleanField(
+        default=False, verbose_name="Friday afternoon")
+    available_fri_evening = models.BooleanField(
+        default=False, verbose_name="Friday evening")
+    available_sat_morning = models.BooleanField(
+        default=False, verbose_name="Staturday morning")
+    available_sat_afternoon = models.BooleanField(
+        default=False, verbose_name="Saturday afternoon")
+    available_sat_evening = models.BooleanField(
+        default=False, verbose_name="Saturday evening")
+    available_sun_morning = models.BooleanField(
+        default=False, verbose_name="Sunday morning")
+    available_sun_afternoon = models.BooleanField(
+        default=False, verbose_name="Sunday afternoon")
+    available_sun_evening = models.BooleanField(
+        default=False, verbose_name="Sunday evening")
 
     def __str__(self):
-        return f"Helper {self.id}: {self.first_name} {self.last_name}"
+        return f"{self.first_name} {self.last_name}"
 
     @property
     def full_name(self):
@@ -157,10 +178,12 @@ class HelpPreference(models.Model):
         Helper, on_delete=models.PROTECT, null=True, help_text="The associated user.")
 
     def __str__(self):
-        return f"HelpPreference: {self.id}"
+        return f"{self.id}"
 
 
 class JobPriority(models.Model):
+    class Meta:
+        verbose_name_plural = "Job priorities"
     name = models.CharField(max_length=50)
 
     def __str__(self):
@@ -217,4 +240,4 @@ class Job(models.Model):
         return f"{self.description} by {self.requested_datetime.strftime('%d %b')}"
 
     def __str__(self):
-        return f"Job: {self.id}"
+        return f"{self.id}"
