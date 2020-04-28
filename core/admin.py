@@ -75,5 +75,5 @@ class JobAdmin(admin.ModelAdmin):
         })
     )
 
-admin.site.register(Notification, JobAdmin)
 admin.site.register(Job, JobAdmin)
+admin.site.register(Notification)
