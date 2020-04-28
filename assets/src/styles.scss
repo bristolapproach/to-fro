@@ -5,9 +5,19 @@
 @import 'styles/generic/bootstrap';
 @import 'styles/generic/space';
 
+input[type=number] {
+  -moz-appearance: textfield;
+}
+
 :last-child {
   margin-bottom: 0;
 }
+
+.appearance-none {
+  appearance:none;
+}
+
+// Components
 
 .container--small {
   max-width: (600rem / 16);
@@ -23,13 +33,18 @@
   padding: map-get($spacers, 2);
 }
 
-.card-footer [class*="btn-outline"] {
-  background-color: white;
+.card-footer {
+  
+  [class*="btn-outline"] {
+    background-color: white;
+  }
 
-  .btn-outline-danger {
-    &:hover {
-      color: theme-color(danger);
-      text-decoration: underline;
+  @each $color-name,$color-value in $theme-colors {
+    .btn-outline-#{$color-name} {
+      &:hover {
+        color: $color-value;
+        text-decoration: underline;
+      }
     }
   }
 }

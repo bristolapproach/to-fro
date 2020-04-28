@@ -4,16 +4,16 @@
 
 {% block 'content' %}
 <nav aria-label="Job types" class="d-flex justify-content-center space-x-3">
-  <a href="{% url 'tasks:available' %}" class="btn {% if currentListType == 'available' %} btn-dark{%endif%}"
-    {% if currentListType == 'available' %} aria-current {%endif%}>
+  <a href="{% url 'tasks:available' %}" class="btn {% if current_list_type == 'available' %} btn-dark{%endif%}"
+    {% if current_list_type == 'available' %} aria-current {%endif%}>
     Available
   </a>
-  <a href="{% url 'tasks:index' %}" class="btn {% if currentListType == 'mine' %} btn-dark{%endif%}"
-    {% if currentListType == 'mine' %} aria-current {%endif%}>
+  <a href="{% url 'tasks:index' %}" class="btn {% if current_list_type == 'mine' %} btn-dark{%endif%}"
+    {% if current_list_type == 'mine' %} aria-current {%endif%}>
     My tasks
   </a>
-  <a href="{% url 'tasks:completed' %}" class="btn {% if currentListType == 'completed' %} btn-dark {%endif%}"
-    {% if currentListType == 'completed' %} aria-current {%endif%}>
+  <a href="{% url 'tasks:completed' %}" class="btn {% if current_list_type == 'completed' %} btn-dark {%endif%}"
+    {% if current_list_type == 'completed' %} aria-current {%endif%}>
     Completed
   </a>
 </nav>
@@ -35,6 +35,9 @@
   </a>
   {% endfor %}
 </ul>
+{% if page_obj.has_other_pages %}
+{% include 'layouts/_page_links.html' with page=page_obj %}
+{% endif %}
 {% else %}
 <p class="text-center">Sorry, there's nothing available at the moment.</p>
 {% endif %}
