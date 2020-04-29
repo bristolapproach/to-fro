@@ -1,8 +1,8 @@
 {% load svg %}
 
-<h3 class="mb-0 text-muted copy">You'll help</h3>
+<h2 class="mb-0 text-muted copy">You'll help</h2>
 <p class="mt-0">{{requester.first_name}} {{requester.last_name}}</p>
-<h3 class="mb-0 text-muted">They live:</h3>
+<h2 class="mb-0 text-muted">They live:</h2>
 <div class="mt-0">
   {{requester.address_line_1}}<br>
   {%if requester.address2 %}
@@ -13,7 +13,7 @@
   {%endif%}
   {{requester.postcode}}
 </div>
-<h3 class="mb-0 text-muted">You can reach them at:</h3>
+<h2 class="mb-0 text-muted">You can reach them at:</h2>
 <div class="space-x-2">
   <a class="btn btn-outline-primary" href="tel:{{requester.phone_number_primary}}">
     {% embed_svg 'node_modules/@fortawesome/fontawesome-free/svgs/solid/phone-alt.svg' height=16 width=16 class_attribute='rotate-90' %}
