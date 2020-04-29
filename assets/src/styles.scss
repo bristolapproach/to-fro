@@ -5,6 +5,10 @@
 @import 'styles/generic/bootstrap';
 @import 'styles/generic/space';
 
+svg {
+  fill: currentColor;
+}
+
 input[type=number] {
   -moz-appearance: textfield;
 }
@@ -15,6 +19,10 @@ input[type=number] {
 
 .appearance-none {
   appearance:none;
+}
+
+.rotate-90 {
+  transform: rotate(90deg);
 }
 
 // Components
@@ -31,6 +39,15 @@ input[type=number] {
 
   height: auto;
   padding: map-get($spacers, 2);
+}
+
+.btn>svg {
+  position: relative;
+  bottom: (1em /16);
+
+  + * {
+    margin-left: map-get($spacers, 1);
+  }
 }
 
 .card-footer {
