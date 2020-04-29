@@ -1,7 +1,7 @@
 from django.contrib import admin
 
 from core.models import EventType, Event, Relationship, Ward, Requester, Helper, \
-                    HelpType, JobPriority, JobStatus, Job, Notification
+    HelpType, JobPriority, JobStatus, Job, Notification
 
 
 # Register our models with the admin site.
@@ -10,7 +10,9 @@ from core.models import EventType, Event, Relationship, Ward, Requester, Helper,
 admin.site.register(Relationship)
 admin.site.register(Ward)
 
+
 class RequesterAdmin(admin.ModelAdmin):
+    search_fields = ['first_name', 'last_name']
     exclude = ('user_type',)
     fieldsets = ((None, {
         'fields': ('first_name', 'last_name', 'shielded')
@@ -28,10 +30,12 @@ class RequesterAdmin(admin.ModelAdmin):
             'fields': ('notes',)
         }))
 
+
 admin.site.register(Requester, RequesterAdmin)
 
 
 class HelperAdmin(admin.ModelAdmin):
+    search_fields = ['first_name', 'last_name']
     exclude = ('user_type',)
     fieldsets = (
         (None, {
@@ -53,6 +57,7 @@ class HelperAdmin(admin.ModelAdmin):
         })
     )
 
+
 admin.site.register(Helper, HelperAdmin)
 admin.site.register(JobPriority)
 admin.site.register(HelpType)
@@ -62,6 +67,7 @@ class JobAdmin(admin.ModelAdmin):
     list_display = ('requested_datetime', 'requester',
                     'help_type', 'job_status', 'helper')
     list_filter = ('job_status', 'requested_datetime', 'requester', 'helper', )
+    autocomplete_fields = ['requester', 'helper']
     fieldsets = (
         (None, {
             'fields': ('requester', 'requested_datetime', 'help_type', 'job_priority')
@@ -76,6 +82,7 @@ class JobAdmin(admin.ModelAdmin):
             'fields': ('added_by', 'call_datetime', 'call_duration')
         })
     )
+
 
 admin.site.register(Job, JobAdmin)
 admin.site.register(Notification)
