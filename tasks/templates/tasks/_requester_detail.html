@@ -21,12 +21,12 @@
 </div>
 <h2 class="mb-0 text-muted">You can reach them at:</h2>
 <div class="space-x-2">
-  <a class="btn btn-outline-primary" href="tel:{{requester.phone_number_primary}}">
+  <a class="btn btn-outline-primary space-x-1 text-with-icon" href="tel:{{requester.phone_number_primary}}">
     {% embed_svg 'node_modules/@fortawesome/fontawesome-free/svgs/solid/phone-alt.svg' height=16 width=16 class_attribute='rotate-90' %}
     <span>{{requester.phone_number_primary}}</span></a>
   {% if requester.phone_number_primary %}
   <span>or</span>
-  <a class="btn btn-outline-primary" href="tel:{{requester.phone_number_primary}}">
+  <a class="btn btn-outline-primary space-x-1 text-with-icon" href="tel:{{requester.phone_number_primary}}">
     {% embed_svg 'node_modules/@fortawesome/fontawesome-free/svgs/solid/phone-alt.svg' height=16 width=16 class_attribute='rotate-90' %}
     <span>{{requester.phone_number_secondary}}</span></a>
 </div>

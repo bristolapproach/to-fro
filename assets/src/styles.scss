@@ -41,13 +41,14 @@ input[type=number] {
   padding: map-get($spacers, 2);
 }
 
-.btn>svg {
+.align-icon {
   position: relative;
-  bottom: (1em /16);
+  bottom: (2em/16);
+}
 
-  + * {
-    margin-left: map-get($spacers, 1);
-  }
+.text-with-icon>svg {
+  position: relative;
+  bottom: (2em/16);
 }
 
 .card-footer {
