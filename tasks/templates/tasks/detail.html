@@ -4,19 +4,22 @@
 {% load markdown %}
 
 {% block 'content' %}
+{% if job.helper == helper and job.job_status.name != 'pending_help' and job.job_status.name != 'helper_interest' %}
+<h2 class="ma-2">You'll help:</h2>
+{% include './_requester_detail.html' with requester=job.requester %}
+{% endif %}
+<h2 class="ma-2">They need:</h2>
 <div class="card">
   <div class="card-body space-3">
     {% if job.helper == helper and job.job_status.name != 'pending_help' and job.job_status.name != 'helper_interest' %}
     <div class="border-bottom mb-3 pb-3 space-3">
-      {% include './_requester_detail.html' with requester=job.requester %}
-      {% if job.private_description|markdown %}
-      <h2 class="mb-0 text-muted">Here's what they need exactly</h2>
+      {% if job.private_description %}
       {{job.private_description|markdown|heading_level:3}}
       {% endif %}
     </div>
     {% endif %}
     <div>
-      {{job.public_description|markdown|heading_level:2}}
+      {{job.public_description|markdown|heading_level:3}}
     </div>
   </div>
   <div class="card-footer">

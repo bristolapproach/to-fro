@@ -51,6 +51,19 @@ input[type=number] {
   bottom: (2em/16);
 }
 
+.with-decorative-button {
+  &:hover {
+    .with-decorative-button__button {
+      @each $color-name, $color-value in $theme-colors {
+        &.btn-outline-#{$color-name} {
+          background-color: $color-value;
+          color: color-yiq($color-value);
+        }
+      }
+    }
+  }
+}
+
 .card-footer {
   
   [class*="btn-outline"] {
