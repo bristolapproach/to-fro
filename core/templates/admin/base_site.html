@@ -1,0 +1,20 @@
+{% extends "admin:admin/base.html" %}
+
+{% load static %}
+
+{% block title %}{{ title }} | {{ site_title|default:_('Django site admin') }}{% endblock %}
+
+{% block branding %}
+<h1 id="site-name"><a href="{% url 'admin:index' %}">{{ site_header|default:_('Django administration') }}</a></h1>
+{% endblock %}
+
+{% block nav-global %}{% endblock %}
+
+{% block extrahead %}
+{{ block.super }}
+{% if has_permission %}
+<link rel="stylesheet" href="{% static 'admin.css' %}">
+<script type="text/javascript" src="{% static 'admin.js' %}" defer></script>
+{{ js_data|json_script:"js-data" }}
+{%endif%}
+{% endblock %}

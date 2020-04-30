@@ -1,0 +1,13 @@
+
+// Prevent addition, change and removal of relations for the following fields:
+@each $fieldName in (help_type) {
+  .field-#{$fieldName} a[id$="#{$fieldName}"] {
+    display: none;
+  }
+}
+
+// Make the save button always alway apparent on the admin
+.submit-row {
+  position: sticky;
+  bottom: 1rem;
+}
