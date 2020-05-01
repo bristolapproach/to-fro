@@ -6,7 +6,7 @@
 {% block 'content' %}
 <div class="card">
   <div class="card-body space-3">
-    {% if job.volunteer == volunteer and job.job_status.name != 'Pending volunteer interest' and job.job_status.name != 'Volunteer interest' %}
+    {% if job.volunteer == volunteer and job.can_reveal_private_information %}
     <div class="border-bottom mb-3 pb-3 space-3">
       {% include './_requester_detail.html' with requester=job.requester %}
       {% if job.private_description|markdown %}
@@ -20,7 +20,7 @@
     </div>
   </div>
   <div class="card-footer">
-    {% if job.job_status.name == 'Pending volunteer interest' %}
+    {% if job.is_pending %}
     <form method="POST">
       {% csrf_token %}
       <button class="btn d-table mx-auto btn-primary" name="action" value="accept_help">
@@ -31,13 +31,9 @@
     {% if job.volunteer != volunteer %}
     <p class="text-center">Someone's on it, but thanks for thinking of it!</p>
     {% else %}
-    {% if job.job_status.name == 'Volunteer interest' %}
-    {% if job.volunteer == volunteer %}
+    {% if job.has_interest %}
     <p class="text-center">Thanks for volunteering! We'll be back in touch soon!</p>
-    {% else %}
-
-    {% endif %}
-    {% elif job.job_status.name == 'Volunteer assigned' %}
+    {% elif job.is_assigned %}
     <a class="btn d-table mx-auto btn-primary" href="{% url 'tasks:complete' job.id%}">
       All done!
     </a>
