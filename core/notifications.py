@@ -1,4 +1,4 @@
-from core.models import Job, Notification, Volunteer
+from core.models import Job, JobPriority, JobStatus, Notification, Volunteer
 from django.core.mail import send_mail
 from django.utils import timezone
 import os
@@ -10,7 +10,7 @@ from_email = os.getenv("EMAIL_HOST_USER", "test@test.com")
 
 def on_job_save(job):
     # Check if this is a high-priority, pending job.
-    if job.job_priority.name != "high" or job.job_status.name != "pending_help":
+    if job.job_priority != JobPriority.HIGH or job.job_status != JobStatus.PENDING:
         return
     
     # Check for previously created notifications.
@@ -60,7 +60,7 @@ def on_notification_save(notification):
 
         # Send the email.
         send_mail(notification.subject, notification.message, from_email,
-        [r.email_primary for r in notification.recipients.all() if r.email_primary])
+            [r.email for r in notification.recipients.all() if r.email])
 
         # Update the data.
         notification.delivered_date_time = timezone.now()

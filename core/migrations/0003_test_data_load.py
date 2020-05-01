@@ -7,10 +7,10 @@ import json
 def import_help_types(apps, schema_editor):
     # We can't import the models directly as they may be a newer
     # version than this migration expects. We use the historical versions.
-    HelpType = apps.get_model('core', 'HelpType')
+    HelpType = apps.get_model('users', 'HelpType')
 
     # Load the data.
-    with open ("/code/core/initial_data/help_types.json") as data_file:
+    with open ("core/initial_data/help_types.json") as data_file:
         data = json.load(data_file)
         
     # Create the objects.
@@ -18,8 +18,8 @@ def import_help_types(apps, schema_editor):
         HelpType.objects.create(name=help_type).save()
 
 def import_wards(apps, schema_editor):
-    Ward = apps.get_model('core', 'Ward')
-    with open ("/code/core/initial_data/wards.json") as data_file:
+    Ward = apps.get_model('users', 'Ward')
+    with open ("core/initial_data/wards.json") as data_file:
         data = json.load(data_file)
     for ward in data:
         Ward.objects.create(name=ward).save()
@@ -28,7 +28,7 @@ def import_wards(apps, schema_editor):
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('core', '0001_initial'),
+        ('core', '0002_auto_20200501_1319'),
     ]
 
     operations = [

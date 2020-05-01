@@ -6,14 +6,14 @@ from django.contrib import admin
 class JobAdmin(admin.ModelAdmin):
     list_filter = ('requester', 'volunteer', 'requested_datetime', 'job_status')
     fieldsets = (
-        (None, {
-            'fields': ('requester', 'requested_datetime', 'help_type', 'job_priority')
+        ('Job Details', {
+            'fields': ('requester', 'requested_datetime', 'help_type', 'job_priority', 'coordinator')
         }),
         ('Description', {
             'fields': ('public_description', 'private_description')
         }),
         ('Help received', {
-            'fields': ('job_status', 'volunteer', 'designated_coordinator', 'timeTaken', 'notes')
+            'fields': ('job_status', 'volunteer', 'time_taken', 'notes')
         }),
         ('Call details', {
             'fields': ('added_by', 'call_datetime', 'call_duration')

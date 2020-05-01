@@ -37,8 +37,8 @@ LIST_DEFINITIONS = {
 class JobsListView(generic.ListView):
     template_name = 'tasks/index.html'
     context_object_name = 'jobs'
-    paginate_by = 20
     list_type = 'available'
+    paginate_by = 20
 
     def get_queryset(self):
         volunteer = Volunteer.objects.first()
@@ -56,6 +56,7 @@ class JobsListView(generic.ListView):
 
 def detail(request, task_id):
     volunteer = Volunteer.objects.first()
+    print("Remote address:", request.META['REMOTE_ADDR'])
     job = get_object_or_404(Job, pk=task_id)
     context = {
         'job': job,
@@ -89,8 +90,8 @@ def complete(request, task_id):
     if request.method == "POST":
         try:
             # the duration field expects seconds, but we ask for an input in hours
-            job.timeTaken = datetime.timedelta(
-                hours=float(request.POST['timeTaken']))
+            job.time_taken = datetime.timedelta(
+                hours=float(request.POST['time_taken']))
             job.notes = request.POST['notes']
             if (request.POST['outcome'] == 'ok'):
                 job.job_status = JobStatus.COMPLETED

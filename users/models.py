@@ -60,7 +60,7 @@ class User(AbstractBaseUser, PermissionsMixin):
         return f"{self.first_name} {self.last_name}"
     
     def __str__(self):
-        return self.username
+        return self.full_name
 
 
 class Requester(User):
@@ -75,9 +75,6 @@ class Requester(User):
     confident_online_comms = models.BooleanField(default=False, help_text="Is this person confident communicating online?")
     shielded = models.BooleanField(default=False, help_text="Is this person shielded?")
     
-    def __str__(self):
-        return f"{self.first_name} {self.last_name}"
-        
 
 class Volunteer(User):
     dbs_number = models.CharField(max_length=12, null=True, blank=True, help_text="The user's DBS certificate number, if they have one.")
@@ -112,8 +109,9 @@ class Volunteer(User):
     available_sun_afternoon = models.BooleanField(default=False, verbose_name="Sunday afternoon")
     available_sun_evening = models.BooleanField(default=False, verbose_name="Sunday evening")
     
-    def __str__(self):
-        return self.full_name
+
+class Coordinator(User):
+    pass
 
 
 # class Relationship(models.Model):

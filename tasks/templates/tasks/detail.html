@@ -20,7 +20,7 @@
     </div>
   </div>
   <div class="card-footer">
-    {% if job.job_status.name == 'pending_help' %}
+    {% if job.job_status.name == 'Pending volunteer interest' %}
     <form method="POST">
       {% csrf_token %}
       <button class="btn d-table mx-auto btn-primary" name="action" value="accept_help">
