@@ -3,10 +3,6 @@
 {% block 'heading' %}Login{% endblock %}
 {% block 'content' %}
 
-{% if form.errors %}
-<p>Your username and password didn't match. Please try again.</p>
-{% endif %}
-
 {% if next %}
 {% if user.is_authenticated %}
 <p>Your account doesn't have access to this page. To proceed, please login with an account that has access.</p>
@@ -14,8 +10,12 @@
 <p>Please login to see this page.</p>
 {% endif %}
 {% endif %}
-<form method="post" class="card p-3" action="{% url 'login' %}">
-  {% csrf_token %}
+<form method="post" class="card p-3 space-3" action="{% url 'login' %}">
+
+  {% if form.errors %}
+  <p class="alert alert-danger">Your username and password didn't match. Please try again.</p>
+  {% endif %}
+
   <div class="form-group">
     <label class="form-label" for="{{form.username.id_for_label}}">{{form.username.label}}</label>
     <input class="form-control" type="text" name="{{form.username.html_name}}" id="{{form.username.id_for_label}}" />
@@ -27,6 +27,7 @@
   </div>
   <button class="btn btn-primary">Login</button>
   <input type="hidden" name="next" value="{{ next }}" />
+  {% csrf_token %}
 </form>
 
 {# Assumes you setup the password_reset view in your URLconf #}

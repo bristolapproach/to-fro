@@ -16,21 +16,21 @@ LIST_DEFINITIONS = {
         'heading': 'Available jobs',
         'queryset': lambda helper:
             Job.objects.filter(
-                job_status__name='pending_help').filter(requester__ward__in=helper.wards.all()).filter(help_type__in=helper.help_types.all())
+                job_status__name='pending_help').filter(requester__ward__in=helper.wards.all()).filter(help_type__in=helper.help_types.all()).order_by('requested_datetime', '-job_priority')
     },
     'completed': {
         'title': 'Completed',
         'heading': 'Heading',
         'queryset': lambda helper:
             helper.job_set.filter(
-                Q(job_status__name='completed') | Q(job_status__name='couldnt_complete'))
+                Q(job_status__name='completed') | Q(job_status__name='couldnt_complete')).order_by('requested_datetime', '-job_priority')
     },
     'mine': {
         'title': 'My tasks',
         'heading': 'Heading',
         'queryset': lambda helper:
             helper.job_set.exclude(
-                Q(job_status__name='completed') | Q(job_status__name='couldnt_complete'))
+                Q(job_status__name='completed') | Q(job_status__name='couldnt_complete')).order_by('requested_datetime', '-job_priority')
     }
 }
 
