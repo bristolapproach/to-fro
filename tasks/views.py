@@ -1,34 +1,35 @@
-import datetime
 from django.shortcuts import render, redirect, get_object_or_404
-from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.decorators import permission_required
+from django.contrib import messages
 from django.db.models import Q
-from django.core.paginator import Paginator
-from core.models import Job, Helper, JobStatus
 from django.views import generic
+from django.core.paginator import Paginator
+from core.models import Job, Volunteer, JobStatus
+import datetime
 
 LIST_DEFINITIONS = {
     'available': {
         'title': 'Available jobs',
         'heading': 'Available jobs',
-        'queryset': lambda helper:
-            Job.objects.filter(
-                job_status__name='pending_help').filter(requester__ward__in=helper.wards.all()).filter(help_type__in=helper.help_types.all())
+        'queryset': lambda volunteer:
+            Job.objects.filter(job_status=JobStatus.PENDING) \
+                       .filter(requester__ward__in=volunteer.wards.all()) \
+                       .filter(help_type__in=volunteer.help_types.all())
     },
     'completed': {
         'title': 'Completed',
         'heading': 'Heading',
-        'queryset': lambda helper:
-            helper.job_set.filter(
-                Q(job_status__name='completed') | Q(job_status__name='couldnt_complete'))
+        'queryset': lambda volunteer:
+            volunteer.job_set.filter(
+                Q(job_status=JobStatus.COMPLETED) | Q(job_status=JobStatus.COULDNT_COMPLETE))
     },
     'mine': {
         'title': 'My tasks',
         'heading': 'Heading',
-        'queryset': lambda helper:
-            helper.job_set.exclude(
-                Q(job_status__name='completed') | Q(job_status__name='couldnt_complete'))
+        'queryset': lambda volunteer:
+            volunteer.job_set.exclude(
+                Q(job_status=JobStatus.COMPLETED) | Q(job_status=JobStatus.COULDNT_COMPLETE))
     }
 }
 
@@ -40,8 +41,8 @@ class JobsListView(generic.ListView):
     list_type = 'available'
 
     def get_queryset(self):
-        helper = Helper.objects.first()
-        return LIST_DEFINITIONS[self.list_type]['queryset'](helper)
+        volunteer = Volunteer.objects.first()
+        return LIST_DEFINITIONS[self.list_type]['queryset'](volunteer)
 
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context
@@ -54,23 +55,23 @@ class JobsListView(generic.ListView):
 
 
 def detail(request, task_id):
-    helper = Helper.objects.first()
+    volunteer = Volunteer.objects.first()
     job = get_object_or_404(Job, pk=task_id)
     context = {
         'job': job,
         'backUrl': '.',
         'title': "How you can help",
         'heading': job.description,
-        'helper': helper
+        'volunteer': volunteer
     }
 
     if request.method == "POST":
-        if (job.job_status.name != 'pending_help'):
+        if (job.job_status != JobStatus.PENDING):
             messages.error(
                 request, 'Thanks, but someone has already volunteered to help')
         else:
-            job.helper = helper
-            job.job_status = JobStatus.objects.get(name='helper_interest')
+            job.volunteer = volunteer
+            job.job_status = JobStatus.INTEREST
             job.save()
             messages.success(request, 'Thanks for volunteering!')
         return redirect('tasks:detail', task_id=job.id)
@@ -79,10 +80,10 @@ def detail(request, task_id):
 
 
 def complete(request, task_id):
-    helper = Helper.objects.first()
+    volunteer = Volunteer.objects.first()
     job = get_object_or_404(Job, pk=task_id)
 
-    if job.job_status.name != 'helper_assigned' or job.helper != helper:
+    if job.job_status != JobStatus.ASSIGNED or job.volunteer != volunteer:
         return redirect('tasks:detail', task_id=job.id)
 
     if request.method == "POST":
@@ -92,14 +93,14 @@ def complete(request, task_id):
                 hours=float(request.POST['timeTaken']))
             job.notes = request.POST['notes']
             if (request.POST['outcome'] == 'ok'):
-                job.job_status = JobStatus.objects.get(name='completed')
+                job.job_status = JobStatus.COMPLETED
                 job.save()
                 messages.success(request, 'Nice work! Thanks for helping out!')
             else:
-                job.job_status = JobStatus.objects.get(name='couldnt_complete')
+                job.job_status = JobStatus.COULDNT_COMPLETE
                 job.save()
                 messages.success(
-                    request, 'Thanks for helping out! Sorry it did not all go smoothly')
+                    request, 'Thanks for helping out! Sorry it did not all go smoothly.')
             return redirect('tasks:detail', task_id=job.id)
         except:
             messages.error(

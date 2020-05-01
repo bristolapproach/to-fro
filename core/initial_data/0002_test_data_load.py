@@ -17,20 +17,6 @@ def import_help_types(apps, schema_editor):
     for help_type in data:
         HelpType.objects.create(name=help_type).save()
 
-def import_job_priorities(apps, schema_editor):
-    JobPriority = apps.get_model('core', 'JobPriority')
-    with open ("/code/core/initial_data/job_priorities.json") as data_file:
-        data = json.load(data_file)
-    for priority in data:
-        JobPriority.objects.create(name=priority).save()
-
-def import_job_statuses(apps, schema_editor):
-    JobStatus = apps.get_model('core', 'JobStatus')
-    with open ("/code/core/initial_data/job_statuses.json") as data_file:
-        data = json.load(data_file)
-    for status in data:
-        JobStatus.objects.create(name=status).save()
-
 def import_wards(apps, schema_editor):
     Ward = apps.get_model('core', 'Ward')
     with open ("/code/core/initial_data/wards.json") as data_file:
@@ -47,7 +33,5 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.RunPython(import_help_types),
-        migrations.RunPython(import_job_priorities),
-        migrations.RunPython(import_job_statuses),
         migrations.RunPython(import_wards)
     ]

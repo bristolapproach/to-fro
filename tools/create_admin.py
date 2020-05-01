@@ -1,18 +1,29 @@
-from django.contrib.auth.models import User
+from users.models import UserRole
 import os
 
-# Get the admin username and password from the environment.
-admin_user = os.getenv("DJANGO_ADMIN", "admin")
-admin_password = os.getenv("DJANGO_PASSWORD", "password")
+# Load our custom User model through Django.
+from django.contrib.auth import get_user_model
+User = get_user_model()
 
-# Create the admin user.
-users = User.objects.filter(username=admin_user)
-if users:
-    admin = users[0]
-    admin.set_password(admin_password)
+
+# Get the admin details from the environment.
+first_name = os.getenv("DJANGO_ADMIN_FIRSTNAME", "Admin")
+last_name = os.getenv("DJANGO_ADMIN_LASTNAME", "User")
+password = os.getenv("DJANGO_ADMIN_PASSWORD", "password")
+
+# Check if the admin user exists.
+admin = User.objects.filter(username='admin',
+    first_name=first_name, last_name=last_name,
+    role__contains=UserRole.COORDINATOR).first()
+if admin:
+    # Update password.
+    admin.set_password(password)
     admin.save()
 else:
+    # Create the admin user.
     admin = User.objects.create_user(
-        username=admin_user, is_staff=True, is_superuser=True)
-    admin.set_password(admin_password)
+        username='admin', first_name=first_name, 
+        last_name=last_name, role=UserRole.COORDINATOR, 
+        is_superuser=True)
+    admin.set_password(password)
     admin.save()

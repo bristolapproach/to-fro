@@ -1,4 +1,4 @@
-from core.models import Job, Notification, Helper
+from core.models import Job, Notification, Volunteer
 from django.core.mail import send_mail
 from django.utils import timezone
 import os
@@ -21,7 +21,7 @@ def on_job_save(job):
         if not notification.delivered:
         
             # Update the recipients (perhaps there are more since first created).
-            notification.recipients = Helper.objects.filter(wards__id=job.ward.id).all()
+            notification.recipients = Volunteer.objects.filter(wards__id=job.ward.id).all()
             
             # Save the notification - triggering a signal to send the email.
             notification.save()
@@ -43,8 +43,8 @@ def on_job_save(job):
         # This is required before we can assign recipients due to the Many-to-Many constraint.
         notification.save()
 
-        # Find potential helpers.
-        recipients = Helper.objects.filter(wards__id=job.ward.id).all()
+        # Find potential volunteers.
+        recipients = Volunteer.objects.filter(wards__id=job.ward.id).all()
 
         # Assign notification recipients.
         notification.recipients.set(recipients)

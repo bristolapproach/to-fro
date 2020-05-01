@@ -43,8 +43,6 @@ services:
       - SITE_URL=${SITE_URL}
     volumes:
       - "./:/code"
-    depends_on:
-      - db
 
 volumes:
   data_volume:

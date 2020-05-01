@@ -53,10 +53,14 @@ SECRET_KEY = DJANGO_SECRET_KEY
 # List of servers that Django will accept requests from.
 ALLOWED_HOSTS = DJANGO_ALLOWED_HOSTS
 
+# Specify the User model.
+AUTH_USER_MODEL = 'users.User'
+
 # Application definition
 INSTALLED_APPS = [
     'markup-help',
     'assets',
+    'users',
     'tasks',
     'core',
     'django.contrib.admin',
