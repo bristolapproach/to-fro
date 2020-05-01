@@ -8,7 +8,7 @@
     {% if current_list_type == 'available' %} aria-current {%endif%}>
     Available
   </a>
-  <a href="{% url 'tasks:index' %}" class="btn {% if current_list_type == 'mine' %} btn-dark{%endif%}"
+  <a href="{% url 'home' %}" class="btn {% if current_list_type == 'mine' %} btn-dark{%endif%}"
     {% if current_list_type == 'mine' %} aria-current {%endif%}>
     My tasks
   </a>

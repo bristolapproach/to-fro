@@ -1,4 +1,5 @@
 from django.urls import path
+from django.views.generic.base import RedirectView
 from . import views
 
 app_name = 'tasks'
@@ -9,5 +10,5 @@ urlpatterns = [
          name="available"),
     path('completed/', views.JobsListView.as_view(list_type='completed'),
          name="completed"),
-    path('', views.JobsListView.as_view(list_type='mine'), name='index'),
+    path('', RedirectView.as_view(url='/'), name='index'),
 ]
