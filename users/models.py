@@ -47,8 +47,6 @@ class Person(models.Model):
         max_length=50, null=True, blank=True, help_text="Secondary email for the user.")
     notes = models.TextField(null=True,
                              blank=True, help_text="Any other notes?")
-    user = models.ForeignKey(
-        User, null=True, blank=True, on_delete=models.SET_NULL)
 
     @property
     def full_name(self):
@@ -56,6 +54,20 @@ class Person(models.Model):
 
     def __str__(self):
         return self.full_name
+
+
+class UserProfileMixin(models.Model):
+    """
+    An abstract mixin to add the link to auth.User
+
+    This ensures that each kind of profile has their own
+    attribute, enforcing that a user can have only one
+    profile of each kind
+    """
+    class Meta:
+        abstract = True
+    user = models.OneToOneField(
+        User, null=True, blank=True, on_delete=models.SET_NULL)
 
 
 class Requester(Person):
@@ -80,7 +92,7 @@ class Requester(Person):
         default=False, help_text="Is this person shielded?")
 
 
-class Volunteer(Person):
+class Volunteer(UserProfileMixin, Person):
     dbs_number = models.CharField(max_length=12, null=True, blank=True,
                                   help_text="The user's DBS certificate number, if they have one.")
     access_to_car = models.BooleanField(
@@ -144,7 +156,7 @@ class Volunteer(Person):
         default=False, verbose_name="Sunday evening")
 
 
-class Coordinator(Person):
+class Coordinator(UserProfileMixin, Person):
     pass
 
 
