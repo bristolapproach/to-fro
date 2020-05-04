@@ -55,7 +55,7 @@ SECRET_KEY = DJANGO_SECRET_KEY
 ALLOWED_HOSTS = DJANGO_ALLOWED_HOSTS
 
 # Specify the User model.
-AUTH_USER_MODEL = 'users.User'
+# AUTH_USER_MODEL = 'users.User'
 
 # Application definition
 INSTALLED_APPS = [
@@ -86,11 +86,24 @@ MIDDLEWARE = [
 # Add the debug toolbar.
 if DEBUG:
     INSTALLED_APPS = INSTALLED_APPS + ['debug_toolbar']
-    MIDDLEWARE = ['debug_toolbar.middleware.DebugToolbarMiddleware'] + MIDDLEWARE
-    DEBUG_TOOLBAR_CONFIG = {
-        'SHOW_TOOLBAR_CALLBACK': lambda request: not request.is_ajax()
-    }
+    MIDDLEWARE = [
+        'debug_toolbar.middleware.DebugToolbarMiddleware'] + MIDDLEWARE
 
+
+def show_toolbar(request):
+    if request.is_ajax():
+        return False
+    return True
+
+
+DEBUG_TOOLBAR_CONFIG = {
+    'SHOW_TOOLBAR_CALLBACK': lambda request: not request.is_ajax()
+}
+
+# # Used by debug_toolbar.
+# INTERNAL_IPS = [
+#     '172.30.0.1' # This is the Docker container's private IP address...
+# ]
 
 ROOT_URLCONF = 'tofro.urls'
 
