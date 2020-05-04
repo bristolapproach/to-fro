@@ -16,7 +16,6 @@ from tofro.lib import login_required
 urlpatterns = [
     path('', views.homepage, name="home"),
     path('admin/', admin.site.urls),
-    path('tasks/', include('tasks.urls')),
     path('accounts/', include('django.contrib.auth.urls')),
     path('tasks/', decorator_include(login_required, ('tasks.urls', 'tasks'))),
     url(r'^password/$', views.change_password, name='change_password')
