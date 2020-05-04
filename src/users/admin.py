@@ -27,7 +27,7 @@ class CoordinatorAdmin(UserAdmin):
     add_fieldsets = (
         ('Account Details', {
             'fields': ('username', 'first_name', 'last_name', 'password1', 'password2')}
-        ),
+         ),
         ('Contact Details', {
             'fields': ('phone', 'phone_secondary', 'email', 'email_secondary')
         }),
@@ -41,14 +41,15 @@ class CoordinatorAdmin(UserAdmin):
     ordering = ('username', 'email')
 
 
-class RequesterAdmin(UserAdmin):
+class RequesterAdmin(admin.ModelAdmin):
     model = Requester
     list_display = ('first_name', 'last_name', 'phone', 'email')
     list_filter = ('first_name', 'last_name', 'phone', 'email')
+    search_fields = ['first_name', 'last_name']
 
     fieldsets = (
-        ('Account Details', {
-            'fields': ('username', 'first_name', 'last_name', 'password', 'is_active')
+        (None, {
+            'fields': ('first_name', 'last_name')
         }),
         ('Contact Details', {
             'fields': ('phone', 'phone_secondary', 'email', 'email_secondary')
@@ -105,7 +106,7 @@ class VolunteerAdmin(UserAdmin):
             )
         })
     )
-    
+
     add_fieldsets = (
         ('Account Details', {
             'fields': ('username', 'first_name', 'last_name', 'password1', 'password2')
