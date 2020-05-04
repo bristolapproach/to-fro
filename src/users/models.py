@@ -1,4 +1,5 @@
 from django.db import models
+from django.contrib.auth.models import User
 
 
 class Ward(models.Model):
@@ -46,6 +47,8 @@ class Person(models.Model):
         max_length=50, null=True, blank=True, help_text="Secondary email for the user.")
     notes = models.TextField(null=True,
                              blank=True, help_text="Any other notes?")
+    user = models.ForeignKey(
+        User, null=True, blank=True, on_delete=models.SET_NULL)
 
     @property
     def full_name(self):
