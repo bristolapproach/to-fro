@@ -1,6 +1,6 @@
 from users.models import Coordinator, Requester, Volunteer, HelpType, Ward
-from django.contrib.auth.admin import UserAdmin
 from django.contrib import admin
+from django.contrib.auth.models import User
 
 
 class CoordinatorAdmin(admin.ModelAdmin):
@@ -14,6 +14,9 @@ class CoordinatorAdmin(admin.ModelAdmin):
     fieldsets = (
         ('Account Details', {
             'fields': ('first_name', 'last_name')
+        }),
+        ('Authentication', {
+            'fields': ('user',)
         }),
         ('Contact Details', {
             'fields': ('phone', 'phone_secondary', 'email', 'email_secondary')
@@ -61,6 +64,9 @@ class VolunteerAdmin(admin.ModelAdmin):
     fieldsets = (
         (None, {
             'fields': ('first_name', 'last_name')
+        }),
+        ('Authentication', {
+            'fields': ('user',)
         }),
         ('Contact Details', {
             'fields': ('phone', 'phone_secondary', 'email', 'email_secondary')
