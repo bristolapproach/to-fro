@@ -1,8 +1,3 @@
-from django.contrib.auth.models import AbstractBaseUser
-from django.contrib.auth.models import PermissionsMixin
-from django.utils.translation import gettext_lazy as _
-from users.managers import UserManager
-from django.utils import timezone
 from django.db import models
 
 
@@ -34,26 +29,13 @@ class UserRole:
     ]
 
 
-class User(AbstractBaseUser, PermissionsMixin):
-    '''Custom Base User class.
-    https://docs.djangoproject.com/en/3.0/topics/auth/customizing/#specifying-a-custom-user-model
+class Person(models.Model):
+    '''Shared profile attributes
     '''
-    # Constants used by Django.
-    USERNAME_FIELD = 'username'
-    REQUIRED_FIELDS = ['first_name', 'last_name', 'role']
-
-    # Default User attributes.
-    username = models.CharField(max_length=50, unique=True)
-    is_active = models.BooleanField(default=True)
-    is_staff = models.BooleanField(default=True)
-    date_joined = models.DateTimeField(default=timezone.now)
-    objects = UserManager()
 
     # Custom User attributes.
     first_name = models.CharField(max_length=50)
     last_name = models.CharField(max_length=50)
-    role = models.CharField(
-        max_length=1, choices=UserRole.ROLES, help_text="The role of the user.")
     phone = models.CharField(
         max_length=15, null=True, blank=True, help_text="Main phone number for the user.")
     phone_secondary = models.CharField(
@@ -62,7 +44,7 @@ class User(AbstractBaseUser, PermissionsMixin):
                              blank=True, help_text="Main email for the user.")
     email_secondary = models.CharField(
         max_length=50, null=True, blank=True, help_text="Secondary email for the user.")
-    notes = models.CharField(max_length=500, null=True,
+    notes = models.TextField(null=True,
                              blank=True, help_text="Any other notes?")
 
     @property
@@ -73,17 +55,7 @@ class User(AbstractBaseUser, PermissionsMixin):
         return self.full_name
 
 
-class Requester(models.Model):
-    first_name = models.CharField(max_length=50)
-    last_name = models.CharField(max_length=50)
-    phone = models.CharField(
-        max_length=15, null=True, blank=True, help_text="Main phone number for the user.")
-    phone_secondary = models.CharField(
-        max_length=15, null=True, blank=True, help_text="Secondary phone number for the user.")
-    email = models.CharField(max_length=50, null=True,
-                             blank=True, help_text="Main email for the user.")
-    email_secondary = models.CharField(
-        max_length=50, null=True, blank=True, help_text="Secondary email for the user.")
+class Requester(Person):
     address_line_1 = models.CharField(
         max_length=100, help_text="First line of their address.")
     address_line_2 = models.CharField(
@@ -103,11 +75,9 @@ class Requester(models.Model):
         default=False, help_text="Is this person confident communicating online?")
     shielded = models.BooleanField(
         default=False, help_text="Is this person shielded?")
-    notes = models.TextField(max_length=500, null=True,
-                             blank=True, help_text="Any other notes?")
 
 
-class Volunteer(User):
+class Volunteer(Person):
     dbs_number = models.CharField(max_length=12, null=True, blank=True,
                                   help_text="The user's DBS certificate number, if they have one.")
     access_to_car = models.BooleanField(
@@ -171,7 +141,7 @@ class Volunteer(User):
         default=False, verbose_name="Sunday evening")
 
 
-class Coordinator(User):
+class Coordinator(Person):
     pass
 
 
