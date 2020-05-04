@@ -6,6 +6,8 @@ from django.contrib.auth.models import User
 class CoordinatorAdmin(admin.ModelAdmin):
     model = Coordinator
 
+    autocomplete_fields = ['user']
+
     # Displayed on the admin site in a grid when looking at Users.
     list_display = ('first_name', 'last_name', 'phone', 'email')
     list_filter = ('first_name', 'last_name', 'phone', 'email')
@@ -57,6 +59,9 @@ class RequesterAdmin(admin.ModelAdmin):
 
 class VolunteerAdmin(admin.ModelAdmin):
     model = Volunteer
+
+    autocomplete_fields = ['user']
+
     list_display = ('first_name', 'last_name', 'phone', 'email')
     list_filter = ('first_name', 'last_name', 'phone', 'email')
     search_fields = ['first_name', 'last_name']
