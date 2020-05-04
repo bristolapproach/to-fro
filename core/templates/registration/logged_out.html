@@ -1,0 +1,7 @@
+{% extends 'layouts/application.html' %}
+{% block 'page_title' %}Logged out | {% endblock %}
+{% block 'heading' %}Logged out{% endblock %}
+
+{% block 'content' %}
+<a class="btn btn-primary mx-auto d-table" href="{% url 'login'%}">Log in again</a>
+{% endblock %}

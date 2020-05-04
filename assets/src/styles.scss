@@ -5,6 +5,10 @@
 @import 'styles/generic/bootstrap';
 @import 'styles/generic/space';
 
+svg {
+  fill: currentColor;
+}
+
 input[type=number] {
   -moz-appearance: textfield;
 }
@@ -15,6 +19,10 @@ input[type=number] {
 
 .appearance-none {
   appearance:none;
+}
+
+.rotate-90 {
+  transform: rotate(90deg);
 }
 
 // Components
@@ -31,6 +39,29 @@ input[type=number] {
 
   height: auto;
   padding: map-get($spacers, 2);
+}
+
+.align-icon {
+  position: relative;
+  bottom: (2em/16);
+}
+
+.text-with-icon>svg {
+  position: relative;
+  bottom: (2em/16);
+}
+
+.with-decorative-button {
+  &:hover {
+    .with-decorative-button__button {
+      @each $color-name, $color-value in $theme-colors {
+        &.btn-outline-#{$color-name} {
+          background-color: $color-value;
+          color: color-yiq($color-value);
+        }
+      }
+    }
+  }
 }
 
 .card-footer {

@@ -1,12 +1,14 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from django.contrib.auth.decorators import login_required
 from django.contrib.auth.decorators import permission_required
-from django.contrib import messages
-from django.db.models import Q
-from django.views import generic
-from django.core.paginator import Paginator
+from django.contrib.auth.decorators import login_required
 from core.models import Job, Volunteer, JobStatus
+from django.core.paginator import Paginator
+from django.contrib import messages
+from django.views import generic
+from django.urls import reverse
+from django.db.models import Q
 import datetime
+
 
 LIST_DEFINITIONS = {
     'available': {
@@ -15,21 +17,24 @@ LIST_DEFINITIONS = {
         'queryset': lambda volunteer:
             Job.objects.filter(job_status=JobStatus.PENDING) \
                        .filter(requester__ward__in=volunteer.wards.all()) \
-                       .filter(help_type__in=volunteer.help_types.all())
+                       .filter(help_type__in=volunteer.help_types.all()) \
+                       .order_by('requested_datetime', '-job_priority')
     },
     'completed': {
         'title': 'Completed',
         'heading': 'Heading',
         'queryset': lambda volunteer:
             volunteer.job_set.filter(
-                Q(job_status=JobStatus.COMPLETED) | Q(job_status=JobStatus.COULDNT_COMPLETE))
+                Q(job_status=JobStatus.COMPLETED) | Q(job_status=JobStatus.COULDNT_COMPLETE)) \
+                .order_by('requested_datetime', '-job_priority')
     },
     'mine': {
         'title': 'My tasks',
         'heading': 'Heading',
         'queryset': lambda volunteer:
             volunteer.job_set.exclude(
-                Q(job_status=JobStatus.COMPLETED) | Q(job_status=JobStatus.COULDNT_COMPLETE))
+                Q(job_status=JobStatus.COMPLETED) | Q(job_status=JobStatus.COULDNT_COMPLETE)) \
+                .order_by('requested_datetime', '-job_priority')
     }
 }
 
@@ -54,28 +59,40 @@ class JobsListView(generic.ListView):
         return context
 
 
+def back_url(job, volunteer):
+    if (job.volunteer != volunteer):
+        return reverse('tasks:available')
+
+    if (job.job_status == JobStatus.INTEREST or job.job_status == JobStatus.ASSIGNED):
+        return reverse('tasks:index')
+
+    if (job.job_status == JobStatus.COULDNT_COMPLETE or job.job_status == JobStatus.COMPLETED):
+        return reverse('tasks:completed')
+
+    return reverse('tasks:available')
+
+
 def detail(request, task_id):
     volunteer = Volunteer.objects.first()
-    print("Remote address:", request.META['REMOTE_ADDR'])
     job = get_object_or_404(Job, pk=task_id)
-    context = {
-        'job': job,
-        'backUrl': '.',
-        'title': "How you can help",
-        'heading': job.description,
-        'volunteer': volunteer
-    }
 
     if request.method == "POST":
         if (job.job_status != JobStatus.PENDING):
-            messages.error(
-                request, 'Thanks, but someone has already volunteered to help')
+            messages.error(request, 'Thanks, but someone has already volunteered to help')
         else:
             job.volunteer = volunteer
             job.job_status = JobStatus.INTEREST
             job.save()
             messages.success(request, 'Thanks for volunteering!')
         return redirect('tasks:detail', task_id=job.id)
+
+    context = {
+        'job': job,
+        'back_url': back_url(job, volunteer),
+        'title': "How you can help",
+        'heading': job.description,
+        'volunteer': volunteer
+    }
 
     return render(request, 'tasks/detail.html', context)
 
@@ -109,7 +126,7 @@ def complete(request, task_id):
 
     context = {
         'job': job,
-        'backUrl': '..',
+        'back_url': reverse('tasks:detail', kwargs={'task_id': job.id}),
         'title': 'How did it go?',
         'heading': 'How did it go?',
     }

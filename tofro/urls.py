@@ -11,13 +11,15 @@ from django.contrib import admin
 from core import views
 
 urlpatterns = [
-    path('tasks/', include('tasks.urls')),
+    path('', views.homepage, name="home"),
     path('admin/', admin.site.urls),
+    path('tasks/', include('tasks.urls')),
     path('accounts/', include('django.contrib.auth.urls')),
     url(r'^password/$', views.change_password, name='change_password')
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 
 
+# Add the debug toolbar.
 if settings.DEBUG:
     import debug_toolbar
     urlpatterns = urlpatterns + [

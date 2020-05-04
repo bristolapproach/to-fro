@@ -8,7 +8,7 @@
     {% if current_list_type == 'available' %} aria-current {%endif%}>
     Available
   </a>
-  <a href="{% url 'tasks:index' %}" class="btn {% if current_list_type == 'mine' %} btn-dark{%endif%}"
+  <a href="{% url 'home' %}" class="btn {% if current_list_type == 'mine' %} btn-dark{%endif%}"
     {% if current_list_type == 'mine' %} aria-current {%endif%}>
     My tasks
   </a>
@@ -20,7 +20,7 @@
 {% if jobs %}
 <ul class="list-group bg-white">
   {% for job in jobs %}
-  <a aria-label="{{job.descriptionWithDate}}" href="{% url 'tasks:detail' job.id %}"
+  <a aria-label="{{job.description_with_date}}" href="{% url 'tasks:detail' job.id %}"
     class="list-group-item list-group-item-action">
     <li class="list-unstyled d-flex justify-content-between">
       <div>
@@ -28,7 +28,7 @@
         <span class="d-block">{{job.ward}}</span>
       </div>
       <time datetime="{{job.requested_datetime|date:"c"}}" class="text-right">
-        <span>{{job.requested_datetime|date:"d M"}}</span>
+        <span>{{job.requested_datetime|date:"D d M"}}</span>
         <span class="text-muted text-small d-block">{{job.requested_datetime|naturaltime}}</span>
       </time>
     </li>

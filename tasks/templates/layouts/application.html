@@ -7,26 +7,47 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>{% if title %} {{title}} | {% endif %}To/Fro</title>
+  <title>
+    {% block 'page_title' %}
+    {% if title %} {{title}} | {% endif %}
+    {% endblock %}
+    To/Fro</title>
   <link rel="stylesheet" href="{% static 'styles.css' %}">
   <script src="{% static "app.js" %}" defer></script>
 </head>
 
 <body>
-  <header class="navbar navbar-dark bg-dark">
+  <header class="navbar navbar-expand-lg navbar-dark bg-dark">
     <a class="navbar-brand" href="/">To/Fro</a>
+    {% if request.user.is_authenticated %}
+    <nav class="collapse navbar-collapse" id="navbarSupportedContent" aria-labelledBy="navbarNavHeading">
+      <h2 id="navbarNavHeading" hidden>Main navigation</h2>
+      <ul class="navbar-nav ml-auto">
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'password_change' %}">Change password</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'logout' %}">Log out</a>
+        </li>
+      </ul>
+    </nav>
+    {% endif %}
   </header>
   {% include './_messages.html' %}
   <div class="container container--small py-5 space-4">
     <div class="heading-container d-flex justify-content-between">
-      {% if backUrl %}
-      <a href="{{backUrl}}" class="btn btn-icon-only rounded-circle align-self-start mt-2">
+      {% if back_url %}
+      <a href="{{back_url}}" class="btn btn-icon-only rounded-circle align-self-start mt-2">
         {% embed_svg 'node_modules/@fortawesome/fontawesome-free/svgs/solid/arrow-left.svg' %}
         <span class="sr-only">Back</span>
       </a>
       {% endif %}
-      <h1 class="text-center mx-auto">{{heading|safe}}</h1>
-      {% if backUrl %}
+      <h1 class="text-center mx-auto">
+        {% block 'heading' %}
+        {{heading|safe}}
+        {% endblock %}
+      </h1>
+      {% if back_url %}
       <a class="invisible btn btn-icon-only rounded-circle" role="presentation">
         {% embed_svg 'node_modules/@fortawesome/fontawesome-free/svgs/solid/arrow-left.svg' %}
       </a>

@@ -13,9 +13,10 @@ https://docs.djangoproject.com/en/3.0/ref/settings/
 import os
 
 
-# Required environment variables. These are loaded automatically 
+# Required environment variables. These are loaded automatically
 # by docker-compose, and defined in the .env file.
-DJANGO_ALLOWED_HOSTS = os.environ.get("DJANGO_ALLOWED_HOSTS", "localhost").split(",")
+DJANGO_ALLOWED_HOSTS = os.environ.get(
+    "DJANGO_ALLOWED_HOSTS", "localhost").split(",")
 DJANGO_SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY", "012345")
 POSTGRES_DB = os.getenv('POSTGRES_DB', 'perioddignitydb')
 POSTGRES_USER = os.getenv('POSTGRES_USER', 'friendly')
@@ -106,8 +107,13 @@ TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [os.path.join(BASE_DIR, 'templates')],
-        'APP_DIRS': True,
         'OPTIONS': {
+            # apptemplates allow extending templates from specific apps
+            'loaders': [
+                'apptemplates.Loader',
+                'django.template.loaders.filesystem.Loader',
+                'django.template.loaders.app_directories.Loader',
+            ],
             'context_processors': [
                 'django.template.context_processors.debug',
                 'django.template.context_processors.request',

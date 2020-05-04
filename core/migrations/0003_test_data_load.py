@@ -28,7 +28,7 @@ def import_wards(apps, schema_editor):
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('core', '0002_auto_20200501_1319'),
+        ('core', '0002_auto_20200504_1141'),
     ]
 
     operations = [

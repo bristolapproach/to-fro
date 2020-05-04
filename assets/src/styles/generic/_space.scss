@@ -20,4 +20,12 @@
       margin-left: $space;
     }
   }
+
+  .ma-#{$spacer-name} + * {
+    margin-top: $space !important;
+  }
+
+  * + .mb-#{$spacer-name} {
+    margin-top: $space !important;
+  }
 }
