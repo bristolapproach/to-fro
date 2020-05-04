@@ -18,7 +18,7 @@ services:
   # Django Python Backend.
   server:
     build:
-      context: ./
+      context: ./src/
     env_file:
       - ./.env
       - ./.email.env
@@ -27,7 +27,7 @@ services:
     ports:
       - "${DJANGO_PORT}:${DJANGO_PORT}"
     volumes:
-      - "./:/code"
+      - "./src/:/code"
 
 volumes:
   data_volume:
