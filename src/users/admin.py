@@ -1,10 +1,42 @@
 from users.models import Coordinator, Requester, Volunteer, HelpType, Ward
 from django.contrib import admin
 from django.contrib.auth.models import User
+from django import forms
+from django.utils.translation import gettext as _
+
+
+class UserProfileForm(forms.ModelForm):
+    def clean(self):
+        super().clean()
+        if (not self.cleaned_data.get('user_without_account')):
+            if (not self.cleaned_data.get('user')):
+                # Check that there is an email set
+                email = self.cleaned_data.get('email')
+                if (not email):
+                    raise forms.ValidationError(
+                        _("You need an email to create an account"),
+                        code='needs-email'
+                    )
+                # Check that the email does not already exist
+                try:
+                    user = User.objects.filter(email=email).get()
+                    raise forms.ValidationError(
+                        _("An account already exists for %(email)s. Please select the matching account in the list of users."),
+                        code='email-exists',
+                        params={'email': email}
+                    )
+                except User.DoesNotExist:
+                    return self.cleaned_data
+
+
+class CoordinatorForm(UserProfileForm):
+    class Meta:
+        model = Coordinator
+        fields = '__all__'
 
 
 class CoordinatorAdmin(admin.ModelAdmin):
-    model = Coordinator
+    form = CoordinatorForm
 
     autocomplete_fields = ['user']
 
@@ -18,7 +50,7 @@ class CoordinatorAdmin(admin.ModelAdmin):
             'fields': ('first_name', 'last_name')
         }),
         ('Authentication', {
-            'fields': ('user',)
+            'fields': ('user', 'user_without_account')
         }),
         ('Contact Details', {
             'fields': ('phone', 'phone_secondary', 'email', 'email_secondary')
@@ -57,8 +89,14 @@ class RequesterAdmin(admin.ModelAdmin):
         }))
 
 
+class VolunteerForm(UserProfileForm):
+    class Meta:
+        model = Volunteer
+        fields = '__all__'
+
+
 class VolunteerAdmin(admin.ModelAdmin):
-    model = Volunteer
+    form = VolunteerForm
 
     autocomplete_fields = ['user']
 
@@ -71,7 +109,7 @@ class VolunteerAdmin(admin.ModelAdmin):
             'fields': ('first_name', 'last_name')
         }),
         ('Authentication', {
-            'fields': ('user',)
+            'fields': ('user', 'user_without_account')
         }),
         ('Contact Details', {
             'fields': ('phone', 'phone_secondary', 'email', 'email_secondary')

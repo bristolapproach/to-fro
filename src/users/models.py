@@ -1,6 +1,12 @@
 from django.db import models
 from django.contrib.auth.models import User
 
+# import the logging library
+import logging
+
+# Get an instance of a logger
+logger = logging.getLogger(__name__)
+
 
 class Ward(models.Model):
     name = models.CharField(max_length=50, null=True)
@@ -64,10 +70,32 @@ class UserProfileMixin(models.Model):
     attribute, enforcing that a user can have only one
     profile of each kind
     """
+    user_is_staff = False
+    profile_type = 'coordinator'
+
     class Meta:
         abstract = True
+
     user = models.OneToOneField(
         User, null=True, blank=True, on_delete=models.SET_NULL)
+    user_without_account = models.BooleanField(
+        null=False, default=False, blank=True
+    )
+
+    def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
+        if (not self.user_without_account and not bool(self.user)):
+            self.create_user()
+        if (self.user_without_account and bool(self.user)):
+            self.user = None
+        logger.info(update_fields)
+        return super().save(force_insert=force_insert, force_update=force_update, using=using, update_fields=update_fields)
+
+    def create_user(self):
+        user = User(username=self.email, email=self.email)
+        user.is_staff = self.user_is_staff
+        user.set_unusable_password()
+        setattr(user, self.profile_type, self)
+        user.save()
 
 
 class Requester(Person):
@@ -155,8 +183,11 @@ class Volunteer(UserProfileMixin, Person):
     available_sun_evening = models.BooleanField(
         default=False, verbose_name="Sunday evening")
 
+    profile_type = 'volunteer'
+
 
 class Coordinator(UserProfileMixin, Person):
+    user_is_staff = True
     pass
 
 
