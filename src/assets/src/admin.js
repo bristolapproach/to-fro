@@ -7,6 +7,7 @@ const ATTR_EDITED = 'data-edited';
     const $ = window.django.jQuery;
     const data = getData(); // Read the data passed by the backend
 
+    setupUserAjaxUrl($, data);
 
     // Wait until all Django related setup code has run
     // so we don't respond to synthetic change events triggered
@@ -84,6 +85,15 @@ function setupUserAccountsBehaviour($) {
 
     }
   });
+}
+
+function setupUserAjaxUrl($, { profile_type, profile_id }) {
+  if (profile_type) {
+    const url = $('[name="user"]').data('ajax--url');
+    if (url) {
+      $('[name="user"').data('ajax--url', `${url}?without_profile_type=${profile_type}&profile_id=${profile_id}`)
+    }
+  }
 }
 
 function setUserFieldPlaceholder($) {

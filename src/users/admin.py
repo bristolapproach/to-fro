@@ -1,8 +1,10 @@
 from users.models import Coordinator, Requester, Volunteer, HelpType, Ward
 from django.contrib import admin
 from django.contrib.auth.models import User
+from django.contrib.auth.admin import UserAdmin
 from django import forms
 from django.utils.translation import gettext as _
+from django.db.models import Q
 
 
 class UserProfileForm(forms.ModelForm):
@@ -35,8 +37,37 @@ class CoordinatorForm(UserProfileForm):
         fields = '__all__'
 
 
-class CoordinatorAdmin(admin.ModelAdmin):
+class ModelAdminWithExtraContext(admin.ModelAdmin):
+    """
+    Base class for creating an admin that automatically adds some
+    extra context to the add and change views
+    """
+    extra_context = {}
+
+    def add_view(self, request, form_url='', extra_context=None):
+        extra_context = extra_context or {}
+        extra_context.update(self.extra_context(request))
+        return super().add_view(
+            request, form_url, extra_context=extra_context,
+        )
+
+    def change_view(self, request, object_id, form_url='', extra_context=None):
+        extra_context = extra_context or {}
+        extra_context.update(self.extra_context(object_id=object_id))
+        return super().change_view(
+            request, object_id, form_url, extra_context=extra_context,
+        )
+
+
+class CoordinatorAdmin(ModelAdminWithExtraContext):
     form = CoordinatorForm
+
+    def extra_context(self, object_id=None): return {
+        'js_data': {
+            'profile_type': 'coordinator',
+            'profile_id': object_id
+        }
+    }
 
     autocomplete_fields = ['user']
 
@@ -95,8 +126,15 @@ class VolunteerForm(UserProfileForm):
         fields = '__all__'
 
 
-class VolunteerAdmin(admin.ModelAdmin):
+class VolunteerAdmin(ModelAdminWithExtraContext):
     form = VolunteerForm
+
+    def extra_context(self, object_id=None): return {
+        'js_data': {
+            'profile_type': 'volunteer',
+            'profile_id': object_id
+        }
+    }
 
     autocomplete_fields = ['user']
 
@@ -128,8 +166,44 @@ class VolunteerAdmin(admin.ModelAdmin):
     )
 
 
+class ToFroUserAdmin(UserAdmin):
+    """
+    Customization of the user admin to allow filtering of the autocomplete
+    so it returns only Users that don't already have a profile
+    """
+
+    def get_search_results(self, request, queryset, search_term):
+        queryset, use_distinct = super().get_search_results(request, queryset, search_term)
+
+        profile_type = request.GET.get('without_profile_type')
+        profile_id = request.GET.get('profile_id')
+        queryset = self.filter_search_results(
+            queryset, profile_type, profile_id)
+
+        return (queryset, use_distinct)
+
+    def filter_search_results(self, queryset, profile_type, profile_id):
+        """
+        Filters the search results further to ignore users that already
+        have the given profile_type, unless they have the given profile_id
+        """
+        if (profile_type):
+            # Whatever happens only grab the users that have the given
+            # profile
+            criteria = Q(**{f'{profile_type}__isnull': True})
+            if (profile_id):
+                # But if we have an ID, make sure it's in the list too
+                criteria = criteria | Q(**{profile_type: profile_id})
+
+            return queryset.filter(criteria)
+
+        return queryset
+
+
 admin.site.register(Ward)
 admin.site.register(HelpType)
 admin.site.register(Requester, RequesterAdmin)
 admin.site.register(Volunteer, VolunteerAdmin)
 admin.site.register(Coordinator, CoordinatorAdmin)
+admin.site.unregister(User)
+admin.site.register(User, ToFroUserAdmin)
