@@ -23,7 +23,7 @@ POSTGRES_USER = os.getenv('POSTGRES_USER', 'friendly')
 POSTGRES_PASSWORD = os.getenv('POSTGRES_PASSWORD', 'Pa55word')
 DATABASE_HOST = os.getenv('DATABASE_HOST', 'postgres-server')
 DATABASE_PORT = os.getenv('DATABASE_PORT', '5432')
-DEBUG = os.getenv("DEBUG", True)
+DEBUG = os.getenv("DEBUG", "True") == "True"
 
 
 # Email settings.
@@ -86,20 +86,10 @@ MIDDLEWARE = [
 if DEBUG:
     INSTALLED_APPS = INSTALLED_APPS + ['debug_toolbar']
     MIDDLEWARE = ['debug_toolbar.middleware.DebugToolbarMiddleware'] + MIDDLEWARE
+    DEBUG_TOOLBAR_CONFIG = {
+        'SHOW_TOOLBAR_CALLBACK': lambda request: not request.is_ajax()
+    }
 
-def show_toolbar(request):
-    if request.is_ajax():
-        return False
-    return True
-
-DEBUG_TOOLBAR_CONFIG = {
-    'SHOW_TOOLBAR_CALLBACK': lambda request: not request.is_ajax()
-}
-
-# # Used by debug_toolbar.
-# INTERNAL_IPS = [
-#     '172.30.0.1' # This is the Docker container's private IP address...
-# ]
 
 ROOT_URLCONF = 'tofro.urls'
 

@@ -1,0 +1,29 @@
+# Role variables.
+src_destination: /home/vagrant/tofro/
+
+# Certificate variables.
+hostname: 0.0.0.0
+
+# PSQL variables.
+postgres_user: tofro
+postgres_db: tofro
+postgres_password: password
+database_host: tofro-db
+database_port: 5432
+
+# Django variables.
+site_url: http://{{ hostname }}:8000
+django_admin_firstname: admin
+django_admin_lastname: ""
+django_admin_password: password
+django_secret_key: 2#top$s4c&1l0gtvc(9u+@09qc@l2d3th*k4f30y#&vj0+$aws
+django_allowed_hosts: "{{ hostname }},localhost"
+django_debug: False
+django_https: True
+django_port: 443
+
+# Email settings.
+email_host: smtp.office365.com
+email_port: 587
+email_host_user: user@gmail.com
+email_host_password: password

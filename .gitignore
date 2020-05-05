@@ -138,3 +138,6 @@ static/
 
 # Private email settings.
 .email.env
+
+# Ansible
+vault_password

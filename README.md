@@ -15,7 +15,7 @@ A volume mount defined in `docker-compose.yml` maps your local directory with th
     server:
         ...
         volumes:
-        - "./:/code"
+        - "./src/:/code"
 
 This allows you to execute commands on the running Python container (e.g. `python manage.py startapp test`) and have the results in your local filesystem. The benefit of this is avoiding installing dependencies locally.
 
@@ -27,10 +27,10 @@ You can see the names of the running containers with `docker ps`.
 
 ## Frontend assets
 
-The styles and scripts of the app are build with [ParcelJS](https://parceljs.org/) from the sources in `assets/src`. The files are compiled to the `assets/static` folder to match [Django's conventions for static folders](https://docs.djangoproject.com/en/3.0/howto/static-files/#configuring-static-files).
+The styles and scripts of the app are build with [ParcelJS](https://parceljs.org/) from the sources in `src/assets/src`. The files are compiled to the `src/assets/static` folder to match [Django's conventions for static folders](https://docs.djangoproject.com/en/3.0/howto/static-files/#configuring-static-files).
 
 The build happens at container startup so you shouldn't have anything to do if you're just editing backend code. If you need to edit the styles or scripts for the app, you'll need to have [NodeJS installed (12.X)](https://nodejs.org/en/).
-You can then run the following to rebuild the files when you change them in the `assets/src` folder:
+You can then run the following to rebuild the files when you change them in the `src/assets/src` folder:
 
     npm run dev
 
