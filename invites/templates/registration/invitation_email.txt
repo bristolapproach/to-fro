@@ -1,0 +1,11 @@
+Hello,
+
+You're receiving this email because you'd like to volunteer to help during this crisis. 
+
+An account has been set up for you on {{site_name}}. Please complete its creation by setting a password, following this link:
+
+{{site_url}}{% url 'password_reset_confirm' uidb64=uid token=token %}
+
+Thanks for offering to help!
+
+The {{ site_name }} team

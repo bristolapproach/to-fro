@@ -63,6 +63,7 @@ INSTALLED_APPS = [
     'markup-help',
     'assets',
     'users',
+    'invites',
     'tasks',
     'core',
     'django.contrib.admin',
