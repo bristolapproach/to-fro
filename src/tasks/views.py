@@ -15,9 +15,9 @@ LIST_DEFINITIONS = {
         'title': 'Available jobs',
         'heading': 'Available jobs',
         'queryset': lambda volunteer:
-            Job.objects.filter(job_status=JobStatus.PENDING) \
-                       .filter(requester__ward__in=volunteer.wards.all()) \
-                       .filter(help_type__in=volunteer.help_types.all()) \
+            Job.objects.filter(job_status=JobStatus.PENDING)
+                       .filter(requester__ward__in=volunteer.wards.all())
+                       .filter(help_type__in=volunteer.help_types.all())
                        .order_by('requested_datetime', '-job_priority')
     },
     'completed': {
@@ -25,16 +25,16 @@ LIST_DEFINITIONS = {
         'heading': 'Heading',
         'queryset': lambda volunteer:
             volunteer.job_set.filter(
-                Q(job_status=JobStatus.COMPLETED) | Q(job_status=JobStatus.COULDNT_COMPLETE)) \
-                .order_by('requested_datetime', '-job_priority')
+                Q(job_status=JobStatus.COMPLETED) | Q(job_status=JobStatus.COULDNT_COMPLETE))
+        .order_by('requested_datetime', '-job_priority')
     },
     'mine': {
         'title': 'My tasks',
         'heading': 'Heading',
         'queryset': lambda volunteer:
             volunteer.job_set.exclude(
-                Q(job_status=JobStatus.COMPLETED) | Q(job_status=JobStatus.COULDNT_COMPLETE)) \
-                .order_by('requested_datetime', '-job_priority')
+                Q(job_status=JobStatus.COMPLETED) | Q(job_status=JobStatus.COULDNT_COMPLETE))
+        .order_by('requested_datetime', '-job_priority')
     }
 }
 
@@ -46,7 +46,7 @@ class JobsListView(generic.ListView):
     paginate_by = 20
 
     def get_queryset(self):
-        volunteer = Volunteer.objects.first()
+        volunteer = self.request.user.volunteer
         return LIST_DEFINITIONS[self.list_type]['queryset'](volunteer)
 
     def get_context_data(self, **kwargs):
@@ -73,12 +73,13 @@ def back_url(job, volunteer):
 
 
 def detail(request, task_id):
-    volunteer = Volunteer.objects.first()
+    volunteer = request.user.volunteer
     job = get_object_or_404(Job, pk=task_id)
 
     if request.method == "POST":
         if (job.job_status != JobStatus.PENDING):
-            messages.error(request, 'Thanks, but someone has already volunteered to help')
+            messages.error(
+                request, 'Thanks, but someone has already volunteered to help')
         else:
             job.volunteer = volunteer
             job.job_status = JobStatus.INTEREST
@@ -98,7 +99,7 @@ def detail(request, task_id):
 
 
 def complete(request, task_id):
-    volunteer = Volunteer.objects.first()
+    volunteer = request.user.volunteer
     job = get_object_or_404(Job, pk=task_id)
 
     if job.job_status != JobStatus.ASSIGNED or job.volunteer != volunteer:
