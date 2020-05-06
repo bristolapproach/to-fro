@@ -69,15 +69,15 @@ class UserProfileMixin(models.Model):
     This ensures that each kind of profile has their own
     attribute, enforcing that a user can have only one
     profile of each kind
+
+    Note: The addition of the OneToOne field is left to the
+    extending class, so that a custom related_name can be set for the relation
     """
     user_is_staff = False
-    profile_type = 'coordinator'
 
     class Meta:
         abstract = True
 
-    user = models.OneToOneField(
-        User, null=True, blank=True, on_delete=models.SET_NULL)
     user_without_account = models.BooleanField(
         null=False, default=False, blank=True
     )
@@ -184,10 +184,17 @@ class Volunteer(UserProfileMixin, Person):
         default=False, verbose_name="Sunday evening")
 
     profile_type = 'volunteer'
+    related_name = 'volunteer'
+    user = models.OneToOneField(
+        User, null=True, blank=True, on_delete=models.SET_NULL, related_name=related_name)
 
 
 class Coordinator(UserProfileMixin, Person):
     user_is_staff = True
+    related_name = 'coordinator'
+    user = models.OneToOneField(
+        User, null=True, blank=True, on_delete=models.SET_NULL,
+        related_name=related_name)
     pass
 
 
