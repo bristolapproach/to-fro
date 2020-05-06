@@ -194,15 +194,18 @@ STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 LOGIN_REDIRECT_URL = '/tasks/'
 
 LOGGING = copy.deepcopy(DEFAULT_LOGGING)
+
+# Add a root logger that'll catch the logs of our own apps
+LOGGING['loggers'][''] = {
+    'handlers': ['console'],
+    'level': 'INFO'
+}
+# Prevent Django's logs to be emitted a second time
+# by being propaggated to the root logger
+LOGGING['loggers']['django']['propagate'] = False
+
 # Customize the logging configuration for development
 if DEBUG:
     # Lower the threshold for the console logger
     LOGGING['handlers']['console']['level'] = 'DEBUG'
-    # Add a root logger that'll catch the logs of our own apps
-    LOGGING['loggers'][''] = {
-        'handlers': ['console'],
-        'level': 'DEBUG'
-    }
-    # Prevent Django's logs to be emitted a second time
-    # by being propaggated to the root logger
-    LOGGING['loggers']['django']['propagate'] = False
+    LOGGING['loggers']['']['level'] = 'DEBUG'
