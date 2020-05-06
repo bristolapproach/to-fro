@@ -9,7 +9,8 @@ https://docs.djangoproject.com/en/3.0/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.0/ref/settings/
 """
-
+import copy
+from django.utils.log import DEFAULT_LOGGING
 import os
 
 
@@ -100,10 +101,10 @@ DEBUG_TOOLBAR_CONFIG = {
     'SHOW_TOOLBAR_CALLBACK': lambda request: not request.is_ajax()
 }
 
-# # Used by debug_toolbar.
-# INTERNAL_IPS = [
-#     '172.30.0.1' # This is the Docker container's private IP address...
-# ]
+# Used by debug_toolbar.
+INTERNAL_IPS = [
+    '172.30.0.1'  # This is the Docker container's private IP address...
+]
 
 ROOT_URLCONF = 'tofro.urls'
 
@@ -192,17 +193,16 @@ STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 # Redirect to home URL after login (Default redirects to /accounts/profile/)
 LOGIN_REDIRECT_URL = '/tasks/'
 
-
-LOGGING = {
-    'version': 1,
-    'disable_existing_loggers': True,
-    'handlers': {
-        'console': {
-            'class': 'logging.StreamHandler',
-        },
-    },
-    'root': {
+LOGGING = copy.deepcopy(DEFAULT_LOGGING)
+# Customize the logging configuration for development
+if DEBUG:
+    # Lower the threshold for the console logger
+    LOGGING['handlers']['console']['level'] = 'DEBUG'
+    # Add a root logger that'll catch the logs of our own apps
+    LOGGING['loggers'][''] = {
         'handlers': ['console'],
-        'level': 'DEBUG',
-    },
-}
+        'level': 'DEBUG'
+    }
+    # Prevent Django's logs to be emitted a second time
+    # by being propaggated to the root logger
+    LOGGING['loggers']['django']['propagate'] = False
