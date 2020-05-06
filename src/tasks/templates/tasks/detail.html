@@ -4,7 +4,7 @@
 {% load markdown %}
 
 {% block 'content' %}
-{% if job.volunteer == volunteer and job.job_status.name != 'Pending volunteer interest' and job.job_status.name != 'Volunteer interest' %}
+{% if job.volunteer == volunteer and job.can_reveal_private_information %}
 <h2 class="ma-2">You'll help:</h2>
 {% include './_requester_detail.html' with requester=job.requester %}
 {% endif %}
