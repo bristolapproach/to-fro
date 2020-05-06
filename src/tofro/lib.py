@@ -8,7 +8,6 @@ logger = logging.getLogger(__name__)
 
 
 def login_required(function=None, redirect_field_name=REDIRECT_FIELD_NAME, login_url=None):
-    logger.debug('Protecting %s', function)
     actual_decorator = user_passes_test(
         has_permission,
         login_url=login_url,
@@ -23,7 +22,6 @@ def login_required(function=None, redirect_field_name=REDIRECT_FIELD_NAME, login
         else:
             return function
     else:
-        logger.debug('Returning decorator only')
         return actual_decorator
 
 

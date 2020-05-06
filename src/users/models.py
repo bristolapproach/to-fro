@@ -87,13 +87,11 @@ class UserProfileMixin(models.Model):
             self.create_user()
         if (self.user_without_account and bool(self.user)):
             self.user = None
-        logger.info(update_fields)
         return super().save(force_insert=force_insert, force_update=force_update, using=using, update_fields=update_fields)
 
     def create_user(self):
         user = User(username=self.email, email=self.email)
         user.is_staff = self.user_is_staff
-        user.set_unusable_password()
         setattr(user, self.profile_type, self)
         user.save()
 
