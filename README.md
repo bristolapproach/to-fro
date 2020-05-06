@@ -4,20 +4,19 @@ We're working on a system that can be used by different communities to help self
 
 ## Development environment
 
-To get started, download docker and clone this repository.
+To get started, download docker, clone this repository, then start the database and the Django server in the foreground using this command:
 
-Run `docker-compose up` to start the database and Django server in the foreground. Configuration is handled via the `.env` file. Environment variables will override what's defined in the `.env` file.
+    docker-compose up --build
+
+Configuration is handled via the `.env` file. Environment variables will override what's defined in the `.env` file.
 
 If `DEBUG=True`, then Django's development server will be used. This includes hot-reload from code changes, and additional log information. If `DEBUG=False`, a production `gunicorn` server will be used.
 
-A volume mount defined in `docker-compose.yml` maps your local directory with that in the docker container.
+During development, you can enable Django's hot-reload functionality by mounting the source code as a volume into the container. This maps your local directory with a directory in the docker container. To do this, change the command above to:
 
-    server:
-        ...
-        volumes:
-        - "./src/:/code"
+    docker-compose -f docker-compose.yml -f development.yml up --build
 
-This allows you to execute commands on the running Python container (e.g. `python manage.py startapp test`) and have the results in your local filesystem. The benefit of this is avoiding installing dependencies locally.
+The benefit of mounting your local filesystem into the docker container is both avoiding installing dependencies locally, and to avoid reloading the container every time you write some code.
 
 To execute a python command on the docker container, use a command like this:
 

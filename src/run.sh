@@ -33,12 +33,14 @@ if [[ ! -z ${DJANGO_HTTPS} && ! -z ${HOSTNAME} ]]; then
     
     # Serve over HTTPS.
     gunicorn --certfile=server.crt --keyfile=server.key \
+             --capture-output --enable-stdio-inheritance \
              --worker-tmp-dir /dev/shm --workers=2 \
              --threads=4 --worker-class=gthread \
              --bind :${DJANGO_PORT} tofro.wsgi
 else
     # Serve over HTTP.
-    gunicorn --worker-tmp-dir /dev/shm --workers=2 \
+    gunicorn --capture-output --enable-stdio-inheritance \
+             --worker-tmp-dir /dev/shm --workers=2 \
              --threads=4 --worker-class=gthread \
              --bind :${DJANGO_PORT} tofro.wsgi
 fi
