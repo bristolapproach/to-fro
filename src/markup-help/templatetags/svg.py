@@ -13,3 +13,8 @@ def embed_svg(path, width=20, height=20, role="presentation", class_attribute=No
     content = content.replace(
         '<svg', f'<svg role={role} width="{width}" height="{height}" {class_attribute}')
     return mark_safe(content)
+
+
+@register.simple_tag()
+def embed_fontawesome(icon_name, icon_set="solid", **kwargs):
+    return embed_svg(f"node_modules/@fortawesome/fontawesome-free/svgs/{icon_set}/{icon_name}.svg", **kwargs)

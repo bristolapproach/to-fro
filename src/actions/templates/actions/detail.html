@@ -2,6 +2,7 @@
 
 {% load headings %}
 {% load markdown %}
+{% load svg %}
 
 {% block 'content' %}
 {% if action.volunteer == volunteer and action.can_reveal_private_information %}
@@ -28,6 +29,7 @@
     <form method="POST">
       {% csrf_token %}
       <button class="btn d-table mx-auto btn-primary" name="action" value="accept_help">
+        {% embed_fontawesome 'hands-helping' class_attribute="align-icon mr-1" %}
         I'll help!
       </button>
     </form>
@@ -39,7 +41,8 @@
     <p class="text-center">Thanks for volunteering! We'll be back in touch soon!</p>
     {% elif action.is_assigned %}
     <a class="btn d-table mx-auto btn-primary" href="{% url 'actions:complete' action.id%}">
-      All done!
+      {% embed_fontawesome 'walking' class_attribute="align-icon" %}
+      I went and helped!
     </a>
     {% else %}
     <p>Thanks for helping!</p>

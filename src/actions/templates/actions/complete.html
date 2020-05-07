@@ -1,5 +1,7 @@
 {% extends 'layouts/application.html' %}
 
+{% load svg %}
+
 {% block 'content' %}
 <form class="card" method="POST">
   {% csrf_token %}
@@ -26,8 +28,14 @@
     </div>
   </div>
   <div class="card-footer text-center d-flex justify-content-between">
-    <button name="outcome" value="ko" class="btn btn-outline-danger">Couldn't do it all</button>
-    <button name="outcome" value="ok" class="btn btn-primary">All went fine</button>
+    <button name="outcome" value="ko" class="btn btn-outline-danger">
+      {% embed_fontawesome 'thumbs-down' icon_set='regular' class_attribute="align-icon mr-1" %}
+      Couldn't do it all
+    </button>
+    <button name="outcome" value="ok" class="btn btn-primary">
+      {% embed_fontawesome 'thumbs-up' icon_set='regular' class_attribute="align-icon mr-1" %}
+      All went fine
+    </button>
   </div>
 </form>
 {% endblock %}
