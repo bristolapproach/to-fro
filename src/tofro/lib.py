@@ -27,12 +27,8 @@ def login_required(function=None, redirect_field_name=REDIRECT_FIELD_NAME, login
 
 def has_permission(user):
     try:
-        logging.info('Checking user permissions')
-        logging.info('Is authenticated', user.is_authenticated)
-        # logging.info('Is a volunteer', user.volunteer)
         return user.is_authenticated and bool(user.volunteer)
     except:
-        logging.info('User is not a volunteer')
         # `user.volunteer` might raise a RelatedObjectDoesNotExist
         # if there is no volunteer, in which case, we're not authorized
         return False
