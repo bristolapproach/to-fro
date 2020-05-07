@@ -6,7 +6,9 @@
 {% if user.is_authenticated %}
 <p class="alert alert-danger">Your account doesn't have access to this page. To proceed, please login with an account that has access.</p>
 {% else %}
+{%if next %}
 <p class="alert alert-danger">Please login to see this page.</p>
+{% endif %}
 {% endif %}
 
 <form method="post" class="card p-3 space-3" action="{% url 'login' %}">
