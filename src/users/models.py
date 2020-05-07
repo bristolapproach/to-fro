@@ -75,7 +75,7 @@ class UserProfileMixin(models.Model):
     def create_user(self):
         user = User(username=self.email, email=self.email)
         user.is_staff = self.user_is_staff
-        setattr(user, self.profile_type, self)
+        setattr(user, self.profile_related_name, self)
         user.save()
 
 
@@ -164,18 +164,17 @@ class Volunteer(UserProfileMixin, Person):
     available_sun_evening = models.BooleanField(
         default=False, verbose_name="Sunday evening")
 
-    profile_type = 'volunteer'
-    related_name = 'volunteer'
+    profile_related_name = 'volunteer'
     user = models.OneToOneField(
-        User, null=True, blank=True, on_delete=models.SET_NULL, related_name=related_name)
+        User, null=True, blank=True, on_delete=models.SET_NULL, related_name=profile_related_name)
 
 
 class Coordinator(UserProfileMixin, Person):
     user_is_staff = True
-    related_name = 'coordinator'
+    profile_related_name = 'coordinator'
     user = models.OneToOneField(
         User, null=True, blank=True, on_delete=models.SET_NULL,
-        related_name=related_name)
+        related_name=profile_related_name)
     pass
 
 
