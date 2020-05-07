@@ -18,21 +18,9 @@
   </a>
 </nav>
 {% if actions %}
-<ul class="list-group bg-white">
+<ul class="list-group bg-white list-unstyled">
   {% for action in actions %}
-  <a aria-label="{{action.description_with_date}}" href="{% url 'actions:detail' action.id %}"
-    class="list-group-item list-group-item-action">
-    <li class="list-unstyled d-flex justify-content-between">
-      <div>
-        <strong class="d-block">{{action.help_type}}</strong>
-        <span class="d-block">{{action.ward}}</span>
-      </div>
-      <time datetime="{{action.requested_datetime|date:"c"}}" class="text-right">
-        <span>{{action.requested_datetime|date:"D d M"}}</span>
-        <span class="text-muted text-small d-block">{{action.requested_datetime|naturaltime}}</span>
-      </time>
-    </li>
-  </a>
+  {% include './_action_list_item.html' with action=action %}
   {% endfor %}
 </ul>
 {% if page_obj.has_other_pages %}
