@@ -2,6 +2,9 @@ from users.models import Coordinator, Resident, Volunteer
 from categories.models import HelpType
 from django.db import models
 
+import logging
+logger = logging.getLogger(__name__)
+
 
 class ActionPriority:
     LOW, MEDIUM, HIGH = '1', '2', '3'
@@ -80,7 +83,8 @@ class Action(models.Model):
 
     @property
     def can_reveal_private_information(self):
-        return self.action_status != ActionStatus.PENDING and action_status != ActionStatus.INTEREST
+        return not (
+            self.action_status is ActionStatus.INTEREST or self.action_status is ActionStatus.PENDING)
 
     def __str__(self):
         return f"Action: {self.id}"
