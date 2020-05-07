@@ -39,7 +39,12 @@
 {% include 'layouts/_page_links.html' with page=page_obj %}
 {% endif %}
 {% else %}
+{% if current_list_type == 'available' %}
 <p class="text-center">Sorry, there's nothing available at the moment.</p>
+{% else %}
+<p class="text-center">Looks like you haven't undertaken any action yet.</p>
+<a class="btn btn-primary d-table mx-auto" href="{% url "actions:available" %}">See how you could help!</a>
+{% endif %}
 {% endif %}
 </div>
 {% endblock %}

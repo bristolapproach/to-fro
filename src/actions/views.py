@@ -22,7 +22,7 @@ LIST_DEFINITIONS = {
     },
     'completed': {
         'title': 'Completed',
-        'heading': 'Heading',
+        'heading': 'Completed',
         'queryset': lambda volunteer:
             volunteer.action_set.filter(
                 Q(action_status=ActionStatus.COMPLETED) | Q(action_status=ActionStatus.COULDNT_COMPLETE))
@@ -30,7 +30,7 @@ LIST_DEFINITIONS = {
     },
     'mine': {
         'title': 'My actions',
-        'heading': 'Heading',
+        'heading': 'My actions',
         'queryset': lambda volunteer:
             volunteer.action_set.exclude(
                 Q(action_status=ActionStatus.COMPLETED) | Q(action_status=ActionStatus.COULDNT_COMPLETE))
