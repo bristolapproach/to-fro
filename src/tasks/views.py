@@ -16,7 +16,7 @@ LIST_DEFINITIONS = {
         'heading': 'Available jobs',
         'queryset': lambda volunteer:
             Job.objects.filter(job_status=JobStatus.PENDING)
-                       .filter(requester__ward__in=volunteer.wards.all())
+                       .filter(resident__ward__in=volunteer.wards.all())
                        .filter(help_type__in=volunteer.help_types.all())
                        .order_by('requested_datetime', '-job_priority')
     },

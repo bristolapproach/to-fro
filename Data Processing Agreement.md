@@ -23,7 +23,7 @@ You may choose to share and retain contact information with each other, but you 
 
 There are three groups of people in this system:
 1. Co-ordinators: volunteers working for the Knowle West Alliance
-2. Requesters: people who have been referred to the Co-ordinators after they (or a carer/guardian) contacted the council’s We Are Bristol hotline (0800 6940184) or via email (coronavirus@bristol.gov.uk)
+2. Residents: people who have been referred to the Co-ordinators after they (or a carer/guardian) contacted the council’s We Are Bristol hotline (0800 6940184) or via email (coronavirus@bristol.gov.uk)
 3. Helpers: people who have been referred to the Co-ordinators after volunteering via Can Do Bristol (https://candobristol.co.uk).
 
 
@@ -44,7 +44,7 @@ For data you have access to please respect your responsibilities as explained at
 
 
 
-Requesters
+Residents
 
 Specifically relevant information you provided to the council will have been passed onto the Co-ordinators and entered into this system. The Co-ordinators may ask for further details to aid with providing adequete support.
 
@@ -64,13 +64,13 @@ You will have a username and password to access the system. Please use a strong 
 
 Co-ordinators
 
-Your information will be viewable by the other Co-ordinators with the sole purposes of making this system work, through organising and overlooking the Helpers to ensure that they provide adequate support to the Requesters. 
+Your information will be viewable by the other Co-ordinators with the sole purposes of making this system work, through organising and overlooking the Helpers to ensure that they provide adequate support to the Residents. 
 
-Your contact information may at times be shared with Helpers or Requesters so that they can keep you informed about new and ongoing tasks as well as giving them the ability to exercise their data rights.
+Your contact information may at times be shared with Helpers or Residents so that they can keep you informed about new and ongoing tasks as well as giving them the ability to exercise their data rights.
 
 You retain rights over your data as explained at the start of this agreement and although you are able to see, change or delete your own information, you may also request for another Co-ordinator to do so.
 
-You will be able to see and edit all of the information stored in the system including the three groups: Co-ordinators, Requesters and Helpers as well as jobs and other relevant information. If anyone requests to see, change or delete the information related to them (where it doesn’t infringe another person’s privacy), then you must do so.
+You will be able to see and edit all of the information stored in the system including the three groups: Co-ordinators, Residents and Helpers as well as jobs and other relevant information. If anyone requests to see, change or delete the information related to them (where it doesn’t infringe another person’s privacy), then you must do so.
 
 For data you have access to please respect your responsibilities as explained at the start of this agreement.
 

@@ -28,10 +28,10 @@ class HelpType(models.Model):
 
 class UserRole:
     '''Constants used in the User class.'''
-    COORDINATOR, REQUESTER, VOLUNTEER = '1', '2', '3'
+    COORDINATOR, RESIDENT, VOLUNTEER = '1', '2', '3'
     ROLES = [
         (COORDINATOR, "Coordinator"),
-        (REQUESTER, "Requester"),
+        (RESIDENT, "Resident"),
         (VOLUNTEER, "Volunteer")
     ]
 
@@ -96,7 +96,7 @@ class UserProfileMixin(models.Model):
         user.save()
 
 
-class Requester(Person):
+class Resident(Person):
     address_line_1 = models.CharField(
         max_length=100, help_text="First line of their address.")
     address_line_2 = models.CharField(

@@ -18,35 +18,59 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Job',
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('call_datetime', models.DateTimeField(help_text='What time did you receive the call about this task?', null=True)),
-                ('call_duration', models.DurationField(blank=True, help_text='How long was the call?', null=True)),
-                ('requested_datetime', models.DateTimeField(help_text='When should the task be completed by?', null=True)),
-                ('job_status', models.CharField(choices=[('1', 'Pending volunteer interest'), ('2', 'Volunteer interest'), ('3', 'Volunteer assigned'), ('4', 'Completed'), ('5', "Couldn't complete")], default='1', help_text="What's the status of this task?", max_length=1)),
-                ('job_priority', models.CharField(choices=[('1', 'low'), ('2', 'medium'), ('3', 'high')], default='1', help_text='What priority should this task be given?', max_length=1)),
-                ('time_taken', models.DurationField(blank=True, help_text='How long did it take to complete the task?', null=True)),
-                ('notes', models.TextField(blank=True, help_text='Notes from the volunteer.', max_length=500, null=True)),
-                ('public_description', models.TextField(blank=True, help_text='Text that gets displayed to volunteers who are browsing tasks.', max_length=500, null=True)),
-                ('private_description', models.TextField(blank=True, help_text="Text that only gets displayed to a volunteer when they're assigned to the task.", null=True)),
-                ('added_by', models.ForeignKey(help_text="What's your name?", on_delete=django.db.models.deletion.PROTECT, related_name='added_by', to='users.Coordinator')),
-                ('coordinator', models.ForeignKey(help_text='Who will mediate this task?', on_delete=django.db.models.deletion.PROTECT, related_name='coordinator', to='users.Coordinator')),
-                ('help_type', models.ForeignKey(help_text='Which kind of help is needed', null=True, on_delete=django.db.models.deletion.PROTECT, to='users.HelpType')),
-                ('requester', models.ForeignKey(help_text='Who made the request?', null=True, on_delete=django.db.models.deletion.PROTECT, to='users.Requester')),
-                ('volunteer', models.ForeignKey(blank=True, help_text='Who will complete the task?', null=True, on_delete=django.db.models.deletion.PROTECT, to='users.Volunteer')),
+                ('id', models.AutoField(auto_created=True,
+                                        primary_key=True, serialize=False, verbose_name='ID')),
+                ('call_datetime', models.DateTimeField(
+                    help_text='What time did you receive the call about this task?', null=True)),
+                ('call_duration', models.DurationField(blank=True,
+                                                       help_text='How long was the call?', null=True)),
+                ('requested_datetime', models.DateTimeField(
+                    help_text='When should the task be completed by?', null=True)),
+                ('job_status', models.CharField(choices=[('1', 'Pending volunteer interest'), ('2', 'Volunteer interest'), ('3', 'Volunteer assigned'), (
+                    '4', 'Completed'), ('5', "Couldn't complete")], default='1', help_text="What's the status of this task?", max_length=1)),
+                ('job_priority', models.CharField(choices=[('1', 'low'), ('2', 'medium'), (
+                    '3', 'high')], default='1', help_text='What priority should this task be given?', max_length=1)),
+                ('time_taken', models.DurationField(
+                    blank=True, help_text='How long did it take to complete the task?', null=True)),
+                ('notes', models.TextField(
+                    blank=True, help_text='Notes from the volunteer.', max_length=500, null=True)),
+                ('public_description', models.TextField(
+                    blank=True, help_text='Text that gets displayed to volunteers who are browsing tasks.', max_length=500, null=True)),
+                ('private_description', models.TextField(
+                    blank=True, help_text="Text that only gets displayed to a volunteer when they're assigned to the task.", null=True)),
+                ('added_by', models.ForeignKey(help_text="What's your name?",
+                                               on_delete=django.db.models.deletion.PROTECT, related_name='added_by', to='users.Coordinator')),
+                ('coordinator', models.ForeignKey(help_text='Who will mediate this task?',
+                                                  on_delete=django.db.models.deletion.PROTECT, related_name='coordinator', to='users.Coordinator')),
+                ('help_type', models.ForeignKey(help_text='Which kind of help is needed',
+                                                null=True, on_delete=django.db.models.deletion.PROTECT, to='users.HelpType')),
+                ('resident', models.ForeignKey(help_text='Who made the request?', null=True,
+                                               on_delete=django.db.models.deletion.PROTECT, to='users.Resident')),
+                ('volunteer', models.ForeignKey(blank=True, help_text='Who will complete the task?',
+                                                null=True, on_delete=django.db.models.deletion.PROTECT, to='users.Volunteer')),
             ],
         ),
         migrations.CreateModel(
             name='Notification',
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('subject', models.CharField(help_text='The notification subject.', max_length=100, null=True)),
-                ('message', models.TextField(help_text="What's your name?", max_length=1000, null=True)),
-                ('delivered', models.BooleanField(default=False, help_text='This field is updated automatically.')),
-                ('sent_by', models.CharField(help_text="Who's sending the notification?", max_length=50)),
-                ('created_date_time', models.DateTimeField(help_text='This field is updated automatically.', null=True)),
-                ('delivered_date_time', models.DateTimeField(help_text='This field is updated automatically.', null=True)),
-                ('job', models.ForeignKey(help_text='The job the notification is about.', null=True, on_delete=django.db.models.deletion.PROTECT, to='core.Job')),
-                ('recipients', models.ManyToManyField(default=list, help_text='This field is updated automatically.', related_name='notificationrecipient', to=settings.AUTH_USER_MODEL)),
+                ('id', models.AutoField(auto_created=True,
+                                        primary_key=True, serialize=False, verbose_name='ID')),
+                ('subject', models.CharField(
+                    help_text='The notification subject.', max_length=100, null=True)),
+                ('message', models.TextField(
+                    help_text="What's your name?", max_length=1000, null=True)),
+                ('delivered', models.BooleanField(default=False,
+                                                  help_text='This field is updated automatically.')),
+                ('sent_by', models.CharField(
+                    help_text="Who's sending the notification?", max_length=50)),
+                ('created_date_time', models.DateTimeField(
+                    help_text='This field is updated automatically.', null=True)),
+                ('delivered_date_time', models.DateTimeField(
+                    help_text='This field is updated automatically.', null=True)),
+                ('job', models.ForeignKey(help_text='The job the notification is about.',
+                                          null=True, on_delete=django.db.models.deletion.PROTECT, to='core.Job')),
+                ('recipients', models.ManyToManyField(default=list, help_text='This field is updated automatically.',
+                                                      related_name='notificationrecipient', to=settings.AUTH_USER_MODEL)),
             ],
         ),
     ]

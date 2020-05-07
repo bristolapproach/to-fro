@@ -8,14 +8,14 @@ from django.contrib.auth.models import User
 # Register our models with the admin site.
 class JobAdmin(admin.ModelAdmin):
     list_display = ('job_status', 'requested_datetime',
-                    'requester', 'help_type', 'volunteer')
+                    'resident', 'help_type', 'volunteer')
     list_filter = ('job_status', 'requested_datetime',
-                   'requester', 'volunteer')
-    autocomplete_fields = ['requester', 'volunteer']
+                   'resident', 'volunteer')
+    autocomplete_fields = ['resident', 'volunteer']
 
     fieldsets = (
         ('Job Details', {
-            'fields': ('requester', 'requested_datetime', 'help_type', 'job_priority', 'coordinator')
+            'fields': ('resident', 'requested_datetime', 'help_type', 'job_priority', 'coordinator')
         }),
         ('Description', {
             'fields': ('public_description', 'private_description')

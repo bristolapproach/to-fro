@@ -6,7 +6,7 @@
 {% block 'content' %}
 {% if job.volunteer == volunteer and job.can_reveal_private_information %}
 <h2 class="ma-2">You'll help:</h2>
-{% include './_requester_detail.html' with requester=job.requester %}
+{% include './_resident_detail.html' with resident=job.resident %}
 {% endif %}
 <h2 class="ma-2">They need:</h2>
 <div class="card">

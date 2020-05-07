@@ -1,4 +1,4 @@
-from users.models import Coordinator, Requester, Volunteer, HelpType, Ward
+from users.models import Coordinator, Resident, Volunteer, HelpType, Ward
 from django.contrib import admin
 from django.contrib.auth.models import User
 from django.contrib.auth.admin import UserAdmin
@@ -96,8 +96,8 @@ class CoordinatorAdmin(ModelAdminWithExtraContext):
     ordering = ('last_name', 'email')
 
 
-class RequesterAdmin(admin.ModelAdmin):
-    model = Requester
+class ResidentAdmin(admin.ModelAdmin):
+    model = Resident
     list_display = ('first_name', 'last_name', 'phone', 'email')
     list_filter = ('first_name', 'last_name', 'phone', 'email')
     search_fields = ['first_name', 'last_name']
@@ -202,7 +202,7 @@ class ToFroUserAdmin(UserAdmin):
 
 admin.site.register(Ward)
 admin.site.register(HelpType)
-admin.site.register(Requester, RequesterAdmin)
+admin.site.register(Resident, ResidentAdmin)
 admin.site.register(Volunteer, VolunteerAdmin)
 admin.site.register(Coordinator, CoordinatorAdmin)
 admin.site.unregister(User)

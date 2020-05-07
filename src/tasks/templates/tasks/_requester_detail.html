@@ -1,19 +1,19 @@
 {% load svg %}
 {% load links %}
 
-<article class="space-3 card p-3" aria-label="requester">
-  <h3 class="h5">{{requester.first_name}} {{requester.last_name}}</h3>
-  <a href="{{requester.address|map_url}}" target="_blank" rel="noreferrer noopener"
+<article class="space-3 card p-3" aria-label="resident">
+  <h3 class="h5">{{resident.first_name}} {{resident.last_name}}</h3>
+  <a href="{{resident.address|map_url}}" target="_blank" rel="noreferrer noopener"
     class="with-decorative-button d-flex justify-content-between align-items-center space-x-3">
     <span>
-      {{requester.address_line_1}}<br>
-      {%if requester.address2 %}
-      {{requester.address_line_2}}<br>
+      {{resident.address_line_1}}<br>
+      {%if resident.address2 %}
+      {{resident.address_line_2}}<br>
       {%endif%}
-      {%if requester.address3 %}
-      {{requester.address_line_3}}<br>
+      {%if resident.address3 %}
+      {{resident.address_line_3}}<br>
       {%endif%}
-      {{requester.postcode}}
+      {{resident.postcode}}
     </span>
     <span role="presentation" class="with-decorative-button__button btn btn-outline-primary btn-icon-only rounded ml-3">
       {% embed_svg 'node_modules/@fortawesome/fontawesome-free/svgs/solid/map-marked-alt.svg' height=16 width=16 %}
@@ -21,14 +21,14 @@
     </span>
   </a>
   <div class="btn-group mx-n3 mb-n3">
-    <a class="btn btn-outline-primary space-x-1 text-with-icon w-100" href="tel:{{requester.phone_number_primary}}">
+    <a class="btn btn-outline-primary space-x-1 text-with-icon w-100" href="tel:{{resident.phone_number_primary}}">
       {% embed_svg 'node_modules/@fortawesome/fontawesome-free/svgs/solid/phone-alt.svg' height=16 width=16 class_attribute='rotate-90' %}
-      <span>{{requester.phone_number_primary}}</span></a>
-    {% if requester.phone_number_secondary %}
+      <span>{{resident.phone_number_primary}}</span></a>
+    {% if resident.phone_number_secondary %}
     <a class="btn btn-outline-primary space-x-1 text-with-icon d-block w-100"
-      href="tel:{{requester.phone_number_secondary}}">
+      href="tel:{{resident.phone_number_secondary}}">
       {% embed_svg 'node_modules/@fortawesome/fontawesome-free/svgs/solid/phone-alt.svg' height=16 width=16 class_attribute='rotate-90' %}
-      <span>{{requester.phone_number_secondary}}</span></a>
+      <span>{{resident.phone_number_secondary}}</span></a>
     {% endif %}
   </div>
 
