@@ -135,6 +135,7 @@ node_modules/
 
 # Django static files
 static/
+staticfiles/
 
 # Private email settings.
 .email.env
