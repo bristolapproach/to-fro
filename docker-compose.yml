@@ -3,7 +3,8 @@ services:
 
   # PostgreSQL database, with GIS extension.
   db:
-    image: mdillon/postgis
+    build:
+      context: ./db/
     container_name: tofro-db
     restart: unless-stopped
     ports:
