@@ -6,6 +6,9 @@ from django import forms
 from django.utils.translation import gettext as _
 from django.db.models import Q
 
+import logging
+logger = logging.getLogger(__name__)
+
 
 class UserProfileForm(forms.ModelForm):
     def clean(self):
@@ -46,7 +49,7 @@ class ModelAdminWithExtraContext(admin.ModelAdmin):
 
     def add_view(self, request, form_url='', extra_context=None):
         extra_context = extra_context or {}
-        extra_context.update(self.extra_context(request))
+        extra_context.update(self.extra_context())
         return super().add_view(
             request, form_url, extra_context=extra_context,
         )
@@ -62,12 +65,15 @@ class ModelAdminWithExtraContext(admin.ModelAdmin):
 class CoordinatorAdmin(ModelAdminWithExtraContext):
     form = CoordinatorForm
 
-    def extra_context(self, object_id=None): return {
-        'js_data': {
-            'profile_type': 'coordinator',
-            'profile_id': object_id
+    def extra_context(self, object_id=None):
+        logging.debug('Extra context', object_id)
+        return {
+
+            'js_data': {
+                'profile_type': 'coordinator',
+                'profile_id': object_id
+            }
         }
-    }
 
     autocomplete_fields = ['user']
 
@@ -176,7 +182,7 @@ class ToFroUserAdmin(UserAdmin):
         queryset, use_distinct = super().get_search_results(request, queryset, search_term)
 
         profile_type = request.GET.get('without_profile_type')
-        profile_id = request.GET.get('profile_id')
+        profile_id = request.GET.get('profile_id', None)
         queryset = self.filter_search_results(
             queryset, profile_type, profile_id)
 

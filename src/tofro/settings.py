@@ -64,7 +64,7 @@ INSTALLED_APPS = [
     'assets',
     'users',
     'invites',
-    'tasks',
+    'actions',
     'core',
     'django.contrib.admin',
     'django.contrib.auth',
@@ -192,7 +192,7 @@ STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 
 # Redirect to home URL after login (Default redirects to /accounts/profile/)
-LOGIN_REDIRECT_URL = '/tasks/'
+LOGIN_REDIRECT_URL = '/actions/'
 
 LOGGING = copy.deepcopy(DEFAULT_LOGGING)
 

@@ -19,9 +19,9 @@ class Migration(migrations.Migration):
                                         primary_key=True, serialize=False, verbose_name='ID')),
                 ('name', models.CharField(max_length=50, null=True)),
                 ('private_description_template', models.TextField(
-                    blank=True, help_text='Private description will be pre-filled with this text when picking this type of help for a Job', null=True)),
+                    blank=True, help_text='Private description will be pre-filled with this text when picking this type of help for a Action', null=True)),
                 ('public_description_template', models.TextField(
-                    blank=True, help_text='Public description will be pre-filled with this text when picking this type of help for a Job', null=True)),
+                    blank=True, help_text='Public description will be pre-filled with this text when picking this type of help for a Action', null=True)),
             ],
         ),
         migrations.CreateModel(

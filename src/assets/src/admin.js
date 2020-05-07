@@ -13,7 +13,7 @@ const ATTR_EDITED = 'data-edited';
     // so we don't respond to synthetic change events triggered
     // during their initialization
     $(function () {
-      setupJobDescriptionTemplates($, data);
+      setupActionDescriptionTemplates($, data);
       setupUserAccountsBehaviour($);
     });
   });
@@ -29,15 +29,15 @@ function getData() {
 }
 
 /**
- * Manages the prefilling of job descriptions according
+ * Manages the prefilling of action descriptions according
  * to the templates corrsponding to the selecte help type
  * @param {jQuery} $ 
  * @param {Object} data - The hash of data passed to the view
  */
-function setupJobDescriptionTemplates($, data) {
-  if (data.job_description_templates) {
+function setupActionDescriptionTemplates($, data) {
+  if (data.action_description_templates) {
     $(document).on('change', '[name="help_type"]', function ({ target }) {
-      const templates = data.job_description_templates[target.value] || {};
+      const templates = data.action_description_templates[target.value] || {};
 
       // Loop through the fields that we have templates for.
       ['public', 'private'].forEach((descriptionType) => {
