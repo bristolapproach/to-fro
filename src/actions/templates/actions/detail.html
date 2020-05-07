@@ -8,21 +8,22 @@
 <h2 class="ma-2">You'll help:</h2>
 {% include './_resident_detail.html' with resident=action.resident %}
 {% endif %}
+
 <h2 class="ma-2">They need:</h2>
-<div class="card">
-  <div class="card-body space-3">
+<div class="card p-3">
     {% if action.volunteer == volunteer and action.can_reveal_private_information %}
+    {% if action.private_description %}
     <div class="border-bottom mb-3 pb-3 space-3">
-      {% if action.private_description %}
       {{action.private_description|markdown|heading_level:3}}
-      {% endif %}
     </div>
     {% endif %}
+    {% endif %}
+    {% if action.public_description %}
     <div>
       {{action.public_description|markdown|heading_level:3}}
     </div>
-  </div>
-  <div class="card-footer">
+    {% endif %}
+    <div class="mbf-3">
     {% if action.is_pending %}
     <form method="POST">
       {% csrf_token %}
@@ -45,6 +46,6 @@
     {% endif %}
     {% endif %}
     {% endif %}
-  </div>
+    </div>
 </div>
 {% endblock %}

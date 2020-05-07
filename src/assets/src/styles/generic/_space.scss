@@ -21,11 +21,11 @@
     }
   }
 
-  .ma-#{$spacer-name} + * {
+  .maf-#{$spacer-name} + * {
     margin-top: $space !important;
   }
 
-  * + .mb-#{$spacer-name} {
+  * + .mbf-#{$spacer-name} {
     margin-top: $space !important;
   }
 }
