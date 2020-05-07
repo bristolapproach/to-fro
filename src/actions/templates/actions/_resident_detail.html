@@ -20,16 +20,11 @@
       <span class="sr-only">View on a map</span>
     </span>
   </a>
+  {% if resident.phone or resident.phone_secondary %}
   <div class="btn-group mx-n3 mb-n3">
-    <a class="btn btn-outline-primary space-x-1 text-with-icon w-100" href="tel:{{resident.phone_number_primary}}">
-      {% embed_svg 'node_modules/@fortawesome/fontawesome-free/svgs/solid/phone-alt.svg' height=16 width=16 class_attribute='rotate-90' %}
-      <span>{{resident.phone_number_primary}}</span></a>
-    {% if resident.phone_number_secondary %}
-    <a class="btn btn-outline-primary space-x-1 text-with-icon d-block w-100"
-      href="tel:{{resident.phone_number_secondary}}">
-      {% embed_svg 'node_modules/@fortawesome/fontawesome-free/svgs/solid/phone-alt.svg' height=16 width=16 class_attribute='rotate-90' %}
-      <span>{{resident.phone_number_secondary}}</span></a>
-    {% endif %}
+    {% include 'shared/_phone_link.html' with phone_number=resident.phone %}
+    {% include 'shared/_phone_link.html' with phone_number=resident.phone_secondary %}
   </div>
+  {% endif %}
 
 </article>

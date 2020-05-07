@@ -1,0 +1,6 @@
+{% load svg %}
+{% if phone_number %}
+<a class="btn btn-outline-primary space-x-1 text-with-icon w-100" href="tel:{{phone_number}}">
+  {% embed_svg 'node_modules/@fortawesome/fontawesome-free/svgs/solid/phone-alt.svg' height=16 width=16 class_attribute='rotate-90' %}
+  <span>{{phone_number}}</span></a>
+{% endif %}
