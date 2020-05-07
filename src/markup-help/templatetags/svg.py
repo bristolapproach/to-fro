@@ -16,5 +16,8 @@ def embed_svg(path, width=20, height=20, role="presentation", class_attribute=No
 
 
 @register.simple_tag()
-def embed_fontawesome(icon_name, icon_set="solid", **kwargs):
-    return embed_svg(f"node_modules/@fortawesome/fontawesome-free/svgs/{icon_set}/{icon_name}.svg", **kwargs)
+def embed_fontawesome(icon_name, icon_set="solid", fallback=None, **kwargs):
+    try:
+        return embed_svg(f"node_modules/@fortawesome/fontawesome-free/svgs/{icon_set}/{icon_name}.svg", **kwargs)
+    except:
+        return embed_fontawesome(icon_name, icon_set, fallback=None, **kwargs)
