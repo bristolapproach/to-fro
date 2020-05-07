@@ -1,4 +1,4 @@
-from users.models import Coordinator, Resident, Volunteer, HelpType
+from users.models import Coordinator, Resident, Volunteer
 from actions.models import Action
 from django.contrib.auth import get_user_model
 from django.db import models

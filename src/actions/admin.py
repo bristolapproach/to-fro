@@ -1,5 +1,5 @@
 from .models import Action
-from users.models import HelpType
+from categories.models import HelpType
 
 # Register our models with the admin site.
 from django.contrib import admin
@@ -61,3 +61,6 @@ class ActionAdmin(admin.ModelAdmin):
             'private_description_template': help_type.private_description_template,
             'public_description_template': help_type.public_description_template
         }) for help_type in HelpType.objects.all())
+
+
+admin.site.register(Action, ActionAdmin)

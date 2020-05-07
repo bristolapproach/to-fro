@@ -1,4 +1,5 @@
-from users.models import Coordinator, Resident, Volunteer, HelpType, Ward
+from users.models import Coordinator, Resident, Volunteer
+from categories.models import HelpType, Ward
 from django.contrib import admin
 from django.contrib.auth.models import User
 from django.contrib.auth.admin import UserAdmin
@@ -206,8 +207,6 @@ class ToFroUserAdmin(UserAdmin):
         return queryset
 
 
-admin.site.register(Ward)
-admin.site.register(HelpType)
 admin.site.register(Resident, ResidentAdmin)
 admin.site.register(Volunteer, VolunteerAdmin)
 admin.site.register(Coordinator, CoordinatorAdmin)

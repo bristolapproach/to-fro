@@ -1,4 +1,5 @@
-from users.models import Coordinator, Resident, Volunteer, HelpType
+from users.models import Coordinator, Resident, Volunteer
+from categories.models import HelpType
 from django.db import models
 
 
