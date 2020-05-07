@@ -1,4 +1,6 @@
-from core.models import Action, ActionPriority, ActionStatus, Notification, Volunteer
+from actions.models import Action, ActionPriority, ActionStatus
+from users.models import Volunteer
+from .models import Notification
 from django.core.mail import send_mail
 from django.utils import timezone
 import os

@@ -1,5 +1,6 @@
 from django.db.models.signals import post_save
-from core.models import Action, Notification
+from actions.models import Action
+from .models import Notification
 from core import notifications
 
 
