@@ -1,6 +1,7 @@
 from django import template
 from django.utils.safestring import mark_safe
 
+import os
 import logging
 logger = logging.getLogger(__name__)
 
@@ -18,12 +19,23 @@ def embed_svg(path, width=20, height=20, role="presentation", class_attribute=No
     return mark_safe(content)
 
 
+DEFAULT_FONTAWESOME_ICON_SET = "solid"
+
+
 @register.simple_tag()
-def embed_fontawesome(icon_name, icon_set="solid", fallback=None, **kwargs):
+def embed_fontawesome(icon_name, icon_set=DEFAULT_FONTAWESOME_ICON_SET, fallback=None, **kwargs):
     try:
-        return embed_svg(f"node_modules/@fortawesome/fontawesome-free/svgs/{icon_set}/{icon_name}.svg", **kwargs)
+        return embed_svg(fontawesome_icon_path(icon_name, icon_set), **kwargs)
     except:
         if fallback:
             return embed_fontawesome(fallback, icon_set=icon_set, fallback=None, **kwargs)
     # Ensures nothing gets printed if fallback fails
     return ''
+
+
+def fontawesome_icon_path(icon_name, icon_set=DEFAULT_FONTAWESOME_ICON_SET):
+    return f"node_modules/@fortawesome/fontawesome-free/svgs/{icon_set}/{icon_name}.svg"
+
+
+def fontawesome_icon_exists(icon_name, icon_set=DEFAULT_FONTAWESOME_ICON_SET):
+    return os.path.isfile(fontawesome_icon_path(icon_name, icon_set))
