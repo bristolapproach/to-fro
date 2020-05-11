@@ -31,8 +31,8 @@ The styles and scripts of the app are build with [ParcelJS](https://parceljs.org
 The build happens at container startup so you shouldn't have anything to do if you're just editing backend code. If you need to edit the styles or scripts for the app, you'll need to have [NodeJS installed (12.X)](https://nodejs.org/en/).
 You can then run the following to rebuild the files when you change them in the `api/assets/src` folder:
 
-    npm run dev
+    (cd api && npm run dev)
 
-If the command complains about missing modules, check that you have a `node_modules` folder at the root of the project. If it's missing, run the following command to install the NodeJS modules:
+If the command complains about missing modules, check that you have a `node_modules` folder at the root of the project. If it's missing, run the following command to install the NodeJS modules (from the `api` folder again):
 
-    npm install
+    (cd api && npm install)
