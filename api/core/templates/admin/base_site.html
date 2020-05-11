@@ -11,7 +11,7 @@
 {% block nav-global %}{% endblock %}
 
 {% block userlinks %}
-  {% if site_url %}
+  {% if site_url and user.is_volunteer %}
       <a href="{{ site_url }}">{% trans 'Volunteer view' %}</a> /
   {% endif %}
   {% if user.is_active and user.is_staff %}

@@ -177,6 +177,31 @@ class Coordinator(UserProfileMixin, Person):
         related_name=profile_related_name)
     pass
 
+# Add a few helpers to the User class
+# as directly accessing `volunteer` or
+# `coordinator` risks raising a DoesNotExist
+# while we just want a true/false
+
+
+@property
+def is_volunteer(self):
+    try:
+        return bool(self.volunteer)
+    except:
+        return False
+
+
+@property
+def is_coordinator(self):
+    try:
+        return bool(self.coordinator)
+    except:
+        return False
+
+
+User.is_volunteer = is_volunteer
+User.is_coordinator = is_coordinator
+
 
 # class Relationship(models.Model):
 #     user_1 = models.ForeignKey(User, on_delete=models.PROTECT, related_name="user_1")

@@ -26,12 +26,7 @@ def login_required(function=None, redirect_field_name=REDIRECT_FIELD_NAME, login
 
 
 def has_permission(user):
-    try:
-        return user.is_authenticated and bool(user.volunteer)
-    except:
-        # `user.volunteer` might raise a RelatedObjectDoesNotExist
-        # if there is no volunteer, in which case, we're not authorized
-        return False
+    return user.is_authenticated and user.is_volunteer
 
 
 def login_not_required(f):
