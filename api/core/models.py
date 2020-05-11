@@ -1,4 +1,4 @@
-from users.models import Coordinator, Resident, Volunteer
+from users.models import Coordinator, Resident, Volunteer, Person
 from actions.models import Action
 from django.contrib.auth import get_user_model
 from django.db import models
@@ -19,7 +19,7 @@ class Notification(models.Model):
     sent_by = models.CharField(
         max_length=50, help_text="Who's sending the notification?")
     recipients = models.ManyToManyField(
-        User, related_name='notificationrecipient', default=list, help_text="This field is updated automatically.")
+        Person, related_name='notificationrecipient', default=list, help_text="This field is updated automatically.")
     created_date_time = models.DateTimeField(
         null=True, help_text="This field is updated automatically.")
     delivered_date_time = models.DateTimeField(
