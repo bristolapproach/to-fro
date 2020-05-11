@@ -5,7 +5,7 @@
   class="list-group-item list-group-item-action action-list-item">
   <li>
     <i class="btn btn-icon-only action-list-item__icon" role="presentation">
-      {% embed_fontawesome action.help_type.icon_name|default:'hands-helping' %}
+      {% embed_fontawesome action.help_type.icon_name fallback='hands-helping'%}
     </i>
     <h2 class="h5">Help with <strong>{{action.help_type}}</strong> near <strong>{{action.ward}}</strong></h2>
     <time datetime="{{action.requested_datetime|date:"c"}}" class="text-right">

@@ -66,7 +66,7 @@ INSTALLED_APPS = [
     'categories',
     'core',
     'assets',
-    'markup-help',
+    'markup_help',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',

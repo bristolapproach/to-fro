@@ -1,1 +1,26 @@
-["shopping", "food parcel", "prescription", "call", "dog walk", "chores"]
+[
+  {
+    "name": "Shopping",
+    "icon_name": "shopping-basket"
+  },
+  {
+    "name": "Food parcel",
+    "icon_name": "box-open"
+  },
+  {
+    "name": "prescription",
+    "icon_name": "prescription-bottle-alt"
+  },
+  {
+    "name": "call",
+    "icon_name": "comments"
+  },
+  {
+    "name": "dog walk",
+    "icon_name": "dog"
+  },
+  {
+    "name": "chores",
+    "icon_name": "broom"
+  }
+]
