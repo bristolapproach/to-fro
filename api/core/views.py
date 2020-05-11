@@ -5,8 +5,9 @@ from django.contrib import messages
 from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.forms import PasswordChangeForm
 from django.shortcuts import render, redirect
-from tasks.views import JobsListView
+from actions.views import ActionsListView
 from django.contrib.auth.views import LoginView
+from tofro.lib import has_permission
 
 
 def change_password(request):
@@ -28,7 +29,7 @@ def change_password(request):
 
 
 def homepage(request):
-    if (request.user.is_authenticated):
-        return JobsListView.as_view(list_type='mine')(request)
+    if (has_permission(request.user)):
+        return ActionsListView.as_view(list_type='mine')(request)
     else:
         return LoginView.as_view()(request)

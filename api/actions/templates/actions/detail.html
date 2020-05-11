@@ -1,0 +1,54 @@
+{% extends 'layouts/application.html' %}
+
+{% load headings %}
+{% load markdown %}
+{% load svg %}
+
+{% block 'content' %}
+{% if action.volunteer == volunteer and action.can_reveal_private_information %}
+<h2 class="ma-2">You'll help:</h2>
+{% include './_resident_detail.html' with resident=action.resident %}
+{% endif %}
+
+<h2 class="ma-2">They need:</h2>
+<div class="card p-3">
+    {% if action.volunteer == volunteer and action.can_reveal_private_information %}
+    {% if action.private_description %}
+    <div class="border-bottom mb-3 pb-3 space-3">
+      {{action.private_description|markdown|heading_level:3}}
+    </div>
+    {% endif %}
+    {% endif %}
+    {% if action.public_description %}
+    <div>
+      {{action.public_description|markdown|heading_level:3}}
+    </div>
+    {% endif %}
+    <div class="mbf-3">
+    {% if action.is_pending %}
+    <form method="POST">
+      {% csrf_token %}
+      <button class="btn d-table mx-auto btn-primary" name="action" value="accept_help">
+        {% embed_fontawesome 'hands-helping' class_attribute="align-icon mr-1" %}
+        I'll help!
+      </button>
+    </form>
+    {%else %}
+    {% if action.volunteer != volunteer %}
+    <p class="text-center">Someone's on it, but thanks for thinking of it!</p>
+    {% else %}
+    {% if action.has_interest %}
+    <p class="text-center">Thanks for volunteering! We'll be back in touch soon!</p>
+    {% elif action.is_assigned %}
+    <a class="btn d-table mx-auto btn-primary" href="{% url 'actions:complete' action.id%}">
+      {% embed_fontawesome 'walking' class_attribute="align-icon" %}
+      I went and helped!
+    </a>
+    {% else %}
+    <p>Thanks for helping!</p>
+    {% endif %}
+    {% endif %}
+    {% endif %}
+    </div>
+</div>
+{% endblock %}

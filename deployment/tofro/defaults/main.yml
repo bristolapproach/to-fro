@@ -1,5 +1,5 @@
 # Role variables.
-src_destination: /home/vagrant/tofro/
+src_destination: /home/vagrant/to-fro/
 
 # Certificate variables.
 hostname: 0.0.0.0

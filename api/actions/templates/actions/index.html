@@ -1,0 +1,38 @@
+{% extends 'layouts/application.html' %}
+
+{% load humanize %}
+
+{% block 'content' %}
+<nav aria-label="Action types" class="d-flex justify-content-center space-x-3">
+  <a href="{% url 'actions:available' %}" class="btn {% if current_list_type == 'available' %} btn-dark{%endif%}"
+    {% if current_list_type == 'available' %} aria-current {%endif%}>
+    Available
+  </a>
+  <a href="{% url 'home' %}" class="btn {% if current_list_type == 'mine' %} btn-dark{%endif%}"
+    {% if current_list_type == 'mine' %} aria-current {%endif%}>
+    My actions
+  </a>
+  <a href="{% url 'actions:completed' %}" class="btn {% if current_list_type == 'completed' %} btn-dark {%endif%}"
+    {% if current_list_type == 'completed' %} aria-current {%endif%}>
+    Completed
+  </a>
+</nav>
+{% if actions %}
+<ul class="list-group bg-white list-unstyled">
+  {% for action in actions %}
+  {% include './_action_list_item.html' with action=action %}
+  {% endfor %}
+</ul>
+{% if page_obj.has_other_pages %}
+{% include 'layouts/_page_links.html' with page=page_obj %}
+{% endif %}
+{% else %}
+{% if current_list_type == 'available' %}
+<p class="text-center">Sorry, there's nothing available at the moment.</p>
+{% else %}
+<p class="text-center">Looks like you haven't undertaken any action yet.</p>
+<a class="btn btn-primary d-table mx-auto" href="{% url "actions:available" %}">See how you could help!</a>
+{% endif %}
+{% endif %}
+</div>
+{% endblock %}

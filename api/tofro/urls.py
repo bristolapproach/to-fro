@@ -17,7 +17,7 @@ urlpatterns = [
     path('', views.homepage, name="home"),
     path('admin/', admin.site.urls),
     path('accounts/', include('django.contrib.auth.urls')),
-    path('tasks/', decorator_include(login_required, ('tasks.urls', 'tasks'))),
+    path('actions/', decorator_include(login_required, ('actions.urls', 'actions'))),
     url(r'^password/$', views.change_password, name='change_password')
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 

@@ -1,0 +1,30 @@
+{% load svg %}
+{% load links %}
+
+<article class="space-3 card p-3" aria-label="resident">
+  <h3 class="h5">{{resident.first_name}} {{resident.last_name}}</h3>
+  <a href="{{resident.address|map_url}}" target="_blank" rel="noreferrer noopener"
+    class="with-decorative-button d-flex justify-content-between align-items-center space-x-3">
+    <span>
+      {{resident.address_line_1}}<br>
+      {%if resident.address2 %}
+      {{resident.address_line_2}}<br>
+      {%endif%}
+      {%if resident.address3 %}
+      {{resident.address_line_3}}<br>
+      {%endif%}
+      {{resident.postcode}}
+    </span>
+    <span role="presentation" class="with-decorative-button__button btn btn-outline-primary btn-icon-only rounded ml-3">
+      {% embed_svg 'node_modules/@fortawesome/fontawesome-free/svgs/solid/map-marked-alt.svg' height=16 width=16 %}
+      <span class="sr-only">View on a map</span>
+    </span>
+  </a>
+  {% if resident.phone or resident.phone_secondary %}
+  <div class="btn-group mx-n3 mb-n3">
+    {% include 'shared/_phone_link.html' with phone_number=resident.phone %}
+    {% include 'shared/_phone_link.html' with phone_number=resident.phone_secondary %}
+  </div>
+  {% endif %}
+
+</article>

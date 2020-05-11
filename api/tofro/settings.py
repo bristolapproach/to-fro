@@ -9,7 +9,8 @@ https://docs.djangoproject.com/en/3.0/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.0/ref/settings/
 """
-
+import copy
+from django.utils.log import DEFAULT_LOGGING
 import os
 
 
@@ -55,15 +56,17 @@ SECRET_KEY = DJANGO_SECRET_KEY
 ALLOWED_HOSTS = DJANGO_ALLOWED_HOSTS
 
 # Specify the User model.
-AUTH_USER_MODEL = 'users.User'
+# AUTH_USER_MODEL = 'users.User'
 
 # Application definition
 INSTALLED_APPS = [
-    'markup-help',
-    'assets',
+    'actions',
+    'invites',
     'users',
-    'tasks',
+    'categories',
     'core',
+    'assets',
+    'markup-help',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -86,11 +89,24 @@ MIDDLEWARE = [
 # Add the debug toolbar.
 if DEBUG:
     INSTALLED_APPS = INSTALLED_APPS + ['debug_toolbar']
-    MIDDLEWARE = ['debug_toolbar.middleware.DebugToolbarMiddleware'] + MIDDLEWARE
-    DEBUG_TOOLBAR_CONFIG = {
-        'SHOW_TOOLBAR_CALLBACK': lambda request: not request.is_ajax()
-    }
+    MIDDLEWARE = [
+        'debug_toolbar.middleware.DebugToolbarMiddleware'] + MIDDLEWARE
 
+
+def show_toolbar(request):
+    if request.is_ajax():
+        return False
+    return True
+
+
+DEBUG_TOOLBAR_CONFIG = {
+    'SHOW_TOOLBAR_CALLBACK': lambda request: not request.is_ajax()
+}
+
+# Used by debug_toolbar.
+INTERNAL_IPS = [
+    '172.30.0.1'  # This is the Docker container's private IP address...
+]
 
 ROOT_URLCONF = 'tofro.urls'
 
@@ -177,61 +193,21 @@ STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 
 # Redirect to home URL after login (Default redirects to /accounts/profile/)
-LOGIN_REDIRECT_URL = '/tasks/'
+LOGIN_REDIRECT_URL = '/actions/'
 
+LOGGING = copy.deepcopy(DEFAULT_LOGGING)
 
-# Override default logging to ensure errors are still logged to stdout in production.
-LOGGING = {
-    'version': 1,
-    'disable_existing_loggers': False,
-    'filters': {
-        'require_debug_false': {
-            '()': 'django.utils.log.RequireDebugFalse',
-        },
-        'require_debug_true': {
-            '()': 'django.utils.log.RequireDebugTrue',
-        },
-    },
-    'formatters': {
-        'django.server': {
-            '()': 'django.utils.log.ServerFormatter',
-            'format': '[%(server_time)s] %(message)s',
-        }
-    },
-    'handlers': {
-        'console': {
-            'level': 'INFO',
-            'filters': ['require_debug_true'],
-            'class': 'logging.StreamHandler',
-        },
-        # Custom handler which we will use with logger 'django'.
-        # We want errors/warnings to be logged when DEBUG=False
-        'console_on_not_debug': {
-            'level': 'WARNING',
-            'filters': ['require_debug_false'],
-            'class': 'logging.StreamHandler',
-            'formatter': 'django.server'
-        },
-        'django.server': {
-            'level': 'INFO',
-            'class': 'logging.StreamHandler',
-            'formatter': 'django.server'
-        },
-        'mail_admins': {
-            'level': 'ERROR',
-            'filters': ['require_debug_false'],
-            'class': 'django.utils.log.AdminEmailHandler'
-        }
-    },
-    'loggers': {
-        'django': {
-            'handlers': ['console', 'mail_admins', 'console_on_not_debug'],
-            'level': 'INFO',
-        },
-        'django.server': {
-            'handlers': ['django.server'],
-            'level': 'INFO',
-            'propagate': False,
-        },
-    }
+# Add a root logger that'll catch the logs of our own apps
+LOGGING['loggers'][''] = {
+    'handlers': ['console'],
+    'level': 'INFO'
 }
+# Prevent Django's logs to be emitted a second time
+# by being propaggated to the root logger
+LOGGING['loggers']['django']['propagate'] = False
+
+# Customize the logging configuration for development
+if DEBUG:
+    # Lower the threshold for the console logger
+    LOGGING['handlers']['console']['level'] = 'DEBUG'
+    LOGGING['loggers']['']['level'] = 'DEBUG'
