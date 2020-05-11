@@ -31,6 +31,6 @@
 {% if has_permission %}
 <link rel="stylesheet" href="{% static 'admin.css' %}">
 <script type="text/javascript" src="{% static 'admin.js' %}" defer></script>
-{# {{ js_data|json_script:"js-data" }} #}
+{{ js_data|json_script:"js-data" }}
 {%endif%}
 {% endblock %}
