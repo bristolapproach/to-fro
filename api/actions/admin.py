@@ -6,8 +6,8 @@ from django.contrib import admin
 
 
 class ActionAdmin(admin.ModelAdmin):
-    list_display = ('action_status', 'requested_datetime',
-                    'resident', 'help_type', 'volunteer')
+    list_display = ('resident', 'help_type',
+                    'requested_datetime',  'action_status', 'volunteer')
     list_filter = ('action_status', 'requested_datetime',
                    'resident', 'volunteer')
     autocomplete_fields = ['resident', 'volunteer']
