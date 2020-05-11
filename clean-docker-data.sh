@@ -1,3 +1,3 @@
 #!/bin/bash
 docker rm -f tofro-django tofro-db
-docker volume rm -f tofro_data_volume
+docker volume rm -f to-fro_data_volume
