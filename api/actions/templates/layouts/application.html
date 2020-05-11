@@ -1,8 +1,9 @@
+{% load i18n %}
 {% load static %}
 {% load svg %}
 
 <!doctype html>
-<html lang="en_UK">
+<html lang="{% get_current_language as LANGUAGE_CODE %}">
 
 <head>
   <meta charset="utf-8">
@@ -23,6 +24,9 @@
     <nav class="collapse navbar-collapse" id="navbarSupportedContent" aria-labelledBy="navbarNavHeading">
       <h2 id="navbarNavHeading" hidden>Main navigation</h2>
       <ul class="navbar-nav ml-auto">
+        {% if user.is_staff %}
+          <a class="nav-link" href="{% url 'admin:index' %}">Co-ordinator view</a>
+        {% endif %}
         <li class="nav-item">
           <a class="nav-link" href="{% url 'password_change' %}">Change password</a>
         </li>

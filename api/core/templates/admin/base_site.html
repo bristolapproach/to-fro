@@ -1,6 +1,6 @@
 {% extends "admin:admin/base.html" %}
 
-{% load static %}
+{% load i18n static %}
 
 {% block title %}{{ title }} | {{ site_title|default:_('Django site admin') }}{% endblock %}
 
@@ -9,6 +9,22 @@
 {% endblock %}
 
 {% block nav-global %}{% endblock %}
+
+{% block userlinks %}
+  {% if site_url %}
+      <a href="{{ site_url }}">{% trans 'Volunteer view' %}</a> /
+  {% endif %}
+  {% if user.is_active and user.is_staff %}
+      {% url 'django-admindocs-docroot' as docsroot %}
+      {% if docsroot %}
+          <a href="{{ docsroot }}">{% trans 'Documentation' %}</a> /
+      {% endif %}
+  {% endif %}
+  {% if user.has_usable_password %}
+  <a href="{% url 'admin:password_change' %}">{% trans 'Change password' %}</a> /
+  {% endif %}
+  <a href="{% url 'admin:logout' %}">{% trans 'Log out' %}</a>
+{% endblock %}
 
 {% block extrahead %}
 {{ block.super }}
