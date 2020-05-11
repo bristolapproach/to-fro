@@ -23,6 +23,8 @@
     POSTGRES_USER: "{{ postgres_user }}"
     POSTGRES_DB: "{{ postgres_db }}"
     POSTGRES_PASSWORD: "{{ postgres_password }}"
+    POSTGRES_BCC_USER: "{{ postgres_bcc_user }}"
+    POSTGRES_BCC_PASSWORD: "{{ postgres_bcc_password }}"
     DATABASE_HOST: "{{ database_host }}"
     DATABASE_PORT: "{{ database_port }}"
 

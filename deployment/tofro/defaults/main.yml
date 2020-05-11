@@ -8,6 +8,8 @@ hostname: 0.0.0.0
 postgres_user: tofro
 postgres_db: tofro
 postgres_password: password
+postgres_bcc_user: bcc
+postgres_bcc_password: password
 database_host: tofro-db
 database_port: 5432
 

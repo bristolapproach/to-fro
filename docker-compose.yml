@@ -13,6 +13,8 @@ services:
       - POSTGRES_DB=${POSTGRES_DB}
       - POSTGRES_USER=${POSTGRES_USER}
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_BCC_USER=${POSTGRES_BCC_USER}
+      - POSTGRES_BCC_PASSWORD=${POSTGRES_BCC_PASSWORD}
     volumes:
       - data_volume:/var/lib/postgresql/data
 
