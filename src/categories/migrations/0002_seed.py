@@ -13,7 +13,7 @@ def import_help_types(apps, schema_editor):
 
     # Create the objects.
     for help_type in data:
-        HelpType.objects.create(**help_type).save()
+        HelpType.objects.create(name=help_type.get('name')).save()
 
 
 def import_wards(apps, schema_editor):
@@ -27,7 +27,7 @@ def import_wards(apps, schema_editor):
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('categories', '0002_helptype_icon_name'),
+        ('categories', '0001_initial'),
     ]
 
     operations = [
