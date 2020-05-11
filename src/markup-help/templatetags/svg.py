@@ -1,6 +1,9 @@
 from django import template
 from django.utils.safestring import mark_safe
 
+import logging
+logger = logging.getLogger(__name__)
+
 register = template.Library()
 
 # Embeds the SVG at the given path, adding a width and height attribute
@@ -20,4 +23,7 @@ def embed_fontawesome(icon_name, icon_set="solid", fallback=None, **kwargs):
     try:
         return embed_svg(f"node_modules/@fortawesome/fontawesome-free/svgs/{icon_set}/{icon_name}.svg", **kwargs)
     except:
-        return embed_fontawesome(icon_name, icon_set, fallback=None, **kwargs)
+        if fallback:
+            return embed_fontawesome(fallback, icon_set=icon_set, fallback=None, **kwargs)
+    # Ensures nothing gets printed if fallback fails
+    return ''
