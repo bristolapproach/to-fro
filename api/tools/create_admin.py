@@ -3,8 +3,8 @@ from django.contrib.auth.models import User
 import os
 
 # Get the admin username and password from the environment.
-admin_user = os.getenv("DJANGO_ADMIN", "admin")
-admin_password = os.getenv("DJANGO_PASSWORD", "password")
+admin_user = os.getenv("DJANGO_ADMIN_FIRSTNAME", "admin")
+admin_password = os.getenv("DJANGO_ADMIN_PASSWORD", "password")
 
 # Create the admin user.
 users = User.objects.filter(username=admin_user)
