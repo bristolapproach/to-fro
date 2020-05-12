@@ -1,6 +1,7 @@
 from users.models import Coordinator, Resident, Volunteer
 from categories.models import HelpType, Requirement
 from django.db import models
+from django.db.models import Q
 
 import logging
 logger = logging.getLogger(__name__)
@@ -90,3 +91,32 @@ class Action(models.Model):
 
     def __str__(self):
         return f"Action: {self.id}"
+
+
+@property
+def available_actions(self):
+    """
+    The QuerySet for actions available to this volunteer
+    """
+    return Action.objects.filter(action_status=ActionStatus.PENDING).filter(resident__ward__in=self.wards.all()).filter(help_type__in=self.help_types.all())
+
+
+Volunteer.available_actions = available_actions
+
+
+@property
+def incomplete_actions(self):
+    return self.action_set.exclude(
+        Q(action_status=ActionStatus.COMPLETED) | Q(action_status=ActionStatus.COULDNT_COMPLETE))
+
+
+Volunteer.incomplete_actions = incomplete_actions
+
+
+@property
+def completed_actions(self):
+    return self.action_set.filter(
+        Q(action_status=ActionStatus.COMPLETED) | Q(action_status=ActionStatus.COULDNT_COMPLETE))
+
+
+Volunteer.completed_actions = completed_actions
