@@ -91,7 +91,11 @@ function setupUserAjaxUrl($, { profile_type, profile_id }) {
   if (profile_type) {
     const url = $('[name="user"]').data('ajax--url');
     if (url) {
-      $('[name="user"').data('ajax--url', `${url}?without_profile_type=${profile_type}&profile_id=${profile_id}`)
+      let new_url = `${url}?without_profile_type=${profile_type}`
+      if (profile_id) {
+        new_url = `${new_url}&profile_id=${profile_id}`
+      }
+      $('[name="user"').data('ajax--url', new_url)
     }
   }
 }

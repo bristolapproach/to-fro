@@ -34,7 +34,7 @@ LIST_DEFINITIONS = {
         'queryset': lambda volunteer:
             volunteer.action_set.exclude(
                 Q(action_status=ActionStatus.COMPLETED) | Q(action_status=ActionStatus.COULDNT_COMPLETE))
-        .order_by('requested_datetime', '-action_priority')
+            .order_by('requested_datetime', '-action_priority')
     }
 }
 
@@ -47,7 +47,8 @@ class ActionsListView(generic.ListView):
 
     def get_queryset(self):
         volunteer = self.request.user.volunteer
-        return LIST_DEFINITIONS[self.list_type]['queryset'](volunteer)
+        # Avoid N+1 queries when rendering the list of actions
+        return LIST_DEFINITIONS[self.list_type]['queryset'](volunteer).select_related('help_type', 'resident', 'resident__ward')
 
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context
