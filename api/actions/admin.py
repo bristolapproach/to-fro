@@ -3,13 +3,73 @@ from categories.models import HelpType
 
 # Register our models with the admin site.
 from django.contrib import admin
+from django.utils import timezone
+from django.db import models
+import datetime
+from django.utils.translation import gettext_lazy as _
+
+
+class RequestedDatetimeListFilter(admin.DateFieldListFilter):
+    """
+    Custom filter for requested date time to allow filtering
+    future dates rather than past dates
+    """
+
+    def __init__(self, field, request, params, model, model_admin, field_path):
+        super().__init__(field, request, params, model, model_admin, field_path)
+
+        # Copy a bit of logic from the original DateFieldListFilter
+        now = timezone.now()
+        # When time zone support is enabled, convert "now" to the user's time
+        # zone so Django's definition of "Today" matches what the user expects.
+        if timezone.is_aware(now):
+            now = timezone.localtime(now)
+
+        if isinstance(field, models.DateTimeField):
+            today = now.replace(hour=0, minute=0, second=0, microsecond=0)
+        else:       # field is a models.DateField
+            today = now.date()
+        tomorrow = today + datetime.timedelta(days=1)
+        if today.month == 12:
+            next_month = today.replace(year=today.year + 1, month=1, day=1)
+        else:
+            next_month = today.replace(month=today.month + 1, day=1)
+        next_year = today.replace(year=today.year + 1, month=1, day=1)
+
+        self.links = ((_('Any date'), {}),
+                      (_('Past'), {
+                          self.lookup_kwarg_until: str(today),
+                      }),
+                      (_('Today'), {
+                          self.lookup_kwarg_since: str(today),
+                          self.lookup_kwarg_until: str(tomorrow),
+                      }),
+                      (_('Tomorrow'), {
+                          self.lookup_kwarg_since: str(tomorrow),
+                          self.lookup_kwarg_until: str(
+                              tomorrow + datetime.timedelta(days=1))
+                      }),
+                      (_('Within 3 days'), {
+                          self.lookup_kwarg_since: str(today),
+                          self.lookup_kwarg_until: str(
+                              today + datetime.timedelta(days=3))
+                      }),
+                      (_('Within a week'), {
+                          self.lookup_kwarg_since: str(today),
+                          self.lookup_kwarg_until: str(
+                              today + datetime.timedelta(days=7))
+                      })
+
+                      )
 
 
 class ActionAdmin(admin.ModelAdmin):
     list_display = ('resident', 'help_type',
                     'requested_datetime',  'action_status', 'volunteer')
-    list_filter = ('action_status', 'requested_datetime',
-                   'resident', 'volunteer')
+    list_filter = ('action_status',
+                   ('requested_datetime', RequestedDatetimeListFilter),
+                   ('resident', admin.RelatedOnlyFieldListFilter),
+                   ('volunteer', admin.RelatedOnlyFieldListFilter))
     autocomplete_fields = ['resident', 'volunteer']
 
     fieldsets = (
