@@ -148,6 +148,7 @@ class VolunteerAdmin(ModelAdminWithExtraContext):
     list_display = ('first_name', 'last_name', 'phone', 'email')
     list_filter = ('first_name', 'last_name', 'phone', 'email')
     search_fields = ['first_name', 'last_name']
+    filter_horizontal = ('wards', 'help_types')
 
     fieldsets = (
         (None, {
