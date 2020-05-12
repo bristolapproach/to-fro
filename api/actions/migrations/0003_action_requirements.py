@@ -14,6 +14,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='action',
             name='requirements',
-            field=models.ManyToManyField(related_name='actions', to='categories.Requirement'),
+            field=models.ManyToManyField(related_name='actions', to='categories.Requirement',
+                                         help_text='Only volunteers matching these requirements will see the action.'),
         ),
     ]
