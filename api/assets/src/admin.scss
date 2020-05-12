@@ -11,3 +11,15 @@
   position: sticky;
   bottom: 1rem;
 }
+
+.results {
+  td,
+  tbody th {
+    vertical-align: middle;
+  }
+
+  // Prevent deleting related fields from the list
+  .delete-related {
+    display: none;
+  }
+}

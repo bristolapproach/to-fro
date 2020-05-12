@@ -80,6 +80,7 @@ class ActionAdmin(admin.ModelAdmin):
                    ('requested_datetime', RequestedDatetimeListFilter),
                    ('resident', admin.RelatedOnlyFieldListFilter),
                    ('volunteer', admin.RelatedOnlyFieldListFilter))
+    list_editable = ['action_status', 'volunteer']
     autocomplete_fields = ['resident', 'volunteer']
 
     fieldsets = (
