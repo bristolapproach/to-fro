@@ -1,7 +1,7 @@
 from users.models import Coordinator, Resident, Volunteer
 from categories.models import HelpType, Requirement
 from django.db import models
-from django.db.models import Q
+from django.db.models import Q, Count
 
 import logging
 logger = logging.getLogger(__name__)
@@ -98,7 +98,24 @@ def available_actions(self):
     """
     The QuerySet for actions available to this volunteer
     """
-    return Action.objects.filter(action_status=ActionStatus.PENDING).filter(resident__ward__in=self.wards.all()).filter(help_type__in=self.help_types.all())
+
+    # Filter out any pending action which has any requirements
+    # that wouldn't be satisfied by the volunteer...
+    query_set = Action.objects \
+        .filter(action_status=ActionStatus.PENDING) \
+        .annotate(missed_requirements=Count(
+            'requirements',
+            filter=~Q(requirements__in=self.requirements.all())
+        )) \
+        .filter(missed_requirements=0) \
+
+    # As well as any ward or help_type that would not match
+    # the volunteer's preference
+    query_set = query_set \
+        .filter(resident__ward__in=self.wards.all()) \
+        .filter(help_type__in=self.help_types.all())
+
+    return query_set
 
 
 Volunteer.available_actions = available_actions
