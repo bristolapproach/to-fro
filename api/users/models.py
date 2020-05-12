@@ -56,8 +56,6 @@ class UserProfileMixin(models.Model):
     Note: The addition of the OneToOne field is left to the
     extending class, so that a custom related_name can be set for the relation
     """
-    user_is_staff = False
-
     class Meta:
         abstract = True
 
@@ -74,7 +72,8 @@ class UserProfileMixin(models.Model):
 
     def create_user(self):
         user = User(username=self.email, email=self.email)
-        user.is_staff = self.user_is_staff
+        user.is_staff = self.profile_related_name is 'coordinator'
+        user.is_superuser = self.profile_related_name is 'coordinator'
         setattr(user, self.profile_related_name, self)
         user.save()
 
@@ -170,7 +169,6 @@ class Volunteer(UserProfileMixin, Person):
 
 
 class Coordinator(UserProfileMixin, Person):
-    user_is_staff = True
     profile_related_name = 'coordinator'
     user = models.OneToOneField(
         User, null=True, blank=True, on_delete=models.SET_NULL,
