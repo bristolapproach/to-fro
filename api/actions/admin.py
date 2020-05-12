@@ -82,10 +82,11 @@ class ActionAdmin(admin.ModelAdmin):
                    ('volunteer', admin.RelatedOnlyFieldListFilter))
     list_editable = ['action_status', 'volunteer']
     autocomplete_fields = ['resident', 'volunteer']
+    filter_horizontal = ('requirements',)
 
     fieldsets = (
         ('Action Details', {
-            'fields': ('resident', 'requested_datetime', 'help_type', 'action_priority', 'coordinator')
+            'fields': ('resident', 'requested_datetime', 'help_type', 'action_priority', 'coordinator', 'requirements')
         }),
         ('Description', {
             'fields': ('public_description', 'private_description')
@@ -106,11 +107,13 @@ class ActionAdmin(admin.ModelAdmin):
         formClass = super().get_form(request, obj=obj, change=change, **kwargs)
 
         class form(formClass):
-            def __init__(self, initial={}, **kwargs):
-                super().__init__(**{'initial': {
+            def __init__(self, *args, initial={},  **kwargs):
+                new_kwargs = {'initial': {
                     **self.get_initial_for_request(request),
                     **initial
-                }, **kwargs})
+                }, **kwargs}
+
+                super().__init__(*args, **new_kwargs)
 
             def get_initial_for_request(self, request):
                 initial = {

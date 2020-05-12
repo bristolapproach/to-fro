@@ -1,6 +1,6 @@
 from django import forms
 from django.contrib import admin
-from .models import Ward, HelpType
+from .models import Ward, HelpType, Requirement
 
 from django.utils.translation import gettext as _
 from markup_help.templatetags.svg import fontawesome_icon_exists
@@ -9,6 +9,7 @@ import logging
 logger = logging.getLogger(__name__)
 
 admin.site.register(Ward)
+admin.site.register(Requirement)
 
 
 class HelpTypeForm(forms.ModelForm):

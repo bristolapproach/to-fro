@@ -148,7 +148,7 @@ class VolunteerAdmin(ModelAdminWithExtraContext):
     list_display = ('first_name', 'last_name', 'phone', 'email')
     list_filter = ('first_name', 'last_name', 'phone', 'email')
     search_fields = ['first_name', 'last_name']
-    filter_horizontal = ('wards', 'help_types')
+    filter_horizontal = ('wards', 'help_types', 'requirements')
 
     fieldsets = (
         (None, {
@@ -163,13 +163,13 @@ class VolunteerAdmin(ModelAdminWithExtraContext):
         ('Volunteering preferences', {
             'fields': ('wards', 'help_types')
         }),
-        ('Availability', {
-            'fields': ('available_mon_morning', 'available_mon_afternoon', 'available_mon_evening', 'available_tues_morning', 'available_tues_afternoon', 'available_tues_evening', 'available_wed_morning', 'available_wed_afternoon', 'available_wed_evening', 'available_thur_morning', 'available_thur_afternoon', 'available_thur_evening', 'available_fri_morning', 'available_fri_afternoon', 'available_fri_evening', 'available_sat_morning', 'available_sat_afternoon', 'available_sat_evening', 'available_sun_morning', 'available_sun_afternoon', 'available_sun_evening')
-        }),
         ('Checks', {
             'fields': (
-                'dbs_number', 'access_to_car', 'driving_license', 'ts_and_cs_confirmed', 'health_checklist_received', 'key_worker', 'id_received'
+                'requirements',
             )
+        }),
+        ('Availability', {
+            'fields': ('available_mon_morning', 'available_mon_afternoon', 'available_mon_evening', 'available_tues_morning', 'available_tues_afternoon', 'available_tues_evening', 'available_wed_morning', 'available_wed_afternoon', 'available_wed_evening', 'available_thur_morning', 'available_thur_afternoon', 'available_thur_evening', 'available_fri_morning', 'available_fri_afternoon', 'available_fri_evening', 'available_sat_morning', 'available_sat_afternoon', 'available_sat_evening', 'available_sun_morning', 'available_sun_afternoon', 'available_sun_evening')
         })
     )
 

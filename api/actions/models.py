@@ -1,5 +1,5 @@
 from users.models import Coordinator, Resident, Volunteer
-from categories.models import HelpType
+from categories.models import HelpType, Requirement
 from django.db import models
 
 import logging
@@ -56,6 +56,8 @@ class Action(models.Model):
         null=True, blank=True, help_text="Text that only gets displayed to a volunteer when they're assigned to the action.")
     help_type = models.ForeignKey(
         HelpType, on_delete=models.PROTECT, null=True, help_text="Which kind of help is needed")
+    requirements = models.ManyToManyField(
+        Requirement, related_name="actions", help_text="Only volunteers matching these requirements will see the action.")
 
     @property
     def ward(self):
