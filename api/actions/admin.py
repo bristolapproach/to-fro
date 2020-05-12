@@ -1,12 +1,26 @@
-from .models import Action
+from .models import Action, ActionPriority
 from categories.models import HelpType
 
 # Register our models with the admin site.
 from django.contrib import admin
 from django.utils import timezone
 from django.db import models
+from django import forms
 import datetime
 from django.utils.translation import gettext_lazy as _
+
+import logging
+logger = logging.getLogger(__name__)
+
+
+def get_now():
+    # Copy a bit of logic from the original DateFieldListFilter
+    now = timezone.now()
+    # When time zone support is enabled, convert "now" to the user's time
+    # zone so Django's definition of "Today" matches what the user expects.
+    if timezone.is_aware(now):
+        now = timezone.localtime(now)
+    return now
 
 
 class RequestedDatetimeListFilter(admin.DateFieldListFilter):
@@ -19,11 +33,7 @@ class RequestedDatetimeListFilter(admin.DateFieldListFilter):
         super().__init__(field, request, params, model, model_admin, field_path)
 
         # Copy a bit of logic from the original DateFieldListFilter
-        now = timezone.now()
-        # When time zone support is enabled, convert "now" to the user's time
-        # zone so Django's definition of "Today" matches what the user expects.
-        if timezone.is_aware(now):
-            now = timezone.localtime(now)
+        now = get_now()
 
         if isinstance(field, models.DateTimeField):
             today = now.replace(hour=0, minute=0, second=0, microsecond=0)
@@ -86,6 +96,38 @@ class ActionAdmin(admin.ModelAdmin):
             'fields': ('added_by', 'call_datetime', 'call_duration')
         })
     )
+
+    def get_form(self, request, obj=None, change=False, **kwargs):
+        """
+        Customize the form class to provide initial data based on the request
+        as there is not opening for it in Django: https://github.com/django/django/blob/0668164b4ac93a5be79f5b87fae83c657124d9ab/django/contrib/admin/options.py#L1572
+        """
+        formClass = super().get_form(request, obj=obj, change=change, **kwargs)
+
+        class form(formClass):
+            def __init__(self, initial={}, **kwargs):
+                super().__init__(**{'initial': {
+                    **self.get_initial_for_request(request),
+                    **initial
+                }, **kwargs})
+
+            def get_initial_for_request(self, request):
+                initial = {
+                    # Prefilled requested datetime to the evening of the day 18:00
+                    'requested_datetime': get_now().replace(hour=18, minute=0, second=0, microsecond=0),
+                    # Prefilled the call time to now
+                    'call_datetime': get_now(),
+                    # Set action priority to MEDIUM
+                    'action_priority': ActionPriority.MEDIUM
+                }
+                # Prefill coordinator and added_by to the one corresponding
+                # to the current user if applicable
+                if request.user.is_coordinator:
+                    initial['coordinator'] = request.user.coordinator
+                    initial['added_by'] = request.user.coordinator
+                return initial
+
+        return form
 
     def add_view(self, request, form_url='', extra_context=None):
         """
