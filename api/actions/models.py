@@ -46,7 +46,7 @@ class Action(models.Model):
     action_status = models.CharField(max_length=1, choices=ActionStatus.STATUSES,
                                      default=ActionStatus.PENDING, help_text="What's the status of this action?")
     action_priority = models.CharField(max_length=1, choices=ActionPriority.PRIORITIES,
-                                       default=ActionPriority.LOW, help_text="What priority should this action be given?")
+                                       default=ActionPriority.MEDIUM, help_text="What priority should this action be given?")
     time_taken = models.DurationField(
         null=True, help_text="How long did it take to complete the action?", blank=True)
     notes = models.TextField(max_length=500, null=True,

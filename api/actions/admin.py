@@ -107,29 +107,19 @@ class ActionAdmin(admin.ModelAdmin):
         formClass = super().get_form(request, obj=obj, change=change, **kwargs)
 
         class form(formClass):
-            def __init__(self, *args, initial={},  **kwargs):
-                new_kwargs = {'initial': {
-                    **self.get_initial_for_request(request),
-                    **initial
-                }, **kwargs}
 
-                super().__init__(*args, **new_kwargs)
+            def get_initial_for_field(self, field, field_name):
+                initial = super().get_initial_for_field(field, field_name)
+                return initial if initial else self.get_initial_from_request(field_name)
 
-            def get_initial_for_request(self, request):
-                initial = {
-                    # Prefilled requested datetime to the evening of the day 18:00
-                    'requested_datetime': get_now().replace(hour=18, minute=0, second=0, microsecond=0),
-                    # Prefilled the call time to now
-                    'call_datetime': get_now(),
-                    # Set action priority to MEDIUM
-                    'action_priority': ActionPriority.MEDIUM
-                }
-                # Prefill coordinator and added_by to the one corresponding
-                # to the current user if applicable
-                if request.user.is_coordinator:
-                    initial['coordinator'] = request.user.coordinator
-                    initial['added_by'] = request.user.coordinator
-                return initial
+            def get_initial_from_request(self, field_name):
+                if (field_name == 'requested_datetime'):
+                    return get_now().replace(hour=18, minute=0, second=0, microsecond=0)
+                elif (field_name == 'call_datetime'):
+                    return get_now()
+                elif (field_name == 'coordinator' or field_name == 'added_by'):
+                    if (request.user.is_coordinator):
+                        return request.user.coordinator
 
         return form
 
