@@ -1,0 +1,10 @@
+Hello,
+
+A volunteer is interested to help with this action:
+{{admin_action_url}}
+
+Review their application and confirm the action assignment if all looks good!
+
+Thank you!
+
+The To-Fro Team

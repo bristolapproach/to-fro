@@ -19,12 +19,31 @@ from_email = os.getenv("EMAIL_HOST_USER", "test@test.com")
 def on_action_save(action):
 
     # Check if this is a high-priority, pending action.
-    if action.action_priority != ActionPriority.HIGH or action.action_status != ActionStatus.PENDING:
-        return
+    if action.action_priority == ActionPriority.HIGH and action.action_status == ActionStatus.PENDING:
 
-    recipients = Volunteer.objects.filter(wards__id=action.ward.id).all()
-    notify(recipients, action, **
-           subject_and_message(action, 'HIGH_PRIORITY_PENDING'))
+        recipients = Volunteer.objects.filter(wards__id=action.ward.id).all()
+        notify(recipients, action, **
+               subject_and_message(action, 'PENDING_HIGH_PRIORITY'))
+
+    elif action.action_status == ActionStatus.INTEREST:
+        recipients = (action.coordinator,)
+        notify(recipients, action, **
+               subject_and_message(action, 'VOLUNTEER_INTEREST'))
+
+    elif action.action_status == ActionStatus.ASSIGNED:
+        recipients = (action.volunteer,)
+        notify(recipients, action, **
+               subject_and_message(action, 'VOLUNTEER_ASSIGNED'))
+
+    elif action.action_status == ActionStatus.COMPLETED:
+        recipients = (action.coordinator,)
+        notify(recipients, action, **
+               subject_and_message(action, 'ACTION_COMPLETED'))
+
+    elif action.action_status == ActionStatus.COULDNT_COMPLETE:
+        recipients = (action.coordinator,)
+        notify(recipients, action, **
+               subject_and_message(action, 'ACTION_NOT_COMPLETED'))
 
 
 def notify(recipients, action, subject=None, message=None):
@@ -56,7 +75,8 @@ def subject_and_message(action, notification_type):
         .replace('\n', ' ') \
         .replace('\r', ' '),
         'message': render_to_string(f'notifications/{notification_type.lower()}_message.txt', {
-            'action_url': f'{site_url}{reverse("actions:detail", kwargs={"action_id":action.id})}'
+            'action_url': f'{site_url}{reverse("actions:detail", kwargs={"action_id":action.id})}',
+            'admin_action_url': f'{site_url}/admin/actions/action/{action.id}/change'
         })
     }
 

@@ -1,7 +1,8 @@
-from users.models import Coordinator, Resident, Volunteer, Person
-from actions.models import Action
 from django.contrib.auth import get_user_model
 from django.db import models
+from users.models import Coordinator, Resident, Volunteer, Person
+from actions.models import Action
+
 
 # Load our custom User model through Django.
 User = get_user_model()

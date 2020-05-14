@@ -1,0 +1,8 @@
+Hello,
+
+A volunteer could not complete this action:
+{{admin_action_url}}
+
+Thank you!
+
+The To-Fro Team
