@@ -211,3 +211,4 @@ if DEBUG:
     # Lower the threshold for the console logger
     LOGGING['handlers']['console']['level'] = 'DEBUG'
     LOGGING['loggers']['']['level'] = 'DEBUG'
+    LOGGING['loggers']['django.server']['level'] = 'WARNING'
