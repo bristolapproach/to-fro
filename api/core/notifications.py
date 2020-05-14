@@ -1,59 +1,64 @@
-from actions.models import Action, ActionPriority, ActionStatus
+import os
+import logging
+
+from django.core.mail import send_mail
+from django.template.loader import render_to_string
+from django.urls import reverse
+from django.utils import timezone
+
+from actions.models import ActionPriority, ActionStatus
 from users.models import Volunteer
 from .models import Notification
-from django.core.mail import send_mail
-from django.utils import timezone
-import os
 
+logger = logging.getLogger(__name__)
 
 site_url = os.getenv("SITE_URL", "http://0.0.0.0:80")
 from_email = os.getenv("EMAIL_HOST_USER", "test@test.com")
 
 
 def on_action_save(action):
+
     # Check if this is a high-priority, pending action.
     if action.action_priority != ActionPriority.HIGH or action.action_status != ActionStatus.PENDING:
         return
 
-    # Check for previously created notifications.
-    notification = Notification.objects.filter(action__id=action.id).first()
-    if notification:
+    recipients = Volunteer.objects.filter(wards__id=action.ward.id).all()
+    notify(recipients, action, **
+           subject_and_message(action, 'HIGH_PRIORITY_PENDING'))
 
-        # We don't want to send the same email twice.
-        if not notification.delivered:
 
-            # Update the recipients (perhaps there are more since first created).
-            notification.recipients = Volunteer.objects.filter(
-                wards__id=action.ward.id).all()
-
-            # Save the notification - triggering a signal to send the email.
-            notification.save()
-    else:
-        # Create the notification in memory.
+def notify(recipients, action, subject=None, message=None):
+    notification = Notification.objects.filter(
+        action=action).first()
+    if not notification:
         notification = Notification(
             action=action,
             delivered=False,
             created_date_time=timezone.now(),
             sent_by="Action save signal",
-            subject="High-priority help alert",
-            message="Hi!\n\n"
-                    "We've received a request for help in your area. \n\n"
-                    "Check out the details of the request here:\n"
-                    f"{site_url}/actions/{action.id}\n\n"
-                    "Thank you!\nThe To-Fro Team")
+            subject=subject,
+            message=message)
 
-        # Save the notification to assign the notification an ID.
-        # This is required before we can assign recipients due to the Many-to-Many constraint.
         notification.save()
 
-        # Find potential volunteers.
-        recipients = Volunteer.objects.filter(wards__id=action.ward.id).all()
+    notification.recipients.set(recipients)
 
-        # Assign notification recipients.
-        notification.recipients.set(recipients)
+    # Save the notification - triggering a signal to send the email.
+    notification.save()
 
-        # Save the notification - triggering a signal to send the email.
-        notification.save()
+
+def subject_and_message(action, notification_type):
+    return {
+        # Replace any line breaks in the subject
+        # as email header values (like Subject)
+        # cannot contain them
+        'subject': render_to_string(f'notifications/{notification_type.lower()}_subject.txt') \
+        .replace('\n', ' ') \
+        .replace('\r', ' '),
+        'message': render_to_string(f'notifications/{notification_type.lower()}_message.txt', {
+            'action_url': f'{site_url}{reverse("actions:detail", kwargs={"action_id":action.id})}'
+        })
+    }
 
 
 def on_notification_save(notification):

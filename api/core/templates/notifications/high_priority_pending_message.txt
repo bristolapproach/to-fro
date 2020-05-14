@@ -1,0 +1,10 @@
+Hi!
+
+We've received a request for help in your area.
+
+Check out the details of the request here:
+{{action_url}}
+
+Thank you!
+
+The To-Fro Team
