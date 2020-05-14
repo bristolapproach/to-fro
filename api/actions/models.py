@@ -58,7 +58,7 @@ class Action(models.Model):
     help_type = models.ForeignKey(
         HelpType, on_delete=models.PROTECT, null=True, help_text="Which kind of help is needed")
     requirements = models.ManyToManyField(
-        Requirement, related_name="actions", help_text="Only volunteers matching these requirements will see the action.")
+        Requirement, blank=True, related_name="actions", help_text="Only volunteers matching these requirements will see the action.")
 
     @property
     def ward(self):
