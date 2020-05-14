@@ -1,6 +1,7 @@
 from users.models import Coordinator, Resident, Volunteer
-from categories.models import HelpType
+from categories.models import HelpType, Requirement
 from django.db import models
+from django.db.models import Q, Count
 
 import logging
 logger = logging.getLogger(__name__)
@@ -56,6 +57,8 @@ class Action(models.Model):
         null=True, blank=True, help_text="Text that only gets displayed to a volunteer when they're assigned to the action.")
     help_type = models.ForeignKey(
         HelpType, on_delete=models.PROTECT, null=True, help_text="Which kind of help is needed")
+    requirements = models.ManyToManyField(
+        Requirement, blank=True, related_name="actions", help_text="Only volunteers matching these requirements will see the action.")
 
     @property
     def ward(self):
@@ -88,3 +91,49 @@ class Action(models.Model):
 
     def __str__(self):
         return f"Action: {self.id}"
+
+
+@property
+def available_actions(self):
+    """
+    The QuerySet for actions available to this volunteer
+    """
+
+    # Filter out any pending action which has any requirements
+    # that wouldn't be satisfied by the volunteer...
+    query_set = Action.objects \
+        .filter(action_status=ActionStatus.PENDING) \
+        .annotate(missed_requirements=Count(
+            'requirements',
+            filter=~Q(requirements__in=self.requirements.all())
+        )) \
+        .filter(missed_requirements=0) \
+
+    # As well as any ward or help_type that would not match
+    # the volunteer's preference
+    query_set = query_set \
+        .filter(resident__ward__in=self.wards.all()) \
+        .filter(help_type__in=self.help_types.all())
+
+    return query_set
+
+
+Volunteer.available_actions = available_actions
+
+
+@property
+def incomplete_actions(self):
+    return self.action_set.exclude(
+        Q(action_status=ActionStatus.COMPLETED) | Q(action_status=ActionStatus.COULDNT_COMPLETE))
+
+
+Volunteer.incomplete_actions = incomplete_actions
+
+
+@property
+def completed_actions(self):
+    return self.action_set.filter(
+        Q(action_status=ActionStatus.COMPLETED) | Q(action_status=ActionStatus.COULDNT_COMPLETE))
+
+
+Volunteer.completed_actions = completed_actions

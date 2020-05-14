@@ -1,6 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
-from categories.models import Ward, HelpType
+from categories.models import Ward, HelpType, Requirement
 
 # import the logging library
 import logging
@@ -116,9 +116,11 @@ class Volunteer(UserProfileMixin, Person):
     id_received = models.BooleanField(
         null=True, verbose_name="Has sent a copy of their ID")
     wards = models.ManyToManyField(
-        Ward, blank=True, related_name="volunteer_wards")
+        Ward, blank=True, related_name="volunteers")
     help_types = models.ManyToManyField(
-        HelpType, related_name="volunteer_help_types")
+        HelpType, blank=True, related_name="volunteers")
+    requirements = models.ManyToManyField(
+        Requirement, blank=True, related_name="volunteers")
     reference_details = models.CharField(max_length=250, null=True, blank=True)
     available_mon_morning = models.BooleanField(
         default=False, verbose_name="Monday morning")

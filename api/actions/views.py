@@ -6,7 +6,6 @@ from django.core.paginator import Paginator
 from django.contrib import messages
 from django.views import generic
 from django.urls import reverse
-from django.db.models import Q
 import datetime
 
 
@@ -15,25 +14,21 @@ LIST_DEFINITIONS = {
         'title': 'Available actions',
         'heading': 'Available actions',
         'queryset': lambda volunteer:
-            Action.objects.filter(action_status=ActionStatus.PENDING)
-        .filter(resident__ward__in=volunteer.wards.all())
-        .filter(help_type__in=volunteer.help_types.all())
-        .order_by('requested_datetime', '-action_priority')
+            volunteer.available_actions.order_by(
+                'requested_datetime', '-action_priority')
     },
     'completed': {
         'title': 'Completed',
         'heading': 'Completed',
         'queryset': lambda volunteer:
-            volunteer.action_set.filter(
-                Q(action_status=ActionStatus.COMPLETED) | Q(action_status=ActionStatus.COULDNT_COMPLETE))
+            volunteer.completed_actions
         .order_by('requested_datetime', '-action_priority')
     },
     'mine': {
         'title': 'My actions',
         'heading': 'My actions',
         'queryset': lambda volunteer:
-            volunteer.action_set.exclude(
-                Q(action_status=ActionStatus.COMPLETED) | Q(action_status=ActionStatus.COULDNT_COMPLETE))
+        volunteer.incomplete_actions
             .order_by('requested_datetime', '-action_priority')
     }
 }

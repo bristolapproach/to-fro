@@ -4,18 +4,21 @@ const ATTR_EDITED = 'data-edited';
 (function () {
   // Wait for everything to be loaded, especially jQuery
   document.addEventListener('DOMContentLoaded', () => {
-    const $ = window.django.jQuery;
-    const data = getData(); // Read the data passed by the backend
+    if (window.django) {
+      const $ = window.django.jQuery;
+      const data = getData(); // Read the data passed by the backend
 
-    setupUserAjaxUrl($, data);
+      setupUserAjaxUrl($, data);
 
-    // Wait until all Django related setup code has run
-    // so we don't respond to synthetic change events triggered
-    // during their initialization
-    $(function () {
-      setupActionDescriptionTemplates($, data);
-      setupUserAccountsBehaviour($);
-    });
+      // Wait until all Django related setup code has run
+      // so we don't respond to synthetic change events triggered
+      // during their initialization
+      $(function () {
+        setupActionDescriptionTemplates($, data);
+        setupUserAccountsBehaviour($);
+        setupConfirmNavigationIfEdited($);
+      });
+    }
   });
 })();
 
@@ -61,6 +64,32 @@ function setupActionDescriptionTemplates($, data) {
       target.setAttribute('data-edited', '');
     });
   }
+}
+
+/**
+ * Adds a confirmation before navigation if users
+ * have edited anything on the page
+ * @param {jQuery} $ 
+ */
+function setupConfirmNavigationIfEdited($) {
+  let submitted;
+  $(document).on('submit', function () {
+    submitted = true;
+  });
+  $(document).one('change', function () {
+    window.addEventListener('beforeunload', (event) => {
+      if (!submitted) {
+        // Cancel the event as stated by the standard.
+        event.preventDefault();
+        // Chrome requires returnValue to be set.
+        event.returnValue = '';
+        return `Looks like you've edited some data and not saved it yet. If you navigate away, you'll lose those changes. 
+        
+        Are you sure you want to continue?
+        `
+      }
+    });
+  });
 }
 
 /**
