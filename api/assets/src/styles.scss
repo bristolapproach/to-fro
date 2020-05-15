@@ -25,6 +25,11 @@ input[type=number] {
   transform: rotate(90deg);
 }
 
+// Set a minimum size to the navigation links
+.navbar .nav-link {
+  line-height: (40rem / 16)
+}
+
 // Components
 
 .container--small {

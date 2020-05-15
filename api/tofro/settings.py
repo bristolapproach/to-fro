@@ -68,6 +68,7 @@ INSTALLED_APPS = [
     'core',
     'assets',
     'markup_help',
+    'sitetree',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
