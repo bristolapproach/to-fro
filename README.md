@@ -28,11 +28,10 @@ You can see the names of the running containers with `docker ps`.
 
 The styles and scripts of the app are build with [ParcelJS](https://parceljs.org/) from the sources in `api/assets/src`. The files are compiled to the `api/assets/static` folder to match [Django's conventions for static folders](https://docs.djangoproject.com/en/3.0/howto/static-files/#configuring-static-files).
 
-The build happens at container startup so you shouldn't have anything to do if you're just editing backend code. If you need to edit the styles or scripts for the app, you'll need to have [NodeJS installed (12.X)](https://nodejs.org/en/).
-You can then run the following to rebuild the files when you change them in the `api/assets/src` folder:
+The build happens at container startup so you shouldn't have anything to do if you're just editing backend code. For development, you can run `npm run dev` inside the Django container to monitor your files and rebuild on change:
 
-    (cd api && npm run dev)
+    docker exec -it tofro-django npm run dev
 
-If the command complains about missing modules, check that you have a `node_modules` folder at the root of the project. If it's missing, run the following command to install the NodeJS modules (from the `api` folder again):
+Equally, you can run `npm install` to install new modules from inside the Django container too:
 
-    (cd api && npm install)
+    docker exec -it tofro-django npm install
