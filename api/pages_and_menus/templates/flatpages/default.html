@@ -1,0 +1,11 @@
+{% extends 'layouts/application.html' %}
+
+{% load headings %}
+{% load markdown %}
+
+{% block 'page_title' %}{{flatpage.title}} | {% endblock %}
+{% block 'heading' %}{{flatpage.title}}{% endblock %}
+
+{% block 'content' %}
+{{flatpage.content | markdown | heading_level:2}}
+{% endblock %}
