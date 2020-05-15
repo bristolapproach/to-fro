@@ -8,19 +8,19 @@
     "icon_name": "box-open"
   },
   {
-    "name": "prescription",
+    "name": "Prescription",
     "icon_name": "prescription-bottle-alt"
   },
   {
-    "name": "call",
+    "name": "Call",
     "icon_name": "comments"
   },
   {
-    "name": "dog walk",
+    "name": "Dog walk",
     "icon_name": "dog"
   },
   {
-    "name": "chores",
+    "name": "Chores",
     "icon_name": "broom"
   }
 ]

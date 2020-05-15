@@ -61,12 +61,12 @@ ALLOWED_HOSTS = DJANGO_ALLOWED_HOSTS
 # Application definition
 INSTALLED_APPS = [
     'actions',
-    'invites',
-    'users',
+    'assets',
     'categories',
     'core',
-    'assets',
     'markup_help',
+    'notifications',
+    'users',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',

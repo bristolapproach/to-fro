@@ -1,25 +1,42 @@
-import os
-import logging
 
-from django.core.mail import send_mail
+from django.contrib.auth.forms import PasswordResetForm
 from django.template.loader import render_to_string
-from django.urls import reverse
+from django.core.mail import send_mail
 from django.utils import timezone
-
+from django.urls import reverse
+from notifications.models import Notification, NotificationTypes
 from actions.models import ActionPriority, ActionStatus
 from users.models import Volunteer
-from .models import Notification, NotificationTypes
+import logging
+import os
 
+
+from_email = os.getenv("EMAIL_HOST_USER", "test@test.com")
+site_url = os.getenv("SITE_URL", "http://0.0.0.0:80")
 logger = logging.getLogger(__name__)
 
-site_url = os.getenv("SITE_URL", "http://0.0.0.0:80")
-from_email = os.getenv("EMAIL_HOST_USER", "test@test.com")
+
+def send_invite(user):
+    """Sends an email invite to a User instance,
+    using Django's PasswordResetForm.
+    """
+    if user.email:
+        form = PasswordResetForm({'email': user.email})
+        form.is_valid()  # Needed for the `save()` to work.
+        form.save(domain_override=site_url.split('://')[-1],
+                email_template_name='registration/invitation_email.txt',
+                subject_template_name='registration/invitation_subject.txt',
+                extra_email_context={'site_url': site_url})
 
 
-def on_action_save(action):
-
+def send_action_mail(action):
+    """Sends emails related to this action.
+    Depending on what notifications have already been sent, 
+    and the type of action, appropriate emails will be delivered.
+    """
     # Check if this is a high-priority, pending action.
-    if action.action_priority == ActionPriority.HIGH and action.action_status == ActionStatus.PENDING:
+    if action.action_priority == ActionPriority.HIGH \
+     and action.action_status == ActionStatus.PENDING:
         recipients = action.potential_volunteers
         notify(recipients, action=action,
                notification_type=NotificationTypes.PENDING_HIGH_PRIORITY)

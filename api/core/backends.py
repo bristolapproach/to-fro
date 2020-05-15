@@ -2,10 +2,11 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.backends import ModelBackend
 from django.db.models import Q
 
-# Based on https://stackoverflow.com/a/37332393
-
 
 class EmailBackend(ModelBackend):
+    """Custom email auth backend.
+    Based on https://stackoverflow.com/a/37332393
+    """
     def authenticate(self, request, username=None, password=None, **kwargs):
         UserModel = get_user_model()
         try:

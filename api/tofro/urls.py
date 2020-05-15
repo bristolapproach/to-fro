@@ -10,9 +10,9 @@ from django.urls import include, path
 from django.conf import settings
 from django.conf.urls import url
 from django.contrib import admin
-from core import views
-from .views import LoginView
+from tofro.views import LoginView
 from tofro.lib import login_required
+from core import views
 
 urlpatterns = [
     path('', views.homepage, name="home"),

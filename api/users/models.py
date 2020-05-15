@@ -1,16 +1,15 @@
-from django.db import models
-from django.contrib.auth.models import User
 from categories.models import Ward, HelpType, Requirement
-
-# import the logging library
+from django.contrib.auth.models import User
+from django.db import models
 import logging
+
 
 # Get an instance of a logger
 logger = logging.getLogger(__name__)
 
 
 class UserRole:
-    '''Constants used in the User class.'''
+    """Constants used in the User class."""
     COORDINATOR, RESIDENT, VOLUNTEER = '1', '2', '3'
     ROLES = [
         (COORDINATOR, "Coordinator"),
@@ -20,22 +19,14 @@ class UserRole:
 
 
 class Person(models.Model):
-    '''Shared profile attributes
-    '''
-
-    # Custom User attributes.
+    """Base class with shared profile attributes."""
     first_name = models.CharField(max_length=50)
     last_name = models.CharField(max_length=50)
-    phone = models.CharField(
-        max_length=15, null=True, blank=True, help_text="Main phone number for the user.")
-    phone_secondary = models.CharField(
-        max_length=15, null=True, blank=True, help_text="Secondary phone number for the user.")
-    email = models.CharField(max_length=50, null=True,
-                             blank=True, help_text="Main email for the user.")
-    email_secondary = models.CharField(
-        max_length=50, null=True, blank=True, help_text="Secondary email for the user.")
-    notes = models.TextField(null=True,
-                             blank=True, help_text="Any other notes?")
+    phone = models.CharField(max_length=15, null=True, blank=True, help_text="Main phone number for the user.")
+    phone_secondary = models.CharField(max_length=15, null=True, blank=True, help_text="Secondary phone number for the user.")
+    email = models.CharField(max_length=50, null=True, blank=True, help_text="Main email for the user.")
+    email_secondary = models.CharField(max_length=50, null=True, blank=True, help_text="Secondary email for the user.")
+    notes = models.TextField(null=True, blank=True, help_text="Any other notes?")
 
     @property
     def full_name(self):
@@ -46,22 +37,19 @@ class Person(models.Model):
 
 
 class UserProfileMixin(models.Model):
-    """
-    An abstract mixin to add the link to auth.User
+    """An abstract mixin to add the link to auth.User.
 
-    This ensures that each kind of profile has their own
-    attribute, enforcing that a user can have only one
-    profile of each kind
+    This ensures each kind of profile has their own attribute,
+    enforcing that a user can have only one profile of each kind.
 
     Note: The addition of the OneToOne field is left to the
-    extending class, so that a custom related_name can be set for the relation
+    extending class, so that a custom related_name can be set for the relation.
     """
+
     class Meta:
         abstract = True
 
-    user_without_account = models.BooleanField(
-        null=False, default=False, blank=True
-    )
+    user_without_account = models.BooleanField(null=False, default=False, blank=True)
 
     def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
         if (not self.user_without_account and not bool(self.user)):
@@ -79,125 +67,101 @@ class UserProfileMixin(models.Model):
 
 
 class Resident(Person):
-    address_line_1 = models.CharField(
-        max_length=100, help_text="First line of their address.")
-    address_line_2 = models.CharField(
-        max_length=100, null=True, blank=True, help_text="Second line of their address.")
-    address_line_3 = models.CharField(
-        max_length=100, null=True, blank=True, help_text="Third line of their address.")
+    """Concrete class for those who need help."""
+    address_line_1 = models.CharField(max_length=100, help_text="First line of their address.")
+    address_line_2 = models.CharField(max_length=100, null=True, blank=True, help_text="Second line of their address.")
+    address_line_3 = models.CharField(max_length=100, null=True, blank=True, help_text="Third line of their address.")
     postcode = models.CharField(max_length=10, help_text="Address postcode.")
-    ward = models.ForeignKey(Ward, null=True, on_delete=models.PROTECT,
-                             help_text="The ward containing the above address.")
-    internet_access = models.BooleanField(
-        default=False, help_text="Does this person have internet access?")
-    smart_device = models.BooleanField(
-        default=False, help_text="Does this person have a smart device?")
-    confident_online_shopping = models.BooleanField(
-        default=False, help_text="Is this person confident online shopping?")
-    confident_online_comms = models.BooleanField(
-        default=False, help_text="Is this person confident communicating online?")
-    shielded = models.BooleanField(
-        default=False, help_text="Is this person shielded?")
+    ward = models.ForeignKey(Ward, null=True, on_delete=models.PROTECT, help_text="The ward containing the above address.")
+    internet_access = models.BooleanField(default=False, help_text="Does this person have internet access?")
+    smart_device = models.BooleanField(default=False, help_text="Does this person have a smart device?")
+    confident_online_shopping = models.BooleanField(default=False, help_text="Is this person confident online shopping?")
+    confident_online_comms = models.BooleanField(default=False, help_text="Is this person confident communicating online?")
+    shielded = models.BooleanField(default=False, help_text="Is this person shielded?")
 
 
 class Volunteer(UserProfileMixin, Person):
-    dbs_number = models.CharField(max_length=12, null=True, blank=True,
-                                  help_text="The user's DBS certificate number, if they have one.")
-    access_to_car = models.BooleanField(
-        null=True, verbose_name="Has access to car")
-    driving_license = models.BooleanField(
-        null=True, verbose_name="Has a driving license")
-    ts_and_cs_confirmed = models.BooleanField(
-        null=True, verbose_name="Has agreed to terms and conditions")
-    health_checklist_received = models.BooleanField(
-        null=True, verbose_name="Has received their health checklist")
-    key_worker = models.BooleanField(
-        null=True, verbose_name="Has received key worker letter from council")
-    id_received = models.BooleanField(
-        null=True, verbose_name="Has sent a copy of their ID")
-    wards = models.ManyToManyField(
-        Ward, blank=True, related_name="volunteers")
-    help_types = models.ManyToManyField(
-        HelpType, blank=True, related_name="volunteers")
-    requirements = models.ManyToManyField(
-        Requirement, blank=True, related_name="volunteers")
-    reference_details = models.CharField(max_length=250, null=True, blank=True)
-    available_mon_morning = models.BooleanField(
-        default=False, verbose_name="Monday morning")
-    available_mon_afternoon = models.BooleanField(
-        default=False, verbose_name="Monday afternoon")
-    available_mon_evening = models.BooleanField(
-        default=False, verbose_name="Monday evening")
-    available_tues_morning = models.BooleanField(
-        default=False, verbose_name="Tuesday morning")
-    available_tues_afternoon = models.BooleanField(
-        default=False, verbose_name="Tuesday afternoon")
-    available_tues_evening = models.BooleanField(
-        default=False, verbose_name="Tuesday evening")
-    available_wed_morning = models.BooleanField(
-        default=False, verbose_name="Wednesday morning")
-    available_wed_afternoon = models.BooleanField(
-        default=False, verbose_name="Wednesday afternoon")
-    available_wed_evening = models.BooleanField(
-        default=False, verbose_name="Wednesday evening")
-    available_thur_morning = models.BooleanField(
-        default=False, verbose_name="Thursday morning")
-    available_thur_afternoon = models.BooleanField(
-        default=False, verbose_name="Thursday afternoon")
-    available_thur_evening = models.BooleanField(
-        default=False, verbose_name="Thursday evening")
-    available_fri_morning = models.BooleanField(
-        default=False, verbose_name="Friday morning")
-    available_fri_afternoon = models.BooleanField(
-        default=False, verbose_name="Friday afternoon")
-    available_fri_evening = models.BooleanField(
-        default=False, verbose_name="Friday evening")
-    available_sat_morning = models.BooleanField(
-        default=False, verbose_name="Saturday morning")
-    available_sat_afternoon = models.BooleanField(
-        default=False, verbose_name="Saturday afternoon")
-    available_sat_evening = models.BooleanField(
-        default=False, verbose_name="Saturday evening")
-    available_sun_morning = models.BooleanField(
-        default=False, verbose_name="Sunday morning")
-    available_sun_afternoon = models.BooleanField(
-        default=False, verbose_name="Sunday afternoon")
-    available_sun_evening = models.BooleanField(
-        default=False, verbose_name="Sunday evening")
-
+    """Concrete class for those who can offer help."""
     profile_related_name = 'volunteer'
-    user = models.OneToOneField(
-        User, null=True, blank=True, on_delete=models.SET_NULL, related_name=profile_related_name)
+    user = models.OneToOneField(User, null=True, blank=True, on_delete=models.SET_NULL, related_name=profile_related_name)
+    dbs_number = models.CharField(max_length=12, null=True, blank=True, help_text="The user's DBS certificate number, if they have one.")
+    access_to_car = models.BooleanField(null=True, verbose_name="Has access to car")
+    driving_license = models.BooleanField(null=True, verbose_name="Has a driving license")
+    ts_and_cs_confirmed = models.BooleanField(null=True, verbose_name="Has agreed to terms and conditions")
+    health_checklist_received = models.BooleanField(null=True, verbose_name="Has received their health checklist")
+    key_worker = models.BooleanField(null=True, verbose_name="Has received key worker letter from council")
+    id_received = models.BooleanField(null=True, verbose_name="Has sent a copy of their ID")
+    wards = models.ManyToManyField(Ward, blank=True, related_name="volunteers")
+    help_types = models.ManyToManyField(HelpType, blank=True, related_name="volunteers")
+    requirements = models.ManyToManyField(Requirement, blank=True, related_name="volunteers")
+    reference_details = models.CharField(max_length=250, null=True, blank=True)
+    available_mon_morning = models.BooleanField(default=False, verbose_name="Monday morning")
+    available_mon_afternoon = models.BooleanField(default=False, verbose_name="Monday afternoon")
+    available_mon_evening = models.BooleanField(default=False, verbose_name="Monday evening")
+    available_tues_morning = models.BooleanField(default=False, verbose_name="Tuesday morning")
+    available_tues_afternoon = models.BooleanField(default=False, verbose_name="Tuesday afternoon")
+    available_tues_evening = models.BooleanField(default=False, verbose_name="Tuesday evening")
+    available_wed_morning = models.BooleanField(default=False, verbose_name="Wednesday morning")
+    available_wed_afternoon = models.BooleanField(default=False, verbose_name="Wednesday afternoon")
+    available_wed_evening = models.BooleanField(default=False, verbose_name="Wednesday evening")
+    available_thur_morning = models.BooleanField(default=False, verbose_name="Thursday morning")
+    available_thur_afternoon = models.BooleanField(default=False, verbose_name="Thursday afternoon")
+    available_thur_evening = models.BooleanField(default=False, verbose_name="Thursday evening")
+    available_fri_morning = models.BooleanField(default=False, verbose_name="Friday morning")
+    available_fri_afternoon = models.BooleanField(default=False, verbose_name="Friday afternoon")
+    available_fri_evening = models.BooleanField(default=False, verbose_name="Friday evening")
+    available_sat_morning = models.BooleanField(default=False, verbose_name="Saturday morning")
+    available_sat_afternoon = models.BooleanField(default=False, verbose_name="Saturday afternoon")
+    available_sat_evening = models.BooleanField(default=False, verbose_name="Saturday evening")
+    available_sun_morning = models.BooleanField(default=False, verbose_name="Sunday morning")
+    available_sun_afternoon = models.BooleanField(default=False, verbose_name="Sunday afternoon")
+    available_sun_evening = models.BooleanField(default=False, verbose_name="Sunday evening")
+    
+    @property
+    def available_actions(self):
+        """The QuerySet for actions available to this volunteer."""
+
+        # Filter for pending actions that can be completed by this volunteer.
+        # This is done by counting unfilfilled requirements and removing them from the set.
+
+        # Filter for pending actions.
+        # Remove those with unfulfilled user requirements.
+        # Filter for actions inside the Volunteer's wards and help_types.
+        return Action.objects \
+            .filter(action_status=ActionStatus.PENDING) \
+            .annotate(missed_requirements=Count('requirements',
+                filter=~Q(requirements__in=self.requirements.all()))) \
+            .filter(missed_requirements=0) \
+            .filter(resident__ward__in=self.wards.all()) \
+            .filter(help_type__in=self.help_types.all())
+
+    @property
+    def incomplete_actions(self):
+        return self.action_set.exclude(
+            Q(action_status=ActionStatus.COMPLETED) | Q(action_status=ActionStatus.COULDNT_COMPLETE))
+
+    @property
+    def completed_actions(self):
+        return self.action_set.filter(
+            Q(action_status=ActionStatus.COMPLETED) | Q(action_status=ActionStatus.COULDNT_COMPLETE))
 
 
 class Coordinator(UserProfileMixin, Person):
     profile_related_name = 'coordinator'
-    user = models.OneToOneField(
-        User, null=True, blank=True, on_delete=models.SET_NULL,
-        related_name=profile_related_name)
-    pass
+    user = models.OneToOneField(User, null=True, blank=True, on_delete=models.SET_NULL, related_name=profile_related_name)
 
-# Add a few helpers to the User class
-# as directly accessing `volunteer` or
-# `coordinator` risks raising a DoesNotExist
-# while we just want a true/false
 
+# Add computed helper properties to the User class.
+# Directly accessing `volunteer` or `coordinator` risks raising 
+# a DoesNotExist error, when we just want a boolean.
 
 @property
 def is_volunteer(self):
-    try:
-        return bool(self.volunteer)
-    except:
-        return False
-
+    return hasattr(self, "volunteer") and self.volunteer
 
 @property
 def is_coordinator(self):
-    try:
-        return bool(self.coordinator)
-    except:
-        return False
-
+    return hasattr(self, "coordinator") and self.coordinator
 
 User.is_volunteer = is_volunteer
 User.is_coordinator = is_coordinator
