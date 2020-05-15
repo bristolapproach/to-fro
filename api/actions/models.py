@@ -87,7 +87,14 @@ class Action(models.Model):
     @property
     def can_reveal_private_information(self):
         return not (
-            self.action_status is ActionStatus.INTEREST or self.action_status is ActionStatus.PENDING)
+            self.action_status == ActionStatus.INTEREST or self.action_status == ActionStatus.PENDING)
+
+    @property
+    def potential_volunteers(self):
+        return Volunteer.objects \
+            .filter(wards__id=self.ward.id) \
+            .filter(help_types__id=self.help_type.id) \
+            .all()
 
     def __str__(self):
         return f"Action: {self.id}"
@@ -101,6 +108,9 @@ def available_actions(self):
 
     # Filter out any pending action which has any requirements
     # that wouldn't be satisfied by the volunteer...
+    # This is done by counting any requirement on the action
+    # that wouldn't also be in the volunteer's requirements
+    # and filtering actions that have no missed requirements
     query_set = Action.objects \
         .filter(action_status=ActionStatus.PENDING) \
         .annotate(missed_requirements=Count(

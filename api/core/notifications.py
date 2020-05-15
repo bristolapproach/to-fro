@@ -20,8 +20,7 @@ def on_action_save(action):
 
     # Check if this is a high-priority, pending action.
     if action.action_priority == ActionPriority.HIGH and action.action_status == ActionStatus.PENDING:
-
-        recipients = Volunteer.objects.filter(wards__id=action.ward.id).all()
+        recipients = action.potential_volunteers
         notify(recipients, action=action,
                notification_type=NotificationTypes.PENDING_HIGH_PRIORITY)
 
