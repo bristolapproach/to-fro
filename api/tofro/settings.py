@@ -64,6 +64,7 @@ INSTALLED_APPS = [
     'invites',
     'users',
     'categories',
+    'pages_and_menus',
     'core',
     'assets',
     'markup_help',
@@ -73,7 +74,9 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'django.contrib.humanize'
+    'django.contrib.humanize',
+    'django.contrib.sites',
+    'django.contrib.flatpages'
 ]
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -85,6 +88,9 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
+# Necessary for Flatpage
+SITE_ID = 1
 
 # Add the debug toolbar.
 if DEBUG:
