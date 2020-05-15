@@ -23,7 +23,7 @@
     <a class="navbar-brand" href="/">To/Fro</a>
     <nav class="collapse navbar-collapse" aria-labelledBy="leftNavHeading">
       <h2 id="leftNavHeading" hidden>Main navigation</h2>
-      {% sitetree_menu from "left_navigation" include "trunk" template "sitetree/menu_bootstrap4.html" %}
+      {% sitetree_menu from "main_navigation" include "trunk" template "sitetree/menu_bootstrap4.html" %}
     </nav>
     {% if request.user.is_authenticated %}
     <nav class="collapse navbar-collapse mt-2 mt-lg-0" aria-labelledBy="navbarNavHeading">

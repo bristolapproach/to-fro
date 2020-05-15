@@ -21,6 +21,9 @@ python3 manage.py set_site_domain
 # Create the admin user.
 python3 manage.py create_admin
 
+# Create the navigation menu
+python3 manage.py create_main_navigation_menu
+
 # Collect static files.
 python3 manage.py collectstatic --noinput --clear
 
