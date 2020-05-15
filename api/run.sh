@@ -15,8 +15,12 @@ npm run build
 python3 manage.py makemigrations
 python3 manage.py migrate
 
+# Sets the site domain for the Sites app
+python3 manage.py set_site_domain
+
 # Create the admin user.
 python3 manage.py shell < tools/create_admin.py
+
 
 # Collect static files.
 python3 manage.py collectstatic --noinput --clear
