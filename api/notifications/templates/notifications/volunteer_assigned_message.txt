@@ -1,7 +1,6 @@
 Hello,
 
-Your help for this action is very welcome. 
-
+You have been approved to help with this action:
 {{action_url}}
 
 Thank you!

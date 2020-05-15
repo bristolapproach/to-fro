@@ -14,16 +14,18 @@ logger = logging.getLogger(__name__)
 
 @receiver(post_save, sender=User, dispatch_uid="UserSave")
 def post_save_user(sender, instance, created, **kwargs):
+    """Send an email invite if the User has just been created."""
     if created:
-        # Send an email invite if the User has just been created.
         notifications.send_invite(instance)
 
 
 @receiver(post_save, sender=Action, dispatch_uid="ActionSave")
 def post_save_action(sender, instance, **kwargs):
-    notifications.send_action_mail(instance)
+    """Create appropriate notifications when an action changes."""
+    notifications.create_action_notifications(instance)
 
 
 @receiver(post_save, sender=Notification, dispatch_uid="NotificationSave")
 def post_save_notification(sender, instance, **kwargs):
-    notifications.on_notification_save(instance)
+    """Send a notification once it is saved."""
+    notifications.send(instance)
