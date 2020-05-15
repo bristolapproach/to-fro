@@ -1,5 +1,5 @@
 from .models import Notification
-
+from django.urls import reverse
 from django.core import serializers
 from django.contrib import admin
 from django.contrib.auth.models import User
@@ -11,10 +11,6 @@ import logging
 logger = logging.getLogger(__name__)
 
 
-class FlatPageForm(flatpages_admin.FlatpageForm):
-    pass
-
-
 class FlatPageAdmin(flatpages_admin.FlatPageAdmin):
     """
     Customization of the FlatPageAdmin
@@ -22,7 +18,6 @@ class FlatPageAdmin(flatpages_admin.FlatPageAdmin):
 
     # Reduce the visible fields in the admin
     fieldsets = ((None, {'fields': ('url', 'title', 'content')}),)
-    form = FlatPageForm
 
     def save_model(self, request, obj, form, change):
         logger.debug('Change ? %s', change)
@@ -37,6 +32,12 @@ class FlatPageAdmin(flatpages_admin.FlatPageAdmin):
             # Save the related field
             obj.sites.set(Site.objects.all())
             obj.save()
+
+    def view_on_site(self, obj):
+        # Fix the view on site for this object
+        # As we're on the same site, we can just
+        # reverse the URL, making sure we remove the initial slash though
+        return reverse('page', kwargs={'url': obj.url[1:]})
 
 
 admin.site.unregister(models.FlatPage)

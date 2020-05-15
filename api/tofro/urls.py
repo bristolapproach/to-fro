@@ -22,7 +22,7 @@ urlpatterns = [
     path('actions/', decorator_include(login_required, ('actions.urls', 'actions'))),
     path('accounts/login', LoginView.as_view(), name="login"),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT) + [
-    re_path(r'^(?P<url>.*/)$', views.flatpage),
+    re_path(r'^(?P<url>.*/)$', views.flatpage, name="page"),
 ]
 
 
