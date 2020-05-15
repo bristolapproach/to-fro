@@ -19,7 +19,7 @@ python3 manage.py migrate
 python3 manage.py set_site_domain
 
 # Create the admin user.
-python3 manage.py shell < tools/create_admin.py
+python3 manage.py create_admin
 
 
 # Collect static files.
