@@ -67,9 +67,7 @@ class CoordinatorAdmin(ModelAdminWithExtraContext):
     form = CoordinatorForm
 
     def extra_context(self, object_id=None):
-        logging.debug('Extra context', object_id)
         return {
-
             'js_data': {
                 'profile_type': 'coordinator',
                 'profile_id': object_id
