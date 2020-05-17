@@ -1,5 +1,7 @@
 from categories.models import Ward, HelpType, Requirement
+from actions.models import Action, ActionStatus
 from django.contrib.auth.models import User
+from django.db.models import Q, Count
 from django.db import models
 import logging
 
@@ -60,8 +62,8 @@ class UserProfileMixin(models.Model):
 
     def create_user(self):
         user = User(username=self.email, email=self.email)
-        user.is_staff = self.profile_related_name is 'coordinator'
-        user.is_superuser = self.profile_related_name is 'coordinator'
+        user.is_staff = self.profile_related_name == 'coordinator'
+        user.is_superuser = self.profile_related_name == 'coordinator'
         setattr(user, self.profile_related_name, self)
         user.save()
 

@@ -1,7 +1,6 @@
-from users.models import Coordinator, Resident, Volunteer
 from categories.models import HelpType, Requirement
 from django.db import models
-from django.db.models import Q, Count
+
 
 import logging
 logger = logging.getLogger(__name__)
@@ -29,13 +28,13 @@ class ActionStatus:
 
 
 class Action(models.Model):
-    added_by = models.ForeignKey(Coordinator, related_name='added_by', on_delete=models.PROTECT, help_text="What's your name?")
-    coordinator = models.ForeignKey(Coordinator, related_name='coordinator', on_delete=models.PROTECT, help_text="Who will mediate this action?")
+    added_by = models.ForeignKey("users.Coordinator", related_name='added_by', on_delete=models.PROTECT, help_text="What's your name?")
+    coordinator = models.ForeignKey("users.Coordinator", related_name='coordinator', on_delete=models.PROTECT, help_text="Who will mediate this action?")
     call_datetime = models.DateTimeField(null=True, help_text="What time did you receive the call about this action?")
     call_duration = models.DurationField(null=True, blank=True, help_text="How long was the call?")
-    resident = models.ForeignKey(Resident, on_delete=models.PROTECT, null=True, help_text="Who made the request?")
+    resident = models.ForeignKey("users.Resident", on_delete=models.PROTECT, null=True, help_text="Who made the request?")
     requested_datetime = models.DateTimeField(null=True, help_text="When should the action be completed by?")
-    volunteer = models.ForeignKey(Volunteer, on_delete=models.PROTECT, null=True, blank=True, help_text="Who will complete the action?")
+    volunteer = models.ForeignKey("users.Volunteer", on_delete=models.PROTECT, null=True, blank=True, help_text="Who will complete the action?")
     action_status = models.CharField(max_length=1, choices=ActionStatus.STATUSES, default=ActionStatus.PENDING, help_text="What's the status of this action?")
     action_priority = models.CharField(max_length=1, choices=ActionPriority.PRIORITIES, default=ActionPriority.MEDIUM, help_text="What priority should this action be given?")
     time_taken = models.DurationField(null=True, help_text="How long did it take to complete the action?", blank=True)
