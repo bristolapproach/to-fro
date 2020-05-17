@@ -1,5 +1,5 @@
 from categories.models import Ward, HelpType, Requirement
-from actions.models import Action, ActionStatus
+from actions import models as action_models
 from django.contrib.auth.models import User
 from django.db.models import Q, Count
 from django.db import models
@@ -129,8 +129,8 @@ class Volunteer(UserProfileMixin, Person):
         # Filter for pending actions.
         # Remove those with unfulfilled user requirements.
         # Filter for actions inside the Volunteer's wards and help_types.
-        return Action.objects \
-            .filter(action_status=ActionStatus.PENDING) \
+        return action_models.Action.objects \
+            .filter(action_status=action_models.ActionStatus.PENDING) \
             .annotate(missed_requirements=Count('requirements',
                 filter=~Q(requirements__in=self.requirements.all()))) \
             .filter(missed_requirements=0) \
@@ -140,12 +140,14 @@ class Volunteer(UserProfileMixin, Person):
     @property
     def incomplete_actions(self):
         return self.action_set.exclude(
-            Q(action_status=ActionStatus.COMPLETED) | Q(action_status=ActionStatus.COULDNT_COMPLETE))
+            Q(action_status=action_models.ActionStatus.COMPLETED) | 
+            Q(action_status=action_models.ActionStatus.COULDNT_COMPLETE))
 
     @property
     def completed_actions(self):
         return self.action_set.filter(
-            Q(action_status=ActionStatus.COMPLETED) | Q(action_status=ActionStatus.COULDNT_COMPLETE))
+            Q(action_status=action_models.ActionStatus.COMPLETED) | 
+            Q(action_status=action_models.ActionStatus.COULDNT_COMPLETE))
 
 
 class Coordinator(UserProfileMixin, Person):
