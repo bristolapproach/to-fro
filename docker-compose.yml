@@ -17,6 +17,15 @@ services:
       - POSTGRES_BCC_PASSWORD=${POSTGRES_BCC_PASSWORD}
     volumes:
       - data_volume:/var/lib/postgresql/data
+    
+  # Redis, used for Django cache and message queue.
+  redis:
+    build:
+      context: ./redis/
+    container_name: tofro-redis
+    restart: unless-stopped
+    volumes:
+      - redis_volume:/data
 
   # Django Python Backend.
   server:
@@ -56,3 +65,4 @@ services:
 
 volumes:
   data_volume:
+  redis_volume:

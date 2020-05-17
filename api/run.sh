@@ -21,6 +21,9 @@ python3 manage.py shell < tools/create_admin.py
 # Collect static files.
 python3 manage.py collectstatic --noinput --clear
 
+# Start a redis worker.
+python manage.py rqworker default & > /dev/null 2>&1
+
 # Determine whether to serve over HTTP or HTTPS.
 if [[ ! -z ${DJANGO_HTTPS} && ! -z ${HOSTNAME} ]]; then
     

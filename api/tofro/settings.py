@@ -67,6 +67,7 @@ INSTALLED_APPS = [
     'markup_help',
     'notifications',
     'users',
+    "django_rq",
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -92,13 +93,6 @@ if DEBUG:
     MIDDLEWARE = [
         'debug_toolbar.middleware.DebugToolbarMiddleware'] + MIDDLEWARE
 
-
-def show_toolbar(request):
-    if request.is_ajax():
-        return False
-    return True
-
-
 DEBUG_TOOLBAR_CONFIG = {
     'SHOW_TOOLBAR_CALLBACK': lambda request: not request.is_ajax()
 }
@@ -109,7 +103,6 @@ INTERNAL_IPS = [
 ]
 
 ROOT_URLCONF = 'tofro.urls'
-
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
@@ -130,7 +123,6 @@ TEMPLATES = [
         },
     },
 ]
-
 WSGI_APPLICATION = 'tofro.wsgi.application'
 
 
@@ -144,6 +136,17 @@ DATABASES = {
         'PASSWORD': POSTGRES_PASSWORD,
         'HOST': DATABASE_HOST,
         'PORT': DATABASE_PORT
+    }
+}
+
+
+# Redis queue settings.
+RQ_QUEUES = {
+    'default': {
+        'HOST': 'tofro-redis',
+        'PORT': 6379,
+        'DB': 0,
+        'DEFAULT_TIMEOUT': 500
     }
 }
 

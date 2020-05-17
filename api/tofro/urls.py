@@ -31,3 +31,8 @@ if settings.DEBUG:
     urlpatterns = urlpatterns + [
         path('__debug__/', include(debug_toolbar.urls))
     ]
+
+# Add Redis URLs.
+urlpatterns += [
+    path('django-rq/', include('django_rq.urls'))
+]
