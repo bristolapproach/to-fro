@@ -29,4 +29,8 @@ def post_save_action(sender, instance, **kwargs):
 @receiver(post_save, sender=Notification, dispatch_uid="NotificationSave")
 def post_save_notification(sender, instance, **kwargs):
     """Send a notification once it is saved."""
-    django_rq.enqueue(notifications.send, instance)
+    # Determine if we should send an email.
+    if instance.recipients.exists() \
+    and instance.recipients.count() > 0 \
+    and not instance.delivered:
+        django_rq.enqueue(notifications.send, instance)

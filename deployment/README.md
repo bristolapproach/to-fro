@@ -20,10 +20,10 @@
 
 6. Run the Playbook, specifying the development inventory file
   
-   `ansible-playbook -i environments/prod --vault-password vault_password site.yml`
+   `ansible-playbook -i environments/dev --vault-password vault_password site.yml`
 
 ## Changing variables
 
 The following command can be used to view and edit the encrypted variables:
 
-    ansible-vault edit --vault-password-file vault_password tofro/vars/main.yml
+`ansible-vault edit --vault-password-file vault_password environments/dev/group_vars/all.yml`

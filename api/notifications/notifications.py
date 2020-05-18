@@ -86,7 +86,6 @@ def create(recipients, subject=None, message=None, action=None, notification_typ
             type=notification_type,
             delivered=False,
             created_date_time=timezone.now(),
-            sent_by="Action save signal",
             subject=subject or gen_subject,
             message=message or gen_message)
         notification.save()

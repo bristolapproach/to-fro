@@ -41,8 +41,6 @@ class Notification(models.Model):
         max_length=1000, null=True, help_text="What's your name?")
     delivered = models.BooleanField(
         default=False, help_text="This field is updated automatically.")
-    sent_by = models.CharField(
-        max_length=50, help_text="Who's sending the notification?")
     recipients = models.ManyToManyField(
         Person, related_name='notificationrecipient', default=list, help_text="This field is updated automatically.")
     created_date_time = models.DateTimeField(
