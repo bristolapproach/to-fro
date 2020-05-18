@@ -22,7 +22,7 @@ python3 manage.py set_site_domain
 python3 manage.py create_admin
 
 # Create the navigation menu
-python3 manage.py create_main_navigation_menu
+python3 manage.py create_navigation_menus
 
 # Collect static files.
 python3 manage.py collectstatic --noinput --clear

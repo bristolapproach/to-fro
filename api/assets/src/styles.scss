@@ -5,6 +5,20 @@
 @import 'styles/generic/bootstrap';
 @import 'styles/generic/space';
 
+html{
+  height: 100%;
+}
+
+body {
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+
+  > .send-to-bottom {
+    margin-top: auto;
+  }
+}
+
 svg {
   fill: currentColor;
 }
@@ -112,4 +126,30 @@ input[type=number] {
 .action-list-item__icon svg {
   width: 0.9em;
   height: 0.9em;
+}
+
+
+.site-footer {
+  padding-top: map-get($spacers,1);
+  padding-bottom: map-get($spacers,1);
+  padding-left: map-get($spacers, 3);
+  padding-right: map-get($spacers, 3);
+  text-align: center;
+  color: $text-muted;
+
+  ul {
+    list-style-type: none;
+    display: inline-flex;
+    flex-wrap: wrap;
+    padding: 0;
+  }
+
+  a {
+    color: inherit;
+    text-decoration: underline;
+
+    &:hover {
+      text-decoration: none;
+    }
+  }
 }
