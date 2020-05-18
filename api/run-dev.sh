@@ -27,5 +27,8 @@ python3 manage.py create_main_navigation_menu
 # Collect static files.
 python3 manage.py collectstatic --noinput --clear
 
+# Compile messages
+python3 manage.py compilemessages
+
 # Run the Django server.
 python manage.py runserver 0:${DJANGO_PORT}

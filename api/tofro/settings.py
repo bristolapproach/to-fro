@@ -179,7 +179,7 @@ AUTHENTICATION_BACKENDS = ['core.backends.EmailBackend']
 # Internationalization
 # https://docs.djangoproject.com/en/3.0/topics/i18n/
 
-LANGUAGE_CODE = 'en-uk'
+LANGUAGE_CODE = 'en'
 
 TIME_ZONE = 'UTC'
 
@@ -188,6 +188,18 @@ USE_I18N = True
 USE_L10N = True
 
 USE_TZ = True
+
+# Two locale paths to differenciate between our own messages
+# which will be in `locale` and the overriding of messages
+# from existing apps
+# https://stackoverflow.com/a/41945558
+LOCALE_PATHS = (
+    # This is where .po file from Django's `makemessages` command
+    # will end up
+    os.path.join(BASE_DIR, 'locale'),
+    # This is what stores a custom list of messages to override
+    os.path.join(BASE_DIR, 'messages_overrides')
+)
 
 
 # Static files (CSS, JavaScript, Images)

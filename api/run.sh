@@ -27,6 +27,9 @@ python3 manage.py create_main_navigation_menu
 # Collect static files.
 python3 manage.py collectstatic --noinput --clear
 
+# Compile messages
+python3 manage.py compilemessages
+
 # Determine whether to serve over HTTP or HTTPS.
 if [[ ! -z ${DJANGO_HTTPS} && ! -z ${HOSTNAME} ]]; then
     

@@ -15,7 +15,6 @@ class FlatPageAdmin(flatpages_admin.FlatPageAdmin):
     """
     Customization of the FlatPageAdmin
     """
-
     # Reduce the visible fields in the admin
     fieldsets = ((None, {'fields': ('url', 'title', 'content')}),)
 
