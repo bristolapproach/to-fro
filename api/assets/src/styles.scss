@@ -110,6 +110,23 @@ input[type=number] {
   }
 }
 
+.action-list {
+  box-shadow: 0px 10px 0px 5px rgba(0, 0, 0, 0.075);
+
+  .list-group-item {
+    border-left: 0;
+    border-right: 0;
+  }
+
+  .list-group-item:first-child {
+    border-top:0;
+  }
+
+  .list-group-item:last-child {
+    border-bottom: 0;
+  }
+}
+
 .action-list-item{
   position: relative;
   padding-left: map-get($spacers, 4) + map-get($spacers, 2);

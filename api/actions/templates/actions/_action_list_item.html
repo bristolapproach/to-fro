@@ -6,7 +6,7 @@
     <i class="btn btn-icon-only action-list-item__icon action-list-item__type" role="presentation">
       {% embed_fontawesome action.help_type.icon_name fallback='hands-helping'%}
     </i>
-    <h2 class="h5">
+    <h2 class="h5 mb-1">
       <a class="action-list-item-link stretched-link" 
          href="{% url 'actions:detail' action.id %}"
          aria-labelledby="
@@ -23,18 +23,18 @@
       <span class="text-muted small">({{action.requested_datetime|naturaltime}})</span>
     </time>
     {% if action.has_interest %}
-      <i class="btn btn-icon-only action-list-item__icon action-list-item__action" id="action_status_{{action.id}}">
-        {% embed_fontawesome 'stopwatch' %}
+      <i class="btn btn-icon-only text-warning action-list-item__icon action-list-item__action" id="action_status_{{action.id}}">
+        {% embed_fontawesome 'pause-circle' %}
         <span class="sr-only">Pending approval</span>
       </i>
     {% elif action.is_completed %}
-      <i class="btn btn-icon-only action-list-item__icon action-list-item__action" id="action_status_{{action.id}}">
-        {% embed_fontawesome 'check-circle' icon_set="regular"  %}
+      <i class="btn btn-icon-only action-list-item__icon text-success action-list-item__action" id="action_status_{{action.id}}">
+        {% embed_fontawesome 'check-circle'  %}
         <span class="sr-only">Completed</span>
       </i>
     {% elif action.is_failed%}
-      <i class="btn btn-icon-only action-list-item__icon action-list-item__action" id="action_status_{{action.id}}">
-        {% embed_fontawesome 'ban' %}
+      <i class="btn btn-icon-only action-list-item__icon text-danger action-list-item__action" id="action_status_{{action.id}}">
+        {% embed_fontawesome 'times-circle' %}
         <span class="sr-only">Could not be completed</span>
       </i>
     {% else %}
