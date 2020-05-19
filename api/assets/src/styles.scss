@@ -41,7 +41,18 @@ input[type=number] {
 
 // Set a minimum size to the navigation links
 .navbar .nav-link {
-  line-height: (40rem / 16)
+  line-height: (40rem / 16);
+  display: inline-block;
+
+  &.nav-link {
+    color: $light;
+  }
+}
+
+// Make the spacing on the side of containers a bit more generous
+.container{
+  padding-left: (25rem / 16);
+  padding-right: (25rem / 16);
 }
 
 // Components
@@ -101,33 +112,50 @@ input[type=number] {
 
 .action-list-item{
   position: relative;
-  padding-left: map-get($spacers, 4) + map-get($spacers, 1);
-  padding-right: map-get($spacers, 4) + map-get($spacers, 1);
+  padding-left: map-get($spacers, 4) + map-get($spacers, 2);
+  padding-right: map-get($spacers, 4) + map-get($spacers, 2);
+
+  &:hover {
+    .action-list-item__icon {
+      background-color: $list-group-hover-bg;
+    }
+  }
+
+  // Extend the stretched link to encompass the elements
+  // popping out on the sides
+  .stretched-link::after {
+    left: -1.25rem;
+    right: -1.25rem;
+  }
+}
+
+.action-list-item-link {
+  &,&:hover, &:active {
+    color: inherit;
+    font: inherit;
+  }
 }
 
 .action-list-item__icon {
+  background-color: white;
+  border: solid 1px $border-color;
+  color: $text-muted;
+}
+
+.action-list-item__type {
   position: absolute;
   right: 100%;
   top: 50%;
   transform: translate(50%, -50%);
-  background-color: white;
-  border: solid 1px #dfdfdf;
   border-radius: 100%;
-  color: #666;
 }
 
-.action-list-item__shortcut {
+.action-list-item__action {
   position: absolute;
   left: 100%;
   top: 50%;
   transform: translate(-50%, -50%);
 }
-
-.action-list-item__icon svg {
-  width: 0.9em;
-  height: 0.9em;
-}
-
 
 .site-footer {
   padding-top: map-get($spacers,1);

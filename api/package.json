@@ -18,7 +18,7 @@
   },
   "homepage": "https://github.com/cgillions/to-fro#readme",
   "devDependencies": {
-    "bootstrap": "^4.4.1",
+    "bootstrap": "^4.5.0",
     "parcel": "^1.12.4",
     "sass": "^1.26.5"
   },

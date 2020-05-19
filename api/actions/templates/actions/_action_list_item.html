@@ -1,16 +1,46 @@
 {% load humanize %}
 {% load svg %}
 
-<a aria-label="{{action.descriptionWithDate}}" href="{% url 'actions:detail' action.id %}"
-  class="list-group-item list-group-item-action action-list-item">
-  <li>
-    <i class="btn btn-icon-only action-list-item__icon" role="presentation">
+
+  <li class="list-group-item list-group-item-action action-list-item">
+    <i class="btn btn-icon-only action-list-item__icon action-list-item__type" role="presentation">
       {% embed_fontawesome action.help_type.icon_name fallback='hands-helping'%}
     </i>
-    <h2 class="h5">Help with <strong>{{action.help_type}}</strong> near <strong>{{action.ward}}</strong></h2>
+    <h2 class="h5">
+      <a class="action-list-item-link stretched-link" 
+         href="{% url 'actions:detail' action.id %}"
+         aria-labelledby="
+          action_label_{{action.id}} 
+          action_date_{{action.id}} 
+          action_status_{{action.id}}">
+        <span id="action_label_{{action.id}}">
+          <strong>{{action.help_type}}</strong> near <strong>{{action.ward}}</strong>
+        </span>
+      </a>
+    </h2>
     <time datetime="{{action.requested_datetime|date:"c"}}" class="text-right">
-      <span>{{action.requested_datetime|date:"D d M"}}</span>
-      <span class="text-muted text-small">({{action.requested_datetime|naturaltime}})</span>
+      <span id="action_date_{{action.id}}">{{action.requested_datetime|date:"D d M"}}</span>
+      <span class="text-muted small">({{action.requested_datetime|naturaltime}})</span>
     </time>
+    {% if action.has_interest %}
+      <i class="btn btn-icon-only action-list-item__icon action-list-item__action" id="action_status_{{action.id}}">
+        {% embed_fontawesome 'stopwatch' %}
+        <span class="sr-only">Pending approval</span>
+      </i>
+    {% elif action.is_completed %}
+      <i class="btn btn-icon-only action-list-item__icon action-list-item__action" id="action_status_{{action.id}}">
+        {% embed_fontawesome 'check-circle' icon_set="regular"  %}
+        <span class="sr-only">Completed</span>
+      </i>
+    {% elif action.is_failed%}
+      <i class="btn btn-icon-only action-list-item__icon action-list-item__action" id="action_status_{{action.id}}">
+        {% embed_fontawesome 'ban' %}
+        <span class="sr-only">Could not be completed</span>
+      </i>
+    {% else %}
+      <i class="btn btn-icon-only btn-primary action-list-item__action" role="presentation" id="action_status_{{action.id}}">
+        {% embed_fontawesome 'chevron-right' %}
+      </i>
+    {% endif %}
   </li>
 </a>
