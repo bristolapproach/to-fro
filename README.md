@@ -28,11 +28,28 @@ You can see the names of the running containers with `docker ps`.
 
 The styles and scripts of the app are build with [ParcelJS](https://parceljs.org/) from the sources in `api/assets/src`. The files are compiled to the `api/assets/static` folder to match [Django's conventions for static folders](https://docs.djangoproject.com/en/3.0/howto/static-files/#configuring-static-files).
 
-The build happens at container startup so you shouldn't have anything to do if you're just editing backend code. If you need to edit the styles or scripts for the app, you'll need to have [NodeJS installed (12.X)](https://nodejs.org/en/).
-You can then run the following to rebuild the files when you change them in the `api/assets/src` folder:
+The build happens at container startup so you shouldn't have anything to do if you're just editing backend code. For development, you can run `npm run dev` inside the Django container to monitor your files and rebuild on change:
 
-    (cd api && npm run dev)
+    docker exec -it tofro-django npm run dev
 
-If the command complains about missing modules, check that you have a `node_modules` folder at the root of the project. If it's missing, run the following command to install the NodeJS modules (from the `api` folder again):
+Equally, you can run `npm install` to install new modules from inside the Django container too:
 
-    (cd api && npm install)
+    docker exec -it tofro-django npm install
+
+## Application messages
+
+The application relies on 3rd party packages whose messages needed to be overriden. This is done by taking advantage of [Django's localization system](https://docs.djangoproject.com/en/3.0/topics/i18n/translation/#localization-how-to-create-language-files), with a special language file in the `api/messages_overrides` folder, as described by [this StackOverflow answer](https://stackoverflow.com/a/41945558).
+
+To override a piece of text coming from a 3rd party package:
+
+1. Check that the piece of text is computed via Django's translation utilities. This can be a call to one of the `gettext()` methods (often aliased as `_()`) or using the `{% translate %}` tag.
+2. Grab the ID of the message. This will be the string passed to the method or tag.
+3. Add an entry to the `messages_overrides/en/LC_MESSAGES/django.po` file, as such:
+
+    msgid "THE_ID_FOUND_IN_THE_3RD_PARTY_PACKAGE"
+    msgstr "THE_MESSAGE_YOU_WANT_TO_SHOW"
+
+    Pay attention to the case, as the `msgid` is case sensitive
+4. Compile the messages with:
+
+    docker exec -it tofro-django python3 manage.py compilemessages

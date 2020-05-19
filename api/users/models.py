@@ -81,6 +81,12 @@ class Resident(Person):
     confident_online_comms = models.BooleanField(default=False, help_text="Is this person confident communicating online?")
     shielded = models.BooleanField(default=False, help_text="Is this person shielded?")
 
+    @property
+    def address(self, join_char=', '):
+        filled_lines = [line for line in (
+            self.address_line_1, self.address_line_2, self.address_line_3, self.postcode) if line]
+        return join_char.join(filled_lines)
+
 
 class Volunteer(UserProfileMixin, Person):
     """Concrete class for those who can offer help."""

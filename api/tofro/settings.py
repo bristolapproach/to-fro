@@ -63,18 +63,22 @@ INSTALLED_APPS = [
     'actions',
     'assets',
     'categories',
+    'pages_and_menus',
     'core',
     'markup_help',
     'notifications',
     'users',
     "django_rq",
+    'sitetree',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'django.contrib.humanize'
+    'django.contrib.humanize',
+    'django.contrib.sites',
+    'django.contrib.flatpages'
 ]
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -86,6 +90,9 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
+# Necessary for Flatpage
+SITE_ID = 1
 
 # Add the debug toolbar.
 if DEBUG:
@@ -175,7 +182,7 @@ AUTHENTICATION_BACKENDS = ['core.backends.EmailBackend']
 # Internationalization
 # https://docs.djangoproject.com/en/3.0/topics/i18n/
 
-LANGUAGE_CODE = 'en-uk'
+LANGUAGE_CODE = 'en'
 
 TIME_ZONE = 'UTC'
 
@@ -184,6 +191,18 @@ USE_I18N = True
 USE_L10N = True
 
 USE_TZ = True
+
+# Two locale paths to differenciate between our own messages
+# which will be in `locale` and the overriding of messages
+# from existing apps
+# https://stackoverflow.com/a/41945558
+LOCALE_PATHS = (
+    # This is where .po file from Django's `makemessages` command
+    # will end up
+    os.path.join(BASE_DIR, 'locale'),
+    # This is what stores a custom list of messages to override
+    os.path.join(BASE_DIR, 'messages_overrides')
+)
 
 
 # Static files (CSS, JavaScript, Images)

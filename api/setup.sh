@@ -16,10 +16,19 @@ python3 manage.py makemigrations
 python3 manage.py migrate
 
 # Create the admin user.
-python3 manage.py shell < tools/create_admin.py
+python manage.py create_admin
+
+# Create the navigation menu
+python manage.py create_navigation_menus
+
+# Sets the site domain for the Sites app
+python manage.py set_site_domain
 
 # Collect static files.
-python3 manage.py collectstatic --noinput --clear
+python manage.py collectstatic --noinput --clear
+
+# Compile messages
+python manage.py compilemessages
 
 # Start a redis worker.
 python manage.py rqworker default & > /dev/null 2>&1
