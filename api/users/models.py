@@ -99,6 +99,12 @@ class Resident(Person):
     shielded = models.BooleanField(
         default=False, help_text="Is this person shielded?")
 
+    @property
+    def address(self, join_char=', '):
+        filled_lines = [line for line in (
+            self.address_line_1, self.address_line_2, self.address_line_3, self.postcode) if line]
+        return join_char.join(filled_lines)
+
 
 class Volunteer(UserProfileMixin, Person):
     dbs_number = models.CharField(max_length=12, null=True, blank=True,
