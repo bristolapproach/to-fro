@@ -29,3 +29,7 @@ email_host: smtp.office365.com
 email_port: 587
 email_host_user: user@gmail.com
 email_host_password: password
+
+# Scheduled email settings.
+volunteer_digest_hour: 9
+volunteer_digest_minute: 0

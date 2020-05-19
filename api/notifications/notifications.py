@@ -104,13 +104,17 @@ def send(notification):
     and not notification.delivered:
 
         # Send the email.
-        EmailMessage(
-            notification.subject, 
-            notification.message,
-            bcc=[r.email for r in notification.recipients.all() if r.email],
-        ).send()
+        send_email(
+            notification.subject, notification.message,
+            [r.email for r in notification.recipients.all() if r.email])
 
         # Update the data.
         notification.delivered_date_time = timezone.now()
         notification.delivered = True
         notification.save()
+
+def send_email(subject, message, recipients):
+    EmailMessage(
+        subject, message,
+        bcc=recipients
+    ).send()

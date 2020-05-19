@@ -20,4 +20,4 @@ WORKDIR /code
 COPY . /code
 
 # Run the Django server.
-CMD if [ "${DEBUG}" = "True" ]; then bash run-dev.sh; else bash run.sh; fi
+CMD bash setup.sh && if [ "${DEBUG}" = "True" ]; then bash run-dev.sh; else bash run.sh; fi
