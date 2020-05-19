@@ -1,11 +1,6 @@
 import logging
 from django.core.management.base import BaseCommand
 from sitetree.models import Tree
-import os
-
-# Get the admin username and password from the environment.
-admin_user = os.getenv("DJANGO_ADMIN_FIRSTNAME", "admin")
-admin_password = os.getenv("DJANGO_ADMIN_PASSWORD", "password")
 
 
 logger = logging.getLogger(__name__)

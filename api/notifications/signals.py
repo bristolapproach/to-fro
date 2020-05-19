@@ -17,7 +17,7 @@ logger = logging.getLogger(__name__)
 def post_save_user(sender, instance, created, **kwargs):
     """Send an email invite if the User has just been created."""
     if created:
-        django_rq.enqueue(notifications.send_invite, instance)
+        notifications.send_invite(instance)
 
 
 @receiver(post_save, sender=Action, dispatch_uid="ActionSave")
