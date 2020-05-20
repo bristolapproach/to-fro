@@ -70,6 +70,14 @@ class Action(models.Model):
         return self.action_status == ActionStatus.ASSIGNED
 
     @property
+    def is_completed(self):
+        return self.action_status == ActionStatus.COMPLETED
+
+    @property
+    def is_failed(self):
+        return self.action_status == ActionStatus.COULDNT_COMPLETE
+
+    @property
     def can_reveal_private_information(self):
         return not (
             self.action_status == ActionStatus.INTEREST or self.action_status == ActionStatus.PENDING)
