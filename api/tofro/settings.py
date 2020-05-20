@@ -126,6 +126,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'core.context_processors.settings'
             ],
         },
     },
@@ -234,3 +235,6 @@ if DEBUG:
     LOGGING['handlers']['console']['level'] = 'DEBUG'
     LOGGING['loggers']['']['level'] = 'DEBUG'
     LOGGING['loggers']['django.server']['level'] = 'WARNING'
+
+# Help configure contact email
+CONTACT_EMAIL = os.getenv('CONTACT_EMAIL', 'contact@example.com')
