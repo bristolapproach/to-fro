@@ -1,6 +1,6 @@
 from django import template
 from django.utils.safestring import mark_safe
-
+import re
 import os
 import logging
 logger = logging.getLogger(__name__)
@@ -8,6 +8,8 @@ logger = logging.getLogger(__name__)
 register = template.Library()
 
 # Embeds the SVG at the given path, adding a width and height attribute
+
+
 @register.simple_tag()
 def embed_svg(path, width=20, height=20, role="presentation", class_attribute=None):
     with open(path, 'r') as content_file:
