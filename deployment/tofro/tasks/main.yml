@@ -1,4 +1,9 @@
 ---
+- name: Remove old project files
+  file:
+    path: "{{ src_destination }}"
+    state: absent
+
 - name: Copy the project files
   synchronize:
     src: "{{ playbook_dir }}/.."
