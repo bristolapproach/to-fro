@@ -23,7 +23,7 @@
       <span class="text-muted small">({{action.requested_datetime|naturaltime}})</span>
     </time>
     {% if action.has_interest %}
-      <i class="btn btn-icon-only text-warning action-list-item__icon action-list-item__action" id="action_status_{{action.id}}">
+      <i class="btn btn-icon-only action-list-item__icon action-list-item__action" id="action_status_{{action.id}}">
         {% embed_fontawesome 'pause-circle' %}
         <span class="sr-only">Pending approval</span>
       </i>
@@ -38,8 +38,8 @@
         <span class="sr-only">Could not be completed</span>
       </i>
     {% else %}
-      <i class="btn btn-icon-only btn-primary action-list-item__action" role="presentation" id="action_status_{{action.id}}">
-        {% embed_fontawesome 'chevron-right' %}
+      <i class="btn btn-icon-only text-primary action-list-item__icon action-list-item__action" role="presentation" id="action_status_{{action.id}}">
+        {% embed_fontawesome 'info-circle' %}
       </i>
     {% endif %}
   </li>
