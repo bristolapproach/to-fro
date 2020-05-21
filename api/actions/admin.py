@@ -75,7 +75,7 @@ class RequestedDatetimeListFilter(admin.DateFieldListFilter):
 
 
 class ActionAdmin(ModelAdminWithExtraContext):
-    list_display = ('resident', 'help_type',
+    list_display = ('id', 'resident', 'help_type',
                     'requested_datetime',  'action_status', 'volunteer')
     list_filter = ('action_status',
                    ('requested_datetime', RequestedDatetimeListFilter),
