@@ -27,15 +27,12 @@
       <textarea name="notes" id="notes" class="form-control"></textarea>
     </div>
   </div>
-  <div class="card-footer text-center d-flex justify-content-between">
-    <button name="outcome" value="ko" class="btn btn-outline-danger">
-      {% embed_fontawesome 'thumbs-down' icon_set='regular' class_attribute="align-icon mr-1" %}
-      Couldn't do it all
-    </button>
+  <div class="card-footer text-center d-flex justify-content-around">
     <button name="outcome" value="ok" class="btn btn-primary">
       {% embed_fontawesome 'thumbs-up' icon_set='regular' class_attribute="align-icon mr-1" %}
       All went fine
     </button>
   </div>
 </form>
+{% include './_problem_help.html' with action=action volunteer=volunteer%}
 {% endblock %}
