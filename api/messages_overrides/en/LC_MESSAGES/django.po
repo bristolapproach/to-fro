@@ -58,3 +58,6 @@ msgstr "Page"
 msgid "Flat page"
 msgstr "Page"
 
+msgid "Authentication and Authorization"
+msgstr "Site accounts"
+
