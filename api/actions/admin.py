@@ -8,6 +8,7 @@ from django.db import models
 from django import forms
 import datetime
 from django.utils.translation import gettext_lazy as _
+from core.admin import ModelAdminWithExtraContext
 
 import logging
 logger = logging.getLogger(__name__)
@@ -73,7 +74,7 @@ class RequestedDatetimeListFilter(admin.DateFieldListFilter):
                       )
 
 
-class ActionAdmin(admin.ModelAdmin):
+class ActionAdmin(ModelAdminWithExtraContext):
     list_display = ('resident', 'help_type',
                     'requested_datetime',  'action_status', 'volunteer')
     list_filter = ('action_status',
@@ -123,40 +124,33 @@ class ActionAdmin(admin.ModelAdmin):
 
         return form
 
-    def add_view(self, request, form_url='', extra_context=None):
-        """
-        Custom add view that has the list of action description by help type
-        added to the context, ready to be rendered with json_script
-        """
-        extra_context = extra_context or {}
-        extra_context['js_data'] = {
-            'action_description_templates': self.get_description_templates()
-        }
-        return super().add_view(
-            request, form_url, extra_context=extra_context,
-        )
+    def extra_context(self, object_id=None):
+        # Query the help types only once
+        help_types = HelpType.objects.prefetch_related('requirements').all()
 
-    def change_view(self, request, object_id, form_url='', extra_context=None):
-        """
-        Custom add view that has the list of action description by help type
-        added to the context, ready to be rendered with json_script
-        """
-        extra_context = extra_context or {}
-        extra_context['js_data'] = {
-            'action_description_templates': self.get_description_templates()
+        return {
+            'js_data': {
+                'action_description_templates': self.get_description_templates(help_types),
+                'action_requirements_for_help_types': self.get_requirements_for_help_types(help_types)
+            }
         }
-        return super().change_view(
-            request, object_id, form_url, extra_context=extra_context,
-        )
 
-    def get_description_templates(self):
+    def get_requirements_for_help_types(self, help_types):
+        """
+        Queries and prepares an index of each HelpType requirements
+        """
+        return dict((help_type.pk, [
+            requirement.id for requirement in help_type.requirements.all()
+        ]) for help_type in help_types)
+
+    def get_description_templates(self, help_types):
         """
         Queries and prepares an index of each HelpType description templates
         """
         return dict((help_type.pk, {
             'private_description_template': help_type.private_description_template,
             'public_description_template': help_type.public_description_template
-        }) for help_type in HelpType.objects.all())
+        }) for help_type in help_types)
 
 
 admin.site.register(Action, ActionAdmin)

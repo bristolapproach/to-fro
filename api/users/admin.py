@@ -6,6 +6,7 @@ from django.contrib.auth.admin import UserAdmin
 from django import forms
 from django.utils.translation import gettext as _
 from django.db.models import Q
+from core.admin import ModelAdminWithExtraContext
 
 import logging
 logger = logging.getLogger(__name__)
@@ -39,28 +40,6 @@ class CoordinatorForm(UserProfileForm):
     class Meta:
         model = Coordinator
         fields = '__all__'
-
-
-class ModelAdminWithExtraContext(admin.ModelAdmin):
-    """
-    Base class for creating an admin that automatically adds some
-    extra context to the add and change views
-    """
-    extra_context = {}
-
-    def add_view(self, request, form_url='', extra_context=None):
-        extra_context = extra_context or {}
-        extra_context.update(self.extra_context())
-        return super().add_view(
-            request, form_url, extra_context=extra_context,
-        )
-
-    def change_view(self, request, object_id, form_url='', extra_context=None):
-        extra_context = extra_context or {}
-        extra_context.update(self.extra_context(object_id=object_id))
-        return super().change_view(
-            request, object_id, form_url, extra_context=extra_context,
-        )
 
 
 class CoordinatorAdmin(ModelAdminWithExtraContext):

@@ -15,6 +15,7 @@ const ATTR_EDITED = 'data-edited';
       // during their initialization
       $(function () {
         setupActionDescriptionTemplates($, data);
+        setupHelpTypeDefaultRequirements($, data);
         setupUserAccountsBehaviour($);
         setupConfirmNavigationIfEdited($);
       });
@@ -29,6 +30,39 @@ function getData() {
     return JSON.parse(element.innerText);
   }
   return {};
+}
+
+/**
+ * Manages the pre-filling of requirements according
+ * to the default requirements associated to the selected help type
+ * @param {jQuery} $ 
+ * @param {Object} data 
+ */
+function setupHelpTypeDefaultRequirements($, data) {
+  if (data.action_requirements_for_help_types) {
+
+    // Grab all the option elements
+    const options = $('.field-requirements option').toArray();
+    // And the two <select> elements containing the available
+    // and chosen requirements
+    const $availableSelect = $('[name="requirements_old"]');
+    const $chosenSelect = $('[name="requirements"]');
+    
+    $(document).on('change', '[name="help_type"]', function ({ target }) {
+      const defaultRequirements = data.action_requirements_for_help_types[target.value] || [];
+      const chosenOptions = [];
+      const availableOptions = [];
+      for (option of options) {
+        if (defaultRequirements.indexOf(parseInt(option.value)) != -1) {
+          chosenOptions.push(option);
+        } else {
+          availableOptions.push(option);
+        }
+      }
+      $availableSelect.html(availableOptions);
+      $chosenSelect.html(chosenOptions);
+    });
+  }
 }
 
 /**
