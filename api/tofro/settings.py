@@ -78,7 +78,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django.contrib.humanize',
     'django.contrib.sites',
-    'django.contrib.flatpages'
+    'django.contrib.flatpages',
+    'admin_overrides'
 ]
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
