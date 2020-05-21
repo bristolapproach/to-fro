@@ -8,6 +8,13 @@ class Ward(models.Model):
         return f"{self.name}"
 
 
+class Requirement(models.Model):
+    name = models.CharField(max_length=50, unique=True, null=False)
+
+    def __str__(self):
+        return f"{self.name}"
+
+
 class HelpType(models.Model):
     name = models.CharField(max_length=50, null=True)
     icon_name = models.CharField(
@@ -16,13 +23,9 @@ class HelpType(models.Model):
         null=True, blank=True, help_text="Private description will be pre-filled with this text when picking this type of help for a Action")
     public_description_template = models.TextField(
         null=True, blank=True, help_text="Public description will be pre-filled with this text when picking this type of help for a Action")
-
-    def __str__(self):
-        return f"{self.name}"
-
-
-class Requirement(models.Model):
-    name = models.CharField(max_length=50, unique=True, null=False)
+    requirements = models.ManyToManyField(Requirement, blank=True, related_name="help_types",
+                                          verbose_name="Default requirements",
+                                          help_text="New actions with this help type will get these requirements by default. The requirements can then be adjusted per-action.")
 
     def __str__(self):
         return f"{self.name}"
