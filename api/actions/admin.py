@@ -76,7 +76,7 @@ class RequestedDatetimeListFilter(admin.DateFieldListFilter):
 
 class ActionAdmin(ModelAdminWithExtraContext):
     list_display = ('id', 'resident', 'help_type',
-                    'requested_datetime',  'action_status', 'volunteer')
+                    'requested_datetime', 'has_volunteer_made_contact',  'action_status', 'volunteer', )
     list_filter = ('action_status',
                    ('requested_datetime', RequestedDatetimeListFilter),
                    ('resident', admin.RelatedOnlyFieldListFilter),
@@ -151,6 +151,12 @@ class ActionAdmin(ModelAdminWithExtraContext):
             'private_description_template': help_type.private_description_template,
             'public_description_template': help_type.public_description_template
         }) for help_type in help_types)
+
+    def has_volunteer_made_contact(self, obj):
+        return bool(obj.volunteer_made_contact_on)
+
+    has_volunteer_made_contact.boolean = True
+    has_volunteer_made_contact.short_description = "Contact"
 
 
 admin.site.register(Action, ActionAdmin)
