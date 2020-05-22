@@ -37,7 +37,7 @@ LIST_DEFINITIONS = {
         'title': 'My actions',
         'heading': 'My actions',
         'queryset': lambda volunteer:
-        volunteer.incomplete_actions
+        volunteer.upcoming_actions
             .order_by('requested_datetime', '-action_priority')
     }
 }

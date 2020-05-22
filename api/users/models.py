@@ -190,8 +190,9 @@ class Volunteer(UserProfileMixin, Person):
             .filter(help_type__in=self.help_types.all())
 
     @property
-    def incomplete_actions(self):
+    def upcoming_actions(self):
         return self.action_set.exclude(
+            Q(action_status=action_models.ActionStatus.ONGOING) |
             Q(action_status=action_models.ActionStatus.COMPLETED) |
             Q(action_status=action_models.ActionStatus.COULDNT_COMPLETE))
 
