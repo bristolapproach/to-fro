@@ -1,7 +1,7 @@
 from categories.models import HelpType, Requirement
 from users import models as user_models
 from django.db import models
-
+from django.utils import timezone
 
 import logging
 logger = logging.getLogger(__name__)
@@ -61,6 +61,14 @@ class Action(models.Model):
     requirements = models.ManyToManyField(Requirement, blank=True, related_name="actions",
                                           help_text="Only volunteers matching these requirements will see the action.")
     volunteer_made_contact_on = models.DateTimeField(null=True, blank=True)
+
+    def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
+        if (self.action_status in (ActionStatus.ONGOING, ActionStatus.COMPLETED, ActionStatus.COULDNT_COMPLETE) and not self.volunteer_made_contact_on):
+            self.register_volunteer_contact()
+        return super().save(force_insert=force_insert, force_update=force_update, using=using, update_fields=update_fields)
+
+    def register_volunteer_contact(self):
+        self.volunteer_made_contact_on = timezone.now()
 
     @property
     def ward(self):
