@@ -95,6 +95,15 @@ class ActionFeedbackForm(ModelForm):
     will_be_ongoing = BooleanField(
         required=False, label=_("I've scheduled with the person to help them recurrently"))
 
+    def get_initial_for_field(self, field, field_name):
+        initial = super().get_initial_for_field(field, field_name)
+        if (field_name == 'will_be_ongoing'):
+            return self.instance.action_status == ActionStatus.ONGOING
+        return initial
+
     def save(self, commit=True):
-        self.instance.action_status = ActionStatus.COMPLETED
+        if self.cleaned_data['will_be_ongoing']:
+            self.instance.action_status = ActionStatus.ONGOING
+        else:
+            self.instance.action_status = ActionStatus.COMPLETED
         super().save()
