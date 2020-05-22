@@ -74,10 +74,30 @@ class RequestedDatetimeListFilter(admin.DateFieldListFilter):
                       )
 
 
+class MadeContactFilter(admin.SimpleListFilter):
+    title = 'Made contact'
+    parameter_name = 'made_contact'
+
+    def lookups(self, request, model_admin):
+        return (
+            ('Yes', 'Yes'),
+            ('No', 'No'),
+        )
+
+    def queryset(self, request, queryset):
+        value = self.value()
+        if value == 'Yes':
+            return queryset.filter(volunteer_made_contact_on__isnull=False)
+        elif value == 'No':
+            return queryset.filter(volunteer_made_contact_on__isnull=True, action_status__in=(ActionStatus.ONGOING, ActionStatus.ASSIGNED, ActionStatus.COMPLETED, ActionStatus.COULDNT_COMPLETE))
+        return queryset
+
+
 class ActionAdmin(ModelAdminWithExtraContext):
     list_display = ('id', 'resident', 'help_type',
                     'requested_datetime', 'has_volunteer_made_contact',  'action_status', 'volunteer', )
     list_filter = ('action_status',
+                   MadeContactFilter,
                    ('requested_datetime', RequestedDatetimeListFilter),
                    ('resident', admin.RelatedOnlyFieldListFilter),
                    ('volunteer', admin.RelatedOnlyFieldListFilter))
