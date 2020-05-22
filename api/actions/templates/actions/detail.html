@@ -5,14 +5,14 @@
 {% load svg %}
 
 {% block 'content' %}
-{% if action.volunteer == volunteer and action.can_reveal_private_information %}
+{% if action.assigned_volunteer == volunteer and action.can_reveal_private_information %}
 <h2 class="ma-2">You'll help:</h2>
 {% include './_resident_detail.html' with resident=action.resident %}
 {% endif %}
 
 <h2 class="ma-2">They need:</h2>
 <div class="card p-3">
-    {% if action.volunteer == volunteer and action.can_reveal_private_information %}
+    {% if action.assigned_volunteer == volunteer and action.can_reveal_private_information %}
     {% if action.private_description %}
     <div class="border-bottom mb-3 pb-3 space-3">
       {{action.private_description|markdown|heading_level:3}}
@@ -25,7 +25,7 @@
     </div>
     {% endif %}
     <div class="mbf-3">
-    {% if action.is_pending %}
+    {% if not action.is_assigned %}
     <form method="POST">
       {% csrf_token %}
       <button class="btn d-table mx-auto btn-primary" name="action" value="accept_help">
@@ -34,7 +34,7 @@
       </button>
     </form>
     {%else %}
-    {% if action.volunteer != volunteer %}
+    {% if action.assigned_volunteer != volunteer %}
     <p class="text-center">Someone's on it, but thanks for thinking of it!</p>
     {% else %}
     {% if action.has_interest %}

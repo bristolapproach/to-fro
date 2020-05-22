@@ -35,7 +35,10 @@ class Action(models.Model):
     call_duration = models.DurationField(null=True, blank=True, help_text="How long was the call?")
     resident = models.ForeignKey(user_models.Resident, on_delete=models.PROTECT, null=True, help_text="Who made the request?")
     requested_datetime = models.DateTimeField(null=True, help_text="When should the action be completed by?")
-    volunteer = models.ForeignKey(user_models.Volunteer, on_delete=models.PROTECT, null=True, blank=True, help_text="Who will complete the action?")
+    
+    interested_volunteers = models.ManyToManyField(user_models.Volunteer, blank=True, related_name="interested_volunteers", help_text="Volunteers who have expressed interest in completing the action..")
+    assigned_volunteer = models.ForeignKey(user_models.Volunteer, on_delete=models.PROTECT, null=True, blank=True, help_text="The volunteer who will complete the action.")
+
     action_status = models.CharField(max_length=1, choices=ActionStatus.STATUSES, default=ActionStatus.PENDING, help_text="What's the status of this action?")
     action_priority = models.CharField(max_length=1, choices=ActionPriority.PRIORITIES, default=ActionPriority.MEDIUM, help_text="What priority should this action be given?")
     time_taken = models.DurationField(null=True, help_text="How long did it take to complete the action?", blank=True)
@@ -67,7 +70,9 @@ class Action(models.Model):
 
     @property
     def is_assigned(self):
-        return self.action_status == ActionStatus.ASSIGNED
+        return self.action_status == ActionStatus.ASSIGNED \
+            or self.action_status == ActionStatus.COMPLETED \
+            or self.action_status == ActionStatus.COULDNT_COMPLETE
 
     @property
     def is_completed(self):
