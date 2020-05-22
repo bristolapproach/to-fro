@@ -60,6 +60,7 @@ class Action(models.Model):
                                   verbose_name="Action type", help_text="Which kind of help is needed")
     requirements = models.ManyToManyField(Requirement, blank=True, related_name="actions",
                                           help_text="Only volunteers matching these requirements will see the action.")
+    volunteer_made_contact_on = models.DateTimeField(null=True, blank=True)
 
     @property
     def ward(self):

@@ -7,7 +7,7 @@ from django.contrib import messages
 from django.views import generic
 from django.urls import reverse
 from .forms import ActionFeedbackForm
-import datetime
+from .admin import get_now
 
 
 LIST_DEFINITIONS = {
@@ -85,14 +85,18 @@ def detail(request, action_id):
     action = get_object_or_404(Action, pk=action_id)
 
     if request.method == "POST":
-        if (action.action_status != ActionStatus.PENDING):
-            messages.error(
-                request, 'Thanks, but someone has already volunteered to help')
-        else:
-            action.volunteer = volunteer
-            action.action_status = ActionStatus.INTEREST
+        if request.POST['_action'] == 'contact':
+            action.volunteer_made_contact_on = get_now()
             action.save()
-            messages.success(request, 'Thanks for volunteering!')
+        else:
+            if (action.action_status != ActionStatus.PENDING):
+                messages.error(
+                    request, 'Thanks, but someone has already volunteered to help')
+            else:
+                action.volunteer = volunteer
+                action.action_status = ActionStatus.INTEREST
+                action.save()
+                messages.success(request, 'Thanks for volunteering!')
         return redirect('actions:detail', action_id=action.id)
 
     context = {
