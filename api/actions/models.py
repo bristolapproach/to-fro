@@ -17,12 +17,13 @@ class ActionPriority:
 
 
 class ActionStatus:
-    PENDING, INTEREST, ASSIGNED, COMPLETED, \
-        COULDNT_COMPLETE = '1', '2', '3', '4', '5'
+    PENDING, INTEREST, ASSIGNED, ONGOING, COMPLETED, \
+        COULDNT_COMPLETE = '1', '2', '3', '4', '5', '6'
     STATUSES = [
         (PENDING, 'Pending volunteer interest'),
         (INTEREST, 'Volunteer interest'),
         (ASSIGNED, 'Volunteer assigned'),
+        (ONGOING, 'Ongoing'),
         (COMPLETED, 'Completed'),
         (COULDNT_COMPLETE, 'Couldn\'t complete'),
     ]
