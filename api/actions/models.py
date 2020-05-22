@@ -78,6 +78,10 @@ class Action(models.Model):
         return self.action_status == ActionStatus.PENDING
 
     @property
+    def is_ongoing(self):
+        return self.action_status == ActionStatus.ONGOING
+
+    @property
     def has_interest(self):
         return self.action_status == ActionStatus.INTEREST
 
