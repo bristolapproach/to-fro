@@ -40,8 +40,17 @@
     {% if action.has_interest %}
     <p class="text-center">Thanks for volunteering! We'll be back in touch soon!</p>
     {% elif action.is_assigned %}
+      {% if not action.volunteer_made_contact_on %}
+        <form method="POST">
+          {% csrf_token %}
+          <button class="btn d-table mx-auto btn-outline-primary" name="_action" value="contact">
+            {% embed_fontawesome 'comments' icon_set="regular" %}
+            I've made contact
+          </button>
+        </form>
+      {% endif %}
     <a class="btn d-table mx-auto btn-primary" href="{% url 'actions:complete' action.id%}">
-      {% embed_fontawesome 'walking' class_attribute="align-icon" %}
+      {% embed_fontawesome 'check' class_attribute="align-icon" %}
       I went and helped!
     </a>
     {% else %}
