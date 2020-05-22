@@ -136,7 +136,9 @@ class Volunteer(UserProfileMixin, Person):
         # Remove those with unfulfilled user requirements.
         # Filter for actions inside the Volunteer's wards and help_types.
         return action_models.Action.objects \
-            .filter(action_status=action_models.ActionStatus.PENDING) \
+            .filter(
+                Q(action_status=action_models.ActionStatus.PENDING) |
+                Q(action_status=action_models.ActionStatus.INTEREST)) \
             .annotate(missed_requirements=Count('requirements',
                 filter=~Q(requirements__in=self.requirements.all()))) \
             .filter(missed_requirements=0) \
