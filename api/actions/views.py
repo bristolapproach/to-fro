@@ -25,6 +25,14 @@ LIST_DEFINITIONS = {
             volunteer.completed_actions
         .order_by('requested_datetime', '-action_priority')
     },
+    'ongoing': {
+        'title': 'Ongoing',
+        'heading': 'Ongoing',
+        'queryset': lambda volunteer:
+            volunteer.ongoing_actions.order_by(
+                'requested_datetime', '-action_priority'
+            )
+    },
     'mine': {
         'title': 'My actions',
         'heading': 'My actions',
@@ -62,6 +70,9 @@ def back_url(action, volunteer):
 
     if (action.action_status == ActionStatus.INTEREST or action.action_status == ActionStatus.ASSIGNED):
         return reverse('actions:index')
+
+    if (action.action_status == ActionStatus.ONGOING):
+        return reverse('actions:ongoing')
 
     if (action.action_status == ActionStatus.COULDNT_COMPLETE or action.action_status == ActionStatus.COMPLETED):
         return reverse('actions:completed')

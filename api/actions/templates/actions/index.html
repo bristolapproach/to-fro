@@ -6,15 +6,19 @@
 <nav aria-label="Action types" class="d-flex justify-content-center space-x-3">
   <a href="{% url 'actions:available' %}" class="btn {% if current_list_type == 'available' %} btn-dark{%endif%}"
     {% if current_list_type == 'available' %} aria-current {%endif%}>
-    Available
+    Offer help
   </a>
   <a href="{% url 'home' %}" class="btn {% if current_list_type == 'mine' %} btn-dark{%endif%}"
     {% if current_list_type == 'mine' %} aria-current {%endif%}>
-    My actions
+    Upcoming
+  </a>
+  <a href="{% url 'actions:ongoing' %}" class="btn {% if current_list_type == 'ongoing' %} btn-dark{%endif%}"
+    {% if current_list_type == 'ongoing' %} aria-current {%endif%}>
+    Ongoing
   </a>
   <a href="{% url 'actions:completed' %}" class="btn {% if current_list_type == 'completed' %} btn-dark {%endif%}"
     {% if current_list_type == 'completed' %} aria-current {%endif%}>
-    Completed
+    Past
   </a>
 </nav>
 {% if actions %}
