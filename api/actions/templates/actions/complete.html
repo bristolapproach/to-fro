@@ -1,38 +1,16 @@
 {% extends 'layouts/application.html' %}
 
 {% load svg %}
+{% load crispy_forms_tags %}
 
 {% block 'content' %}
-<form class="card" method="POST">
+<form class="card p-3" method="POST">
   {% csrf_token %}
-  {{ form.as_p }}
-  <div class="card-body">
-    <div class="form-group">
-      <label for="time_taken">It took me:</label>
-      <div class="input-group">
-        <input required name="time_taken" id="time_taken" type="number" step="0.01"
-          class="form-control text-right appearance-none" aria-describedby="time_taken-description">
-        <div class="input-group-append">
-          <div class="input-group-text">
-            h
-            <div hidden id="time_taken-description">
-              in hours
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="form-group">
-      <label for="notes">Notes</label>
-      <textarea name="notes" id="notes" class="form-control"></textarea>
-    </div>
-  </div>
-  <div class="card-footer text-center d-flex justify-content-around">
-    <button name="outcome" value="ok" class="btn btn-primary">
-      {% embed_fontawesome 'thumbs-up' icon_set='regular' class_attribute="align-icon mr-1" %}
-      All went fine
-    </button>
-  </div>
+  {% crispy form form.helper%}
+  <button name="outcome" value="ok" class="btn btn-primary">
+    {% embed_fontawesome 'thumbs-up' icon_set='regular' class_attribute="align-icon mr-1" %}
+    Send feedback
+  </button>  
 </form>
 {% include './_problem_help.html' with action=action volunteer=volunteer%}
 {% endblock %}

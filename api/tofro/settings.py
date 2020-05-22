@@ -70,6 +70,7 @@ INSTALLED_APPS = [
     'users',
     "django_rq",
     'sitetree',
+    'crispy_forms',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -215,6 +216,8 @@ STATIC_URL = '/static/'
 # WhiteNoise serves the static files via the Python server.
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
+# Default template pack for crispy-forms
+CRISPY_TEMPLATE_PACK = 'bootstrap4'
 
 # Redirect to home URL after login (Default redirects to /accounts/profile/)
 LOGIN_REDIRECT_URL = '/actions/'
