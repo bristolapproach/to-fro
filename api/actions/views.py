@@ -7,7 +7,6 @@ from django.contrib import messages
 from django.views import generic
 from django.urls import reverse
 from .forms import ActionFeedbackForm
-from .admin import get_now
 
 
 LIST_DEFINITIONS = {
@@ -86,7 +85,7 @@ def detail(request, action_id):
 
     if request.method == "POST":
         if request.POST['_action'] == 'contact':
-            action.volunteer_made_contact_on = get_now()
+            action.register_volunteer_contact()
             action.save()
         else:
             if (action.action_status != ActionStatus.PENDING):

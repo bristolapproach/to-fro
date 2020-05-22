@@ -1,4 +1,4 @@
-from .models import Action, ActionPriority
+from .models import Action, ActionPriority, ActionStatus
 from categories.models import HelpType
 
 # Register our models with the admin site.
@@ -153,7 +153,9 @@ class ActionAdmin(ModelAdminWithExtraContext):
         }) for help_type in help_types)
 
     def has_volunteer_made_contact(self, obj):
-        return bool(obj.volunteer_made_contact_on)
+        # Only return a value when relevant, to not clutter the admin
+        if obj.action_status in (ActionStatus.ONGOING, ActionStatus.ASSIGNED, ActionStatus.COMPLETED, ActionStatus.COULDNT_COMPLETE):
+            return bool(obj.volunteer_made_contact_on)
 
     has_volunteer_made_contact.boolean = True
     has_volunteer_made_contact.short_description = "Contact"
