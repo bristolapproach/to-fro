@@ -31,6 +31,13 @@ class HelpTypeForm(forms.ModelForm):
 
 class HelpTypeAdmin(admin.ModelAdmin):
     form = HelpTypeForm
+    fieldsets = (
+        (None, {'fields': ('name', 'icon_name')}),
+        ('Requirements', {'fields': ('requirements',)}),
+        ('Templates', {
+         'fields': ('private_description_template', 'public_description_template')})
+    )
+    filter_horizontal = ('requirements',)
 
 
 admin.site.register(HelpType, HelpTypeAdmin)

@@ -2,4 +2,4 @@ from notifications.models import Notification
 from django.contrib import admin
 
 
-admin.site.register(Notification)
+# admin.site.register(Notification)
