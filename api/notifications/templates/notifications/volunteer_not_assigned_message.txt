@@ -1,0 +1,8 @@
+Hello,
+
+Thanks for offering, but someone else is completing this action:
+{{action_url}}
+
+Kind regards,
+
+The To-Fro Team

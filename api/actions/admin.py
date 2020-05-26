@@ -75,15 +75,14 @@ class RequestedDatetimeListFilter(admin.DateFieldListFilter):
 
 
 class ActionAdmin(ModelAdminWithExtraContext):
-    list_display = ('id', 'resident', 'help_type',
-                    'requested_datetime',  'action_status', 'volunteer')
-    list_filter = ('action_status',
-                   ('requested_datetime', RequestedDatetimeListFilter),
+    list_display = ('id', 'resident', 'help_type', 'requested_datetime',  'action_status', 'assigned_volunteer')
+    list_filter = ('action_status', ('requested_datetime', RequestedDatetimeListFilter),
+
                    ('resident', admin.RelatedOnlyFieldListFilter),
-                   ('volunteer', admin.RelatedOnlyFieldListFilter))
-    list_editable = ['action_status', 'volunteer']
-    autocomplete_fields = ['resident', 'volunteer']
-    filter_horizontal = ('requirements',)
+                   ('assigned_volunteer', admin.RelatedOnlyFieldListFilter))
+    list_editable = ['action_status', 'assigned_volunteer']
+    autocomplete_fields = ['resident']
+    filter_horizontal = ('requirements', 'interested_volunteers')
 
     fieldsets = (
         ('Action Details', {
@@ -93,7 +92,7 @@ class ActionAdmin(ModelAdminWithExtraContext):
             'fields': ('public_description', 'private_description')
         }),
         ('Help received', {
-            'fields': ('action_status', 'volunteer', 'time_taken', 'notes')
+            'fields': ('action_status', 'interested_volunteers', 'assigned_volunteer', 'time_taken', 'notes')
         }),
         ('Call details', {
             'fields': ('added_by', 'call_datetime', 'call_duration')

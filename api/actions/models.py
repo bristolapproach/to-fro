@@ -30,36 +30,24 @@ class ActionStatus:
 
 
 class Action(models.Model):
-    added_by = models.ForeignKey(user_models.Coordinator, related_name='added_by',
-                                 on_delete=models.PROTECT, help_text="What's your name?")
-    coordinator = models.ForeignKey(user_models.Coordinator, related_name='coordinator',
-                                    on_delete=models.PROTECT, help_text="Who will mediate this action?")
-    call_datetime = models.DateTimeField(
-        null=True, help_text="What time did you receive the call about this action?")
-    call_duration = models.DurationField(
-        null=True, blank=True, help_text="How long was the call?")
-    resident = models.ForeignKey(
-        user_models.Resident, on_delete=models.PROTECT, null=True, help_text="Who made the request?")
-    requested_datetime = models.DateTimeField(
-        null=True, verbose_name="Due", help_text="When should the action be completed by?")
-    volunteer = models.ForeignKey(user_models.Volunteer, on_delete=models.PROTECT,
-                                  null=True, blank=True, help_text="Who will complete the action?")
-    action_status = models.CharField(max_length=1, choices=ActionStatus.STATUSES,
-                                     default=ActionStatus.PENDING, help_text="What's the status of this action?")
-    action_priority = models.CharField(max_length=1, choices=ActionPriority.PRIORITIES,
-                                       default=ActionPriority.MEDIUM, help_text="What priority should this action be given?")
-    time_taken = models.DurationField(
-        null=True, help_text="How long did it take to complete the action?", blank=True)
-    notes = models.TextField(max_length=500, null=True,
-                             blank=True, help_text="Notes from the volunteer.")
-    public_description = models.TextField(max_length=500, null=True, blank=True,
-                                          help_text="Text that gets displayed to volunteers who are browsing actions.")
-    private_description = models.TextField(
-        null=True, blank=True, help_text="Text that only gets displayed to a volunteer when they're assigned to the action.")
-    help_type = models.ForeignKey(HelpType, on_delete=models.PROTECT, null=True,
-                                  verbose_name="Action type", help_text="Which kind of help is needed")
-    requirements = models.ManyToManyField(Requirement, blank=True, related_name="actions",
-                                          help_text="Only volunteers matching these requirements will see the action.")
+    added_by = models.ForeignKey(user_models.Coordinator, related_name='added_by', on_delete=models.PROTECT, help_text="What's your name?")
+    coordinator = models.ForeignKey(user_models.Coordinator, related_name='coordinator', on_delete=models.PROTECT, help_text="Who will mediate this action?")
+    call_datetime = models.DateTimeField(null=True, help_text="What time did you receive the call about this action?")
+    call_duration = models.DurationField(null=True, blank=True, help_text="How long was the call?")
+    resident = models.ForeignKey(user_models.Resident, on_delete=models.PROTECT, null=True, help_text="Who made the request?")
+    requested_datetime = models.DateTimeField(null=True, help_text="When should the action be completed by?")
+    
+    interested_volunteers = models.ManyToManyField(user_models.Volunteer, blank=True, related_name="interested_volunteers", help_text="Volunteers who have expressed interest in completing the action..")
+    assigned_volunteer = models.ForeignKey(user_models.Volunteer, on_delete=models.PROTECT, null=True, blank=True, help_text="The volunteer who will complete the action.")
+
+    action_status = models.CharField(max_length=1, choices=ActionStatus.STATUSES, default=ActionStatus.PENDING, help_text="What's the status of this action?")
+    action_priority = models.CharField(max_length=1, choices=ActionPriority.PRIORITIES, default=ActionPriority.MEDIUM, help_text="What priority should this action be given?")
+    time_taken = models.DurationField(null=True, help_text="How long did it take to complete the action?", blank=True)
+    notes = models.TextField(max_length=500, null=True, blank=True, help_text="Notes from the volunteer.")
+    public_description = models.TextField(max_length=500, null=True, blank=True, help_text="Text that gets displayed to volunteers who are browsing actions.")
+    private_description = models.TextField(null=True, blank=True, help_text="Text that only gets displayed to a volunteer when they're assigned to the action.")
+    help_type = models.ForeignKey(HelpType, on_delete=models.PROTECT, null=True, help_text="Which kind of help is needed")
+    requirements = models.ManyToManyField(Requirement, blank=True, related_name="actions", help_text="Only volunteers matching these requirements will see the action.")
 
     @property
     def ward(self):
@@ -87,7 +75,7 @@ class Action(models.Model):
 
     @property
     def is_assigned(self):
-        return self.action_status == ActionStatus.ASSIGNED
+        return self.assigned_volunteer is not None
 
     @property
     def is_completed(self):
