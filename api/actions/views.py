@@ -22,8 +22,8 @@ LIST_DEFINITIONS = {
         'title': 'Completed',
         'heading': 'Completed',
         'queryset': lambda volunteer:
-            volunteer.completed_actions
-        .order_by('requested_datetime', '-action_priority')
+            volunteer.completed_actions.order_by(
+                'requested_datetime', '-action_priority')
     },
     'ongoing': {
         'title': 'Ongoing',
@@ -37,8 +37,8 @@ LIST_DEFINITIONS = {
         'title': 'My actions',
         'heading': 'My actions',
         'queryset': lambda volunteer:
-        volunteer.upcoming_actions
-            .order_by('requested_datetime', '-action_priority')
+        volunteer.upcoming_actions.order_by(
+            'requested_datetime', '-action_priority')
     }
 }
 
@@ -65,7 +65,7 @@ class ActionsListView(generic.ListView):
 
 
 def back_url(action, volunteer):
-    if (action.volunteer != volunteer):
+    if (action.assigned_volunteer != volunteer):
         return reverse('actions:available')
 
     if (action.action_status == ActionStatus.INTEREST or action.action_status == ActionStatus.ASSIGNED):
@@ -85,14 +85,21 @@ def detail(request, action_id):
     action = get_object_or_404(Action, pk=action_id)
 
     if request.method == "POST":
-        if (action.action_status != ActionStatus.PENDING):
+
+        # Check if the action still needs volunteers to register interest.
+        if action.action_status == ActionStatus.PENDING \
+        or action.action_status == ActionStatus.INTEREST:
+
+            # If so, add the volunteer.
+            if volunteer not in action.interested_volunteers.all():
+                action.interested_volunteers.add(volunteer)
+                action.action_status = ActionStatus.INTEREST
+                action.save()
+            messages.success(request, 'Thanks for volunteering!')
+        else:
             messages.error(
                 request, 'Thanks, but someone has already volunteered to help')
-        else:
-            action.volunteer = volunteer
-            action.action_status = ActionStatus.INTEREST
-            action.save()
-            messages.success(request, 'Thanks for volunteering!')
+        
         return redirect('actions:detail', action_id=action.id)
 
     context = {
@@ -110,8 +117,13 @@ def complete(request, action_id):
     volunteer = request.user.volunteer
     action = get_object_or_404(Action, pk=action_id)
 
+<<<<<<< HEAD
     if action.action_status != ActionStatus.ASSIGNED or action.volunteer != volunteer:
         return redirect('actions:detail', action_id=action.id)
+=======
+    # if action.action_status != ActionStatus.ASSIGNED or action.assigned_volunteer != volunteer:
+    #     return redirect('actions:detail', action_id=action.id)
+>>>>>>> 43a0c219968c39d34a83f615cd575320d839d0cc
 
     form = ActionFeedbackForm(request.POST or None, instance=action)
     if request.method == "POST" and form.is_valid():

@@ -23,7 +23,7 @@ def post_save_user(sender, instance, created, **kwargs):
 @receiver(post_save, sender=Action, dispatch_uid="ActionSave")
 def post_save_action(sender, instance, **kwargs):
     """Create appropriate notifications when an action changes."""
-    django_rq.enqueue(notifications.create_action_notifications, instance)
+    django_rq.enqueue(notifications.create_action_notifications, instance, result_ttl=0)
 
 
 @receiver(post_save, sender=Notification, dispatch_uid="NotificationSave")
@@ -33,4 +33,4 @@ def post_save_notification(sender, instance, **kwargs):
     if instance.recipients.exists() \
     and instance.recipients.count() > 0 \
     and not instance.delivered:
-        django_rq.enqueue(notifications.send, instance)
+        django_rq.enqueue(notifications.send, instance, result_ttl=0)
