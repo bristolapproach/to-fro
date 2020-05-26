@@ -102,7 +102,7 @@ class ActionAdmin(ModelAdminWithExtraContext):
                    ('resident', admin.RelatedOnlyFieldListFilter),
                    ('assigned_volunteer', admin.RelatedOnlyFieldListFilter))
     list_editable = ['action_status', 'assigned_volunteer']
-    autocomplete_fields = ['resident']
+    autocomplete_fields = ['resident', 'assigned_volunteer']
     filter_horizontal = ('requirements', 'interested_volunteers')
 
     fieldsets = (
