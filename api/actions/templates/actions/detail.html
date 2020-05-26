@@ -5,12 +5,15 @@
 {% load svg %}
 
 {% block 'content' %}
+
+<p class="text-center text-muted mt-0">{{action.requested_datetime|date:"D d M H:i"}}</p>
+
 {% if action.assigned_volunteer == volunteer and action.can_reveal_private_information %}
-  <h2 class="ma-2">You'll help:</h2>
+  <h2 class="maf-2">Resident details</h2>
   {% include './_resident_detail.html' with resident=action.resident %}
 {% endif %}
 
-<h2 class="ma-2">They need:</h2>
+<h2 class="maf-2">Action details</h2>
 <div class="card p-3">
   {% if action.assigned_volunteer == volunteer and action.can_reveal_private_information %}
     {% if action.private_description %}
