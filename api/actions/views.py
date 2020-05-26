@@ -116,13 +116,8 @@ def complete(request, action_id):
     volunteer = request.user.volunteer
     action = get_object_or_404(Action, pk=action_id)
 
-<<<<<<< HEAD
-    if action.action_status != ActionStatus.ASSIGNED or action.assigned_volunteer != volunteer:
-        return redirect('actions:detail', action_id=action.id)
-=======
-    # if action.action_status != ActionStatus.ASSIGNED or action.volunteer != volunteer:
+    # if action.action_status != ActionStatus.ASSIGNED or action.assigned_volunteer != volunteer:
     #     return redirect('actions:detail', action_id=action.id)
->>>>>>> master
 
     form = ActionFeedbackForm(request.POST or None, instance=action)
     if request.method == "POST" and form.is_valid():
