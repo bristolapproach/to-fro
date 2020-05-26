@@ -6,6 +6,7 @@ from django.core.paginator import Paginator
 from django.contrib import messages
 from django.views import generic
 from django.urls import reverse
+from .forms import ActionFeedbackForm
 import datetime
 
 
@@ -24,11 +25,19 @@ LIST_DEFINITIONS = {
             volunteer.completed_actions.order_by(
                 'requested_datetime', '-action_priority')
     },
+    'ongoing': {
+        'title': 'Ongoing',
+        'heading': 'Ongoing',
+        'queryset': lambda volunteer:
+            volunteer.ongoing_actions.order_by(
+                'requested_datetime', '-action_priority'
+            )
+    },
     'mine': {
         'title': 'My actions',
         'heading': 'My actions',
         'queryset': lambda volunteer:
-        volunteer.incomplete_actions.order_by(
+        volunteer.upcoming_actions.order_by(
             'requested_datetime', '-action_priority')
     }
 }
@@ -61,6 +70,9 @@ def back_url(action, volunteer):
 
     if (action.action_status == ActionStatus.INTEREST or action.action_status == ActionStatus.ASSIGNED):
         return reverse('actions:index')
+
+    if (action.action_status == ActionStatus.ONGOING):
+        return reverse('actions:ongoing')
 
     if (action.action_status == ActionStatus.COULDNT_COMPLETE or action.action_status == ActionStatus.COMPLETED):
         return reverse('actions:completed')
@@ -104,34 +116,26 @@ def complete(request, action_id):
     volunteer = request.user.volunteer
     action = get_object_or_404(Action, pk=action_id)
 
+<<<<<<< HEAD
     if action.action_status != ActionStatus.ASSIGNED or action.assigned_volunteer != volunteer:
         return redirect('actions:detail', action_id=action.id)
+=======
+    # if action.action_status != ActionStatus.ASSIGNED or action.volunteer != volunteer:
+    #     return redirect('actions:detail', action_id=action.id)
+>>>>>>> master
 
-    if request.method == "POST":
-        try:
-            # the duration field expects seconds, but we ask for an input in hours
-            action.time_taken = datetime.timedelta(
-                hours=float(request.POST['time_taken']))
-            action.notes = request.POST['notes']
-            if (request.POST['outcome'] == 'ok'):
-                action.action_status = ActionStatus.COMPLETED
-                action.save()
-                messages.success(request, 'Nice work! Thanks for helping out!')
-            else:
-                action.action_status = ActionStatus.COULDNT_COMPLETE
-                action.save()
-                messages.success(
-                    request, 'Thanks for helping out! Sorry it did not all go smoothly.')
-            return redirect('actions:detail', action_id=action.id)
-        except:
-            messages.error(
-                request, 'Sorry, we could not save your information. Please double check the form.')
+    form = ActionFeedbackForm(request.POST or None, instance=action)
+    if request.method == "POST" and form.is_valid():
+        form.save()
+        messages.success(request, 'Nice work! Thanks for helping out!')
+        return redirect('actions:detail', action_id=action.id)
 
     context = {
         'action': action,
         'back_url': reverse('actions:detail', kwargs={'action_id': action.id}),
         'title': 'How did it go?',
         'heading': 'How did it go?',
+        'form': form
     }
 
     return render(request, 'actions/complete.html', context)
