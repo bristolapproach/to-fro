@@ -6,11 +6,10 @@
 <nav aria-label="Action types" class="overflow-auto py-1">
   <ul class="d-flex space-x-3 list-unstyled">
     <li class="ml-auto">
-    <a href="#">News <span class="badge">5</span></a><br>
     <a href="{% url 'actions:available' %}" class="btn {% if current_list_type == 'available' %} btn-dark{%endif%} notification"
       {% if current_list_type == 'available' %} aria-current {%endif%}>
       {% if user.new_offer_help %}
-      <span class="badge">!</span>
+        <span class="badge">!</span>
       {% endif %}
       Offer help
     </a>
@@ -19,7 +18,7 @@
     <a href="{% url 'home' %}" class="btn {% if current_list_type == 'mine' %} btn-dark{%endif%} notification"
       {% if current_list_type == 'mine' %} aria-current {%endif%}>
       {% if user.new_upcoming %}
-      <span class="badge">!</span>
+        <span class="badge">!</span>
       {% endif %}
       Upcoming
     </a>
@@ -28,7 +27,7 @@
     <a href="{% url 'actions:ongoing' %}" class="btn {% if current_list_type == 'ongoing' %} btn-dark{%endif%} notification"
       {% if current_list_type == 'ongoing' %} aria-current {%endif%}>
       {% if user.new_ongoing %}
-      <span class="badge">!</span>
+        <span class="badge">!</span>
       {% endif %}
       Ongoing
     </a>
@@ -37,7 +36,7 @@
     <a href="{% url 'actions:completed' %}" class="btn {% if current_list_type == 'completed' %} btn-dark {%endif%} notification"
       {% if current_list_type == 'completed' %} aria-current {%endif%}>
       {% if user.new_past %}
-      <span class="badge">!</span>
+        <span class="badge">!</span>
       {% endif %}
       Past
     </a>
