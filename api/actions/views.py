@@ -91,9 +91,10 @@ def detail(request, action_id):
         or action.action_status == ActionStatus.INTEREST:
 
             # If so, add the volunteer.
-            action.interested_volunteers.add(volunteer)
-            action.action_status = ActionStatus.INTEREST
-            action.save()
+            if volunteer not in action.interested_volunteers.all():
+                action.interested_volunteers.add(volunteer)
+                action.action_status = ActionStatus.INTEREST
+                action.save()
             messages.success(request, 'Thanks for volunteering!')
         else:
             messages.error(
