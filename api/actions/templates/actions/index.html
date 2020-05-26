@@ -3,23 +3,33 @@
 {% load humanize %}
 
 {% block 'content' %}
-<nav aria-label="Action types" class="d-flex justify-content-center space-x-3">
-  <a href="{% url 'actions:available' %}" class="btn {% if current_list_type == 'available' %} btn-dark{%endif%}"
-    {% if current_list_type == 'available' %} aria-current {%endif%}>
-    Offer help
-  </a>
-  <a href="{% url 'home' %}" class="btn {% if current_list_type == 'mine' %} btn-dark{%endif%}"
-    {% if current_list_type == 'mine' %} aria-current {%endif%}>
-    Upcoming
-  </a>
-  <a href="{% url 'actions:ongoing' %}" class="btn {% if current_list_type == 'ongoing' %} btn-dark{%endif%}"
-    {% if current_list_type == 'ongoing' %} aria-current {%endif%}>
-    Ongoing
-  </a>
-  <a href="{% url 'actions:completed' %}" class="btn {% if current_list_type == 'completed' %} btn-dark {%endif%}"
-    {% if current_list_type == 'completed' %} aria-current {%endif%}>
-    Past
-  </a>
+<nav aria-label="Action types" class="overflow-auto py-1">
+  <ul class="d-flex space-x-3 list-unstyled">
+    <li class="ml-auto">
+    <a href="{% url 'actions:available' %}" class="btn {% if current_list_type == 'available' %} btn-dark{%endif%}"
+      {% if current_list_type == 'available' %} aria-current {%endif%}>
+      Offer help
+    </a>
+    </li>
+    <li>
+    <a href="{% url 'home' %}" class="btn {% if current_list_type == 'mine' %} btn-dark{%endif%}"
+      {% if current_list_type == 'mine' %} aria-current {%endif%}>
+      Upcoming
+    </a>
+    </li>
+    <li>
+    <a href="{% url 'actions:ongoing' %}" class="btn {% if current_list_type == 'ongoing' %} btn-dark{%endif%}"
+      {% if current_list_type == 'ongoing' %} aria-current {%endif%}>
+      Ongoing
+    </a>
+    </li>
+    <li class="mr-auto">
+    <a href="{% url 'actions:completed' %}" class="btn {% if current_list_type == 'completed' %} btn-dark {%endif%}"
+      {% if current_list_type == 'completed' %} aria-current {%endif%}>
+      Past
+    </a>
+    </li>
+  </ul>
 </nav>
 {% if actions %}
 <ul class="list-group bg-white list-unstyled action-list">
