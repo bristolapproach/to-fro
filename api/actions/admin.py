@@ -1,4 +1,4 @@
-from .models import Action, ActionPriority
+from .models import Action, ActionPriority, ActionStatus
 from categories.models import HelpType
 
 # Register our models with the admin site.
@@ -74,10 +74,31 @@ class RequestedDatetimeListFilter(admin.DateFieldListFilter):
                       )
 
 
-class ActionAdmin(ModelAdminWithExtraContext):
-    list_display = ('id', 'resident', 'help_type', 'requested_datetime',  'action_status', 'assigned_volunteer')
-    list_filter = ('action_status', ('requested_datetime', RequestedDatetimeListFilter),
+class MadeContactFilter(admin.SimpleListFilter):
+    title = 'Made contact'
+    parameter_name = 'made_contact'
 
+    def lookups(self, request, model_admin):
+        return (
+            ('Yes', 'Yes'),
+            ('No', 'No'),
+        )
+
+    def queryset(self, request, queryset):
+        value = self.value()
+        if value == 'Yes':
+            return queryset.filter(volunteer_made_contact_on__isnull=False)
+        elif value == 'No':
+            return queryset.filter(volunteer_made_contact_on__isnull=True, action_status__in=(ActionStatus.ONGOING, ActionStatus.ASSIGNED, ActionStatus.COMPLETED, ActionStatus.COULDNT_COMPLETE))
+        return queryset
+
+
+class ActionAdmin(ModelAdminWithExtraContext):
+    list_display = ('id', 'resident', 'help_type',
+                    'requested_datetime', 'has_volunteer_made_contact',  'action_status', 'assigned_volunteer', )
+    list_filter = ('action_status',
+                   MadeContactFilter,
+                   ('requested_datetime', RequestedDatetimeListFilter),
                    ('resident', admin.RelatedOnlyFieldListFilter),
                    ('assigned_volunteer', admin.RelatedOnlyFieldListFilter))
     list_editable = ['action_status', 'assigned_volunteer']
@@ -92,7 +113,7 @@ class ActionAdmin(ModelAdminWithExtraContext):
             'fields': ('public_description', 'private_description')
         }),
         ('Help received', {
-            'fields': ('action_status', 'interested_volunteers', 'assigned_volunteer', 'time_taken', 'notes')
+            'fields': ('action_status', 'interested_volunteers', 'assigned_volunteer', 'volunteer_made_contact_on', 'time_taken', 'notes')
         }),
         ('Call details', {
             'fields': ('added_by', 'call_datetime', 'call_duration')
@@ -150,6 +171,14 @@ class ActionAdmin(ModelAdminWithExtraContext):
             'private_description_template': help_type.private_description_template,
             'public_description_template': help_type.public_description_template
         }) for help_type in help_types)
+
+    def has_volunteer_made_contact(self, obj):
+        # Only return a value when relevant, to not clutter the admin
+        if obj.action_status in (ActionStatus.ONGOING, ActionStatus.ASSIGNED, ActionStatus.COMPLETED, ActionStatus.COULDNT_COMPLETE):
+            return bool(obj.volunteer_made_contact_on)
+
+    has_volunteer_made_contact.boolean = True
+    has_volunteer_made_contact.short_description = "Contact"
 
 
 admin.site.register(Action, ActionAdmin)

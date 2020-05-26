@@ -1,0 +1,13 @@
+{% load svg %}
+
+{% if volunteer in action.interested_volunteers.all %}
+  <p class="text-center">Thanks for volunteering! We'll be back in touch soon!</p>
+{% else %}
+  <form method="POST">
+    {% csrf_token %}
+    <button class="btn d-table mx-auto btn-primary" name="_action" value="accept_help">
+      {% embed_fontawesome 'hands-helping' class_attribute="align-icon mr-1" %}
+      I'll help!
+    </button>
+  </form>
+{% endif %}

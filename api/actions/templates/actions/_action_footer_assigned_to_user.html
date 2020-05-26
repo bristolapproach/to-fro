@@ -1,0 +1,27 @@
+{% load svg %}
+
+{% if not action.volunteer_made_contact_on %}
+  <h3 class="h5 text-center">
+    Thanks for volunteering.</h3>
+  <p>
+    Please contact the person asap so they know they have a volunteer/buddy and to make the arrangements.
+    We would recommend you shield your telephone number when doing this.
+  </p>
+  <div class="d-flex flex-wrap justify-content-around mt-n2">
+    <a class="btn btn-link mt-2" href="{% url 'actions:complete' action.id%}">
+      I went and helped!
+    </a>
+    <form method="POST" class="mt-2">
+      {% csrf_token %}
+      <button class="btn btn-primary" name="_action" value="contact">
+        {% embed_fontawesome 'comments' icon_set="regular" %}
+        I've made contact
+      </button>
+    </form>
+  </div>
+{% else %}
+  <a class="btn btn-primary d-table mx-auto mt-2" href="{% url 'actions:complete' action.id%}">
+    {% embed_fontawesome 'check' class_attribute="align-icon" %}
+    I went and helped!
+  </a>
+{% endif %}

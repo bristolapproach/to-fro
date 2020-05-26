@@ -26,35 +26,19 @@
   {% endif %}
   <div class="mbf-3">
     {% if not action.is_assigned %}
-      {% if volunteer in action.interested_volunteers.all %}
-        <button class="btn d-table mx-auto btn-primary" name="action" value="accept_help" disabled>
-          {% embed_fontawesome 'hands-helping' class_attribute="align-icon mr-1" %}
-          Thanks for registering interest
-        </button>
-      {% else %}
-        <form method="POST">
-          {% csrf_token %}
-          <button class="btn d-table mx-auto btn-primary" name="action" value="accept_help">
-            {% embed_fontawesome 'hands-helping' class_attribute="align-icon mr-1" %}
-            I'll help!
-          </button>
-        </form>
-      {% endif %}
-    {% else %}
+      {% include './_action_footer_unassigned.html' with action=action volunteer=volunteer%}
+    {%else %}
       {% if action.assigned_volunteer != volunteer %}
         <p class="text-center">Someone's on it, but thanks for thinking of it!</p>
       {% else %}
         {% if action.has_interest %}
           <p class="text-center">Thanks for volunteering! We'll be back in touch soon!</p>
         {% elif action.is_assigned %}
-          <a class="btn d-table mx-auto btn-primary" href="{% url 'actions:complete' action.id%}">
-            {% embed_fontawesome 'walking' class_attribute="align-icon" %}
-            I went and helped!
-          </a>
+          {% include './_action_footer_assigned_to_user.html'%}
         {% else %}
-        <p>Thanks for helping!</p>
+          <p class="text-center">Thanks for helping!</p>
         {% endif %}
-      {% endif %}
+      {% endif%}
     {% endif %}
   </div>
 </div>
