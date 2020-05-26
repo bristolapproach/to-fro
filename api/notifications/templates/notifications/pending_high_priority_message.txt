@@ -1,10 +1,8 @@
 Hello,
 
-We've received a request for help in your area.
+We have a request for help that is time sensitive.
 
-Check out the details of the request here:
+If you’re able to help please respond here:
 {{action_url}}
 
-Thank you!
-
-The To-Fro Team
+Many thanks and best wishes from the KW Support Hub Team

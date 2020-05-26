@@ -32,12 +32,16 @@ def create_action_notifications(action):
     Depending on what notifications have already been sent, 
     and the type of action, appropriate emails will be delivered.
     """
+    logger.warning("Creating action notifications")
+    logger.warning(action.public_description)
     # New, high-priority, pending actions trigger an email to appropriate volunteers.
     if action.action_priority == ActionPriority.HIGH \
     and action.action_status == ActionStatus.PENDING \
     and not notification_exists(action, NotificationTypes.PENDING_HIGH_PRIORITY):
+        logger.warning("Creating high-priority, pending action notification")
         create(action.potential_volunteers, action=action,
-            notification_type=NotificationTypes.PENDING_HIGH_PRIORITY)
+            notification_type=NotificationTypes.PENDING_HIGH_PRIORITY, 
+            context={"public_description": action.public_description})
 
 
     # Action coordinator is notified when a volunteer shows interest in an action.
@@ -110,13 +114,18 @@ def get_all_notifications(action, notification_type):
             .all()
 
 
-def create(recipients, subject=None, message=None, action=None, notification_type=None):
+def create(recipients, subject=None, message=None, action=None, notification_type=None, context=None):
     """Instantiates notifications.
     Generates a notification subject and message, depending on the notification_type.
     """
 
     # Generate a subject and message based on the notification_type.
-    gen_subject, gen_message = gen_subject_and_message(site_url, notification_type, action)
+    logger.warning("\n\nContext:")
+    logger.warning(context)
+    logger.warning(context.get("admin_action_url"))
+    logger.warning(action.public_description)
+    gen_subject, gen_message = gen_subject_and_message(site_url, notification_type, action, context)
+    
 
     # Create the notification.
     notification = Notification(
