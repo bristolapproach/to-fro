@@ -75,9 +75,7 @@ class Action(models.Model):
 
     @property
     def is_assigned(self):
-        return self.action_status == ActionStatus.ASSIGNED \
-            or self.action_status == ActionStatus.COMPLETED \
-            or self.action_status == ActionStatus.COULDNT_COMPLETE
+        return self.assigned_volunteer is not None
 
     @property
     def is_completed(self):
