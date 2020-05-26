@@ -198,7 +198,15 @@ input[type=number] {
     list-style-type: none;
     display: inline-flex;
     flex-wrap: wrap;
+    justify-content: center;
     padding: 0;
+    // The negative margin compensates for the
+    // margin of the items themselves
+    margin: map-get($spacers, 1) * -1;
+
+    > * {
+      margin: map-get($spacers, 1)
+    }
   }
 
   a {
