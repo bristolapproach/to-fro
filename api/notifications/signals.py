@@ -21,9 +21,11 @@ def post_save_user(sender, instance, created, **kwargs):
 
 
 @receiver(post_save, sender=Action, dispatch_uid="ActionSave")
-def post_save_action(sender, instance, **kwargs):
+def post_save_action(sender, instance, created, **kwargs):
     """Create appropriate notifications when an action changes."""
-    django_rq.enqueue(notifications.create_action_notifications, instance, result_ttl=0)
+    django_rq.enqueue(notifications.create_action_emails, instance, result_ttl=0)
+    if created:
+        django_rq.enqueue(notifications.create_action_notifications, instance, result_ttl=0)
 
 
 @receiver(post_save, sender=Notification, dispatch_uid="NotificationSave")

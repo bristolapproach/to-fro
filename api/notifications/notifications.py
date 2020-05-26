@@ -28,6 +28,23 @@ def send_invite(user):
 
 
 def create_action_notifications(action):
+    """Displays a notification to the user when there's an update."""
+    if action.action_status == ActionStatus.PENDING \
+    or action.action_status == ActionStatus.INTEREST:
+        action.potential_volunteers.update(new_offer_help=True)
+    
+    elif action.action_status == ActionStatus.ASSIGNED:
+        action.potential_volunteers.update(new_upcoming=True)
+    
+    elif action.action_status == ActionStatus.ONGOING:
+        action.potential_volunteers.update(new_ongoing=True)
+
+    elif action.action_status == ActionStatus.COMPLETED \
+    or action.action_status == ActionStatus.COULDNT_COMPLETE:
+        action.potential_volunteers.update(new_past=True)
+
+
+def create_action_emails(action):
     """Sends emails related to this action.
     Depending on what notifications have already been sent, 
     and the type of action, appropriate emails will be delivered.

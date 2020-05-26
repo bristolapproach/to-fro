@@ -170,6 +170,14 @@ class Volunteer(UserProfileMixin, Person):
         default=False, verbose_name="Sunday afternoon")
     available_sun_evening = models.BooleanField(
         default=False, verbose_name="Sunday evening")
+    new_offer_help = models.BooleanField(
+        default=False, verbose_name="Notifies the user of changes")
+    new_upcoming = models.BooleanField(
+        default=False, verbose_name="Notifies the user of changes")
+    new_ongoing = models.BooleanField(
+        default=False, verbose_name="Notifies the user of changes")
+    new_past = models.BooleanField(
+        default=False, verbose_name="Notifies the user of changes")
 
     @property
     def available_actions(self):
