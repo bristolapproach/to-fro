@@ -239,6 +239,11 @@ if DEBUG:
     LOGGING['handlers']['console']['level'] = 'DEBUG'
     LOGGING['loggers']['']['level'] = 'DEBUG'
     LOGGING['loggers']['django.server']['level'] = 'WARNING'
+    # Uncomment to log the DB queries (lots of noise though)
+    # LOGGING['loggers']['django.db.backends'] = {
+    #     'level': 'DEBUG',
+    #     'handlers': ['console'],
+    # }
 
 # Help configure contact email
 CONTACT_EMAIL = os.getenv('CONTACT_EMAIL', 'contact@example.com')
