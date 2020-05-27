@@ -7,6 +7,7 @@ from actions.models import Action
 import django_rq
 import logging
 import os
+from django.db import transaction
 
 
 site_url = os.getenv("SITE_URL", "http://0.0.0.0:80")
@@ -21,9 +22,13 @@ def post_save_user(sender, instance, created, **kwargs):
 
 
 @receiver(post_save, sender=Action, dispatch_uid="ActionSave")
-def post_save_action(sender, instance, **kwargs):
+def post_save_action(sender, instance, using=None, **kwargs):
     """Create appropriate notifications when an action changes."""
-    django_rq.enqueue(notifications.create_action_notifications, instance, result_ttl=0)
+    # Create the notification only after the save of the action
+    # is commited, to ensure action will be found to satisfy
+    # the foreign key on the notifications table
+    transaction.on_commit(lambda:
+                          django_rq.enqueue(notifications.create_action_notifications, instance, result_ttl=0), using=using)
 
 
 @receiver(post_save, sender=Notification, dispatch_uid="NotificationSave")
@@ -31,6 +36,6 @@ def post_save_notification(sender, instance, **kwargs):
     """Send a notification once it is saved."""
     # Determine if we should send an email.
     if instance.recipients.exists() \
-    and instance.recipients.count() > 0 \
-    and not instance.delivered:
+            and instance.recipients.count() > 0 \
+            and not instance.delivered:
         django_rq.enqueue(notifications.send, instance, result_ttl=0)
