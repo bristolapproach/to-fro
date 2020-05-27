@@ -1,8 +1,9 @@
 
 from django.conf import settings
 from django.contrib.auth import views
-from django.urls import reverse
+from django.urls import reverse, reverse_lazy
 from django.shortcuts import resolve_url
+from django.contrib import messages
 
 from actions.views import ActionsListView
 from .lib import has_permission
@@ -27,6 +28,44 @@ class LoginView(views.LoginView):
     def get_redirect_url_for_user(self, user):
         if user.is_staff:
             return reverse('admin:index')
+
+
+class PasswordResetConfirmView(views.PasswordResetConfirmView):
+    """
+    Custom password reset view to display a more welcoming page
+    for first resets
+    """
+    # Save the user some time by logging them in automatically
+    post_reset_login = True
+    # Redirect them to the homepage
+    # reverse_lazy as the URLs are not yet configured
+    # when this is called
+    success_url = reverse_lazy('home')
+
+    def get_template_names(self):
+        if (self.user.password):
+            return [self.template_name]
+        else:
+            return 'registration/password_reset_confirm_invite.html'
+
+    def form_valid(self, form):
+        """
+        Builds on the existing form_valid to display a message
+        confirming the password has been reset on the page
+        the user will be redirected to
+        """
+        messages.success(self.request, 'Your password was successfully reset!')
+        return super().form_valid(form)
+
+    def get_context_data(self, **kwargs):
+        """
+        Adds the user to the request so we can display relevant info
+        """
+        context = super().get_context_data(**kwargs)
+        context.update({
+            'user': self.user
+        })
+        return context
 
 
 def homepage(request):

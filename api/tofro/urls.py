@@ -10,7 +10,7 @@ from django.urls import include, path
 from django.conf import settings
 from django.conf.urls import url
 from django.contrib import admin
-from tofro.views import LoginView, homepage
+from tofro.views import LoginView, PasswordResetConfirmView, homepage
 from tofro.lib import login_required
 from django.contrib.flatpages import views
 
@@ -18,7 +18,9 @@ from django.contrib.flatpages import views
 urlpatterns = [
     path('', homepage, name="home"),
     path('admin/', admin.site.urls, name="admin"),
-
+    # Take over the password reset confirmation with our own view
+    path('accounts/reset/<uidb64>/<token>/',
+         PasswordResetConfirmView.as_view(), name='password_reset_confirm'),
     path('accounts/', include('django.contrib.auth.urls')),
     path('actions/', decorator_include(login_required, ('actions.urls', 'actions'))),
     path('accounts/login', LoginView.as_view(), name="login"),

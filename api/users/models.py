@@ -67,6 +67,13 @@ class UserProfileMixin(models.Model):
         return super().save(force_insert=force_insert, force_update=force_update, using=using, update_fields=update_fields)
 
     def create_user(self):
+        """
+        Creates a new User this profile is associated with
+
+        IMPORTANT: Leave password empty as it's what will let
+        the password reset form be customized to show a different
+        message for the first reset
+        """
         user = User(username=self.email, email=self.email)
         user.is_staff = self.profile_related_name == 'coordinator'
         user.is_superuser = self.profile_related_name == 'coordinator'
