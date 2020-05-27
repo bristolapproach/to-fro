@@ -59,13 +59,7 @@ def create_action_notifications(action):
         or action.assigned_volunteer.id != get_latest_notification(action,
         NotificationTypes.VOLUNTEER_ASSIGNED).recipients.first().id:
             create([action.assigned_volunteer], action=action,
-                notification_type=NotificationTypes.VOLUNTEER_ASSIGNED,
-                context={
-                    "name": action.resident.full_name,
-                    "address": action.resident.address,
-                    "phone_number": action.resident.phone,
-                    "private_description": action.private_description
-                })
+                notification_type=NotificationTypes.VOLUNTEER_ASSIGNED)
         
         # 2. Let those not assigned know.
         # Only send a notification to volunteers that have not received this email for this action.

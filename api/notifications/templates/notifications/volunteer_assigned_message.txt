@@ -5,18 +5,6 @@ Thanks so much for offering to help.
 You have been approved to help with an action, here are the details:
 {{ action_url }}
 
-Name:
-{{ name }}
-
-Address:
-{{ address }}
-
-Contact number:
-{{ phone_number }}
-
-Request:
-{{ private_description }}
-
 As ever – please contact the client asap so they know they have a volunteer/buddy and to make the arrangements, we would recommend you shield your telephone number when doing this. I’d be grateful if you can let me know when you have made contact, and when you have completed your mission (whether one off or ongoing) also let us know your time taken to complete. Once you have done that please delete all personal details for the client so we’re not holding their data unnecessarily.
 
 If you are having difficulty completing the help offer on time or if there is something you’d like to flag up with a Volunteer Coordinator please email feedback@knowlewestalliance.co.uk.
