@@ -1,8 +1,2 @@
-Hello,
-
-A volunteer just completed this action:
+A volunteer just completed action no. {{ action_id }}:
 {{admin_action_url}}
-
-Thank you!
-
-The To-Fro Team

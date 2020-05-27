@@ -1,8 +1,2 @@
-Hello,
-
-A volunteer could not complete this action:
+A volunteer could not complete action no. {{ action_id }}:
 {{admin_action_url}}
-
-Thank you!
-
-The To-Fro Team
