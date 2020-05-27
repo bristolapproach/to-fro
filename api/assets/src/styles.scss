@@ -19,9 +19,8 @@ body {
   }
 }
 
-img,
-svg {
-  // Make sure image don't span wider than
+img {
+  // Make sure images don't span wider than
   // their containter by default
   max-width: 100%;
   height: auto;
