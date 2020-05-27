@@ -1,7 +1,7 @@
 {% load svg %}
 
 {% if volunteer in action.interested_volunteers.all %}
-  <p class="text-center">Thanks for volunteering! We'll be back in touch soon!</p>
+  <p class="text-center">Please wait whilst we check things through. This is to maximise the privacy and safety of everyone involved. We'll be back in touch soon!</p>
 {% else %}
   <form method="POST">
     {% csrf_token %}
