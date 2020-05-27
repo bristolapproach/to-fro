@@ -3,6 +3,7 @@
   file:
     path: "{{ src_destination }}"
     state: absent
+  become: yes
 
 - name: Copy the project files
   synchronize:
