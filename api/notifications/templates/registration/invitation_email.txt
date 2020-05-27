@@ -8,4 +8,4 @@ An account has been set up for you on {{site_name}}. Please complete registratio
 
 Thanks for offering to help!
 
-The {{ site_name }} team
+The To/Fro team
