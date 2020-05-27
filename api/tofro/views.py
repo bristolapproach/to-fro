@@ -31,12 +31,22 @@ class LoginView(views.LoginView):
 
 
 class PasswordResetConfirmView(views.PasswordResetConfirmView):
+    """
+    Custom password reset view to display a more welcoming page
+    for first resets
+    """
     # Save the user some time by logging them in automatically
     post_reset_login = True
     # Redirect them to the homepage
     # reverse_lazy as the URLs are not yet configured
     # when this is called
     success_url = reverse_lazy('home')
+
+    def get_template_names(self):
+        if (self.user.password):
+            return [self.template_name]
+        else:
+            return 'registration/password_reset_confirm_invite.html'
 
     def form_valid(self, form):
         """
@@ -46,6 +56,16 @@ class PasswordResetConfirmView(views.PasswordResetConfirmView):
         """
         messages.success(self.request, 'Your password was successfully reset!')
         return super().form_valid(form)
+
+    def get_context_data(self, **kwargs):
+        """
+        Adds the user to the request so we can display relevant info
+        """
+        context = super().get_context_data(**kwargs)
+        context.update({
+            'user': self.user
+        })
+        return context
 
 
 def homepage(request):
