@@ -9,7 +9,7 @@ def gen_subject_and_message(site_url, notification_type, action=None, context=No
     """
     # Generate message context.
     message_context = {} if not action else context or {}
-    message_context['action_url'] = f'{site_url}{reverse("actions:detail", kwargs={"action_id":action.id})}',
+    message_context['action_url'] = f'{site_url}{reverse("actions:detail", kwargs={"action_id":action.id})}'
     message_context['admin_action_url'] = f'{site_url}/admin/actions/action/{action.id}/change'
 
     # Return the subject and message, removing line breaks from the subject.

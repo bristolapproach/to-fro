@@ -1,8 +1,10 @@
 Hello,
 
-Thanks for offering, but someone else is completing this action:
+Many thanks for putting your hand up and offering to help for this action:
 {{action_url}}
 
-Kind regards,
+On this occasion we’ve had multiple offers and this job has been allocated to another helper.
 
-The To-Fro Team
+Thanks again for being so generous with your time.
+
+Best wishes from the KW Support Hub Team

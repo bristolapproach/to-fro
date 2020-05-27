@@ -2,7 +2,10 @@ Hello,
 
 We have a request for help that is time sensitive.
 
+Info:
+{{ public_description }}
+
 If you’re able to help please respond here:
-{{action_url}}
+{{ action_url }}
 
 Many thanks and best wishes from the KW Support Hub Team

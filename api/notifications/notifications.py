@@ -32,13 +32,10 @@ def create_action_notifications(action):
     Depending on what notifications have already been sent, 
     and the type of action, appropriate emails will be delivered.
     """
-    logger.warning("Creating action notifications")
-    logger.warning(action.public_description)
     # New, high-priority, pending actions trigger an email to appropriate volunteers.
     if action.action_priority == ActionPriority.HIGH \
     and action.action_status == ActionStatus.PENDING \
     and not notification_exists(action, NotificationTypes.PENDING_HIGH_PRIORITY):
-        logger.warning("Creating high-priority, pending action notification")
         create(action.potential_volunteers, action=action,
             notification_type=NotificationTypes.PENDING_HIGH_PRIORITY, 
             context={"public_description": action.public_description})
@@ -48,7 +45,8 @@ def create_action_notifications(action):
     elif action.action_status == ActionStatus.INTEREST \
     and not notification_exists(action, NotificationTypes.VOLUNTEER_INTEREST):
         create([action.coordinator], action=action,
-            notification_type=NotificationTypes.VOLUNTEER_INTEREST)
+            notification_type=NotificationTypes.VOLUNTEER_INTEREST,
+            context={"action_id": action.id})
 
 
     # Volunteers are notified about whether or not they're assigned to an action.
@@ -61,7 +59,13 @@ def create_action_notifications(action):
         or action.assigned_volunteer.id != get_latest_notification(action,
         NotificationTypes.VOLUNTEER_ASSIGNED).recipients.first().id:
             create([action.assigned_volunteer], action=action,
-                notification_type=NotificationTypes.VOLUNTEER_ASSIGNED)
+                notification_type=NotificationTypes.VOLUNTEER_ASSIGNED,
+                context={
+                    "name": action.resident.full_name,
+                    "address": action.resident.address,
+                    "phone_number": action.resident.phone,
+                    "private_description": action.private_description
+                })
         
         # 2. Let those not assigned know.
         # Only send a notification to volunteers that have not received this email for this action.
@@ -80,14 +84,16 @@ def create_action_notifications(action):
     elif action.action_status == ActionStatus.COMPLETED \
     and not notification_exists(action, NotificationTypes.ACTION_COMPLETED):
         create([action.coordinator], action=action,
-            notification_type=NotificationTypes.ACTION_COMPLETED)
+            notification_type=NotificationTypes.ACTION_COMPLETED,
+            context={"action_id": action.id})
 
 
     # Coordinators are notified when a volunteer can't complete an action.
     elif action.action_status == ActionStatus.COULDNT_COMPLETE \
     and not notification_exists(action, NotificationTypes.ACTION_NOT_COMPLETED):
         create([action.coordinator], action=action,
-            notification_type=NotificationTypes.ACTION_NOT_COMPLETED)
+            notification_type=NotificationTypes.ACTION_NOT_COMPLETED,
+            context={"action_id": action.id})
     
 
 def notification_exists(action, notification_type):
@@ -120,12 +126,7 @@ def create(recipients, subject=None, message=None, action=None, notification_typ
     """
 
     # Generate a subject and message based on the notification_type.
-    logger.warning("\n\nContext:")
-    logger.warning(context)
-    logger.warning(context.get("admin_action_url"))
-    logger.warning(action.public_description)
     gen_subject, gen_message = gen_subject_and_message(site_url, notification_type, action, context)
-    
 
     # Create the notification.
     notification = Notification(
