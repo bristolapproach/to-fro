@@ -18,6 +18,7 @@ from django.contrib.flatpages import views
 urlpatterns = [
     path('', homepage, name="home"),
     path('admin/', admin.site.urls, name="admin"),
+    # Take over the password reset confirmation with our own view
     path('accounts/reset/<uidb64>/<token>/',
          PasswordResetConfirmView.as_view(), name='password_reset_confirm'),
     path('accounts/', include('django.contrib.auth.urls')),
