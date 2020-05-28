@@ -61,3 +61,12 @@ msgstr "Page"
 msgid "Authentication and Authorization"
 msgstr "Site accounts"
 
+# Rename admin actions to activity
+# so they're not confused with the app
+# actions
+msgid "Recent actions"
+msgstr "Recent activity"
+
+msgid "My actions"
+msgstr "My activity"
+
