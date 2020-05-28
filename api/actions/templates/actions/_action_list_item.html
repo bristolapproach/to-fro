@@ -1,5 +1,6 @@
 {% load humanize %}
 {% load svg %}
+{% load actions %}
 
 
   <li class="list-group-item list-group-item-action action-list-item">
@@ -22,7 +23,7 @@
       <span id="action_date_{{action.id}}">{{action.requested_datetime|date:"D d M"}}</span>
       <span class="text-muted small">({{action.requested_datetime|naturaltime}})</span>
     </time>
-    {% if action.has_interest %}
+    {% if action|is_awaiting_confirmation_for:user.volunteer %}
       <i class="btn btn-icon-only action-list-item__icon action-list-item__action" id="action_status_{{action.id}}">
         {% embed_fontawesome 'pause-circle' %}
         <span class="sr-only">Pending approval</span>
