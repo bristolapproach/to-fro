@@ -195,6 +195,9 @@ class Volunteer(UserProfileMixin, Person):
             .annotate(missed_requirements=Count('requirements',
                                                 filter=~Q(requirements__in=self.requirements.all()))) \
             .filter(missed_requirements=0) \
+            .annotate(has_volunteered=Count('interested_volunteers',
+                                            filter=Q(interested_volunteers__id=self.id))) \
+            .filter(has_volunteered=0) \
             .filter(resident__ward__in=self.wards.all()) \
             .filter(help_type__in=self.help_types.all())
 
