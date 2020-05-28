@@ -67,6 +67,8 @@ class Action(models.Model):
     volunteer_made_contact_on = models.DateTimeField(null=True, blank=True)
 
     def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
+        if (self.assigned_volunteer and self.action_status in (ActionStatus.INTEREST, ActionStatus.PENDING)):
+            self.action_status = ActionStatus.ASSIGNED
         if (self.action_status in (ActionStatus.ONGOING, ActionStatus.COMPLETED, ActionStatus.COULDNT_COMPLETE) and not self.volunteer_made_contact_on):
             self.register_volunteer_contact()
         return super().save(force_insert=force_insert, force_update=force_update, using=using, update_fields=update_fields)
