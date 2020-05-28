@@ -11,30 +11,30 @@ from .forms import ActionFeedbackForm
 
 LIST_DEFINITIONS = {
     'available': {
-        'title': 'Available actions',
-        'heading': 'Available actions',
+        'title': "Here's what you can do to help",
+        'heading': "Here's what you can do to help",
         'queryset': lambda volunteer:
             volunteer.available_actions.order_by(
                 'requested_datetime', '-action_priority')
     },
     'completed': {
-        'title': 'Completed',
-        'heading': 'Completed',
+        'title': "Your completed actions",
+        'heading': "Your completed actions",
         'queryset': lambda volunteer:
             volunteer.completed_actions.order_by(
                 'requested_datetime', '-action_priority')
     },
     'ongoing': {
-        'title': 'Ongoing',
-        'heading': 'Ongoing',
+        'title': "Your ongoing actions",
+        'heading': "Your ongoing actions",
         'queryset': lambda volunteer:
             volunteer.ongoing_actions.order_by(
                 'requested_datetime', '-action_priority'
             )
     },
     'mine': {
-        'title': 'My actions',
-        'heading': 'My actions',
+        'title': "Your upcoming actions",
+        'heading': "Your upcoming actions",
         'queryset': lambda volunteer:
         # order first by action_status to make the assigned
         # actions appear first
