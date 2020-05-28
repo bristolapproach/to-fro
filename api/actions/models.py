@@ -2,6 +2,7 @@ from categories.models import HelpType, Requirement
 from users import models as user_models
 from django.db import models
 from django.utils import timezone
+from model_utils import FieldTracker
 
 import logging
 logger = logging.getLogger(__name__)
@@ -30,6 +31,10 @@ class ActionStatus:
 
 
 class Action(models.Model):
+
+    STATUSES_WITHOUT_ASSIGNED_VOLUNTEER = (
+        ActionStatus.INTEREST, ActionStatus.PENDING)
+
     added_by = models.ForeignKey(user_models.Coordinator, related_name='added_by',
                                  on_delete=models.PROTECT, help_text="What's your name?")
     coordinator = models.ForeignKey(user_models.Coordinator, related_name='coordinator',
@@ -66,11 +71,32 @@ class Action(models.Model):
                                           help_text="Only volunteers matching these requirements will see the action.")
     volunteer_made_contact_on = models.DateTimeField(null=True, blank=True)
 
+    # Track changes to the model so we can access the previous status
+    # when it changes, and update the volunteer accordingly if it swapped
+    # to a status that doesn't have a volunteer assigned
+    tracker = FieldTracker()
+
     def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
-        if (self.assigned_volunteer and self.action_status in (ActionStatus.INTEREST, ActionStatus.PENDING)):
+        # Ensure that the volunteer gets cleared when we move from a status
+        # that has an assigned volunteer to one that doesn't
+        if (self.tracker.has_changed('action_status')
+            and self.action_status in self.STATUSES_WITHOUT_ASSIGNED_VOLUNTEER
+                and self.tracker.previous('action_status') not in self.STATUSES_WITHOUT_ASSIGNED_VOLUNTEER):
+            self.assigned_volunteer = None
+
+        # Ensures that the status gets to assigned if we set a volunteer
+        # and the status was one that doesn't need a volunteer
+        # This needs to happen after the clearing of the volunteer
+        # when switching to a status without volunteer so there is no
+        # volunteer and we don't update the status
+        if (self.assigned_volunteer and self.action_status in self.STATUSES_WITHOUT_ASSIGNED_VOLUNTEER):
             self.action_status = ActionStatus.ASSIGNED
+
+        # Track the contact date when setting the status
+        # to one implying that contact would have happened
         if (self.action_status in (ActionStatus.ONGOING, ActionStatus.COMPLETED, ActionStatus.COULDNT_COMPLETE) and not self.volunteer_made_contact_on):
             self.register_volunteer_contact()
+
         return super().save(force_insert=force_insert, force_update=force_update, using=using, update_fields=update_fields)
 
     def register_volunteer_contact(self):
