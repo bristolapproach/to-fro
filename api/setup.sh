@@ -30,11 +30,5 @@ python manage.py collectstatic --noinput --clear
 # Compile messages
 python manage.py compilemessages
 
-# Start a redis worker.
-python manage.py rqworker default & > /dev/null 2>&1
-
-# Start the redis scheduler.
-python manage.py rqscheduler &
-
 # Schedule our repeated tasks.
 python manage.py schedule_tasks

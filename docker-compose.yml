@@ -26,11 +26,46 @@ services:
     restart: unless-stopped
     volumes:
       - redis_volume:/data
+  
+  # Django Redis worker.
+  redis-worker:
+    build:
+      context: ./api/
+      dockerfile: Dockerfile.worker
+    container_name: tofro-redis-worker
+    restart: unless-stopped
+    environment:
+      - DEBUG=${DEBUG}
+      - POSTGRES_DB=${POSTGRES_DB}
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - DATABASE_PORT=${DATABASE_PORT}
+      - DATABASE_HOST=${DATABASE_HOST}
+    depends_on:
+      - redis
+  
+  # Django Redis scheduler.
+  redis-scheduler:
+    build:
+      context: ./api/
+      dockerfile: Dockerfile.scheduler
+    container_name: tofro-redis-scheduler
+    restart: unless-stopped
+    environment:
+      - DEBUG=${DEBUG}
+      - POSTGRES_DB=${POSTGRES_DB}
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - DATABASE_PORT=${DATABASE_PORT}
+      - DATABASE_HOST=${DATABASE_HOST}
+    depends_on:
+      - redis
 
   # Django Python Backend.
   server:
     build:
       context: ./api/
+      dockerfile: Dockerfile.api
     container_name: tofro-django
     restart: unless-stopped
     ports:
@@ -65,6 +100,9 @@ services:
       # Used in production deployment with Ansible.
       - DJANGO_HTTPS=${DJANGO_HTTPS}
       - HOSTNAME=${HOSTNAME}
+    depends_on:
+      - redis-worker
+      - redis-scheduler
 
 volumes:
   data_volume:
