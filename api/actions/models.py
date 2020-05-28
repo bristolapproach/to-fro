@@ -48,7 +48,7 @@ class Action(models.Model):
     requested_datetime = models.DateTimeField(
         null=True, verbose_name="Due", help_text="When should the action be completed by?")
 
-    interested_volunteers = models.ManyToManyField(user_models.Volunteer, blank=True, related_name="interested_volunteers",
+    interested_volunteers = models.ManyToManyField(user_models.Volunteer, blank=True, related_name="actions_interested_in",
                                                    help_text="Volunteers who have expressed interest in completing the action..")
     assigned_volunteer = models.ForeignKey(user_models.Volunteer, on_delete=models.PROTECT,
                                            null=True, blank=True, help_text="The volunteer who will complete the action.")

@@ -36,8 +36,10 @@ LIST_DEFINITIONS = {
         'title': 'My actions',
         'heading': 'My actions',
         'queryset': lambda volunteer:
+        # order first by action_status to make the assigned
+        # actions appear first
         volunteer.upcoming_actions.order_by(
-            'requested_datetime', '-action_priority')
+            '-action_status', 'requested_datetime', '-action_priority')
     }
 }
 
@@ -51,7 +53,7 @@ class ActionsListView(generic.ListView):
     def get_queryset(self):
         volunteer = self.request.user.volunteer
         # Avoid N+1 queries when rendering the list of actions
-        return LIST_DEFINITIONS[self.list_type]['queryset'](volunteer).select_related('help_type', 'resident', 'resident__ward')
+        return LIST_DEFINITIONS[self.list_type]['queryset'](volunteer)
 
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context

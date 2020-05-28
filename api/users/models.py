@@ -203,10 +203,14 @@ class Volunteer(UserProfileMixin, Person):
 
     @property
     def upcoming_actions(self):
+        # select_related needs to happen here rather
+        # than outside of the query due to the `union`
         return self.action_set.exclude(
             Q(action_status=action_models.ActionStatus.ONGOING) |
             Q(action_status=action_models.ActionStatus.COMPLETED) |
-            Q(action_status=action_models.ActionStatus.COULDNT_COMPLETE))
+            Q(action_status=action_models.ActionStatus.COULDNT_COMPLETE)) \
+            .select_related('help_type', 'resident', 'resident__ward') \
+            .union(action_models.Action.objects.filter(interested_volunteers__id=self.id).select_related('help_type', 'resident', 'resident__ward'))
 
     @property
     def completed_actions(self):
