@@ -163,6 +163,10 @@ class Action(models.Model):
             self.action_status == ActionStatus.INTEREST or self.action_status == ActionStatus.PENDING)
 
     @property
+    def can_give_feedback(self):
+        return self.action_status == ActionStatus.ASSIGNED
+
+    @property
     def potential_volunteers(self):
         return user_models.Volunteer.objects \
             .filter(wards__id=self.ward.id) \

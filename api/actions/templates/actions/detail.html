@@ -36,10 +36,10 @@
       {% else %}
         {% if action.has_interest %}
           <p class="text-center">Thanks for volunteering! We'll be back in touch soon!</p>
-        {% elif action.is_assigned %}
+        {% elif action.can_give_feedback %}
           {% include './_action_footer_assigned_to_user.html'%}
         {% else %}
-          <p class="text-center">Thanks for helping!</p>
+          <p class="alert alert-success mx-n3 mb-n3 text-center border-0 rounded-0">Thanks for helping!</p>
         {% endif %}
       {% endif%}
     {% endif %}
