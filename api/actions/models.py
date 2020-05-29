@@ -1,6 +1,6 @@
 from categories.models import HelpType, Requirement
 from users import models as user_models
-from django.db import models
+from django.db import models, transaction
 from django.utils import timezone
 from model_utils import FieldTracker
 
@@ -78,10 +78,11 @@ class Action(models.Model):
 
     def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
         # Ensure that the volunteer gets cleared when we move from a status
-        # that has an assigned volunteer to one that doesn't
+        # that has an assigned volunteer to one that doesn't.
         if (self.tracker.has_changed('action_status')
             and self.action_status in self.STATUSES_WITHOUT_ASSIGNED_VOLUNTEER
-                and self.tracker.previous('action_status') not in self.STATUSES_WITHOUT_ASSIGNED_VOLUNTEER):
+                and self.tracker.previous('action_status') not in self.STATUSES_WITHOUT_ASSIGNED_VOLUNTEER
+                and self.tracker.previous('action_status') is not None):
             self.assigned_volunteer = None
 
         # Ensures that the status gets to assigned if we set a volunteer
@@ -97,7 +98,25 @@ class Action(models.Model):
         if (self.action_status in (ActionStatus.ONGOING, ActionStatus.COMPLETED, ActionStatus.COULDNT_COMPLETE) and not self.volunteer_made_contact_on):
             self.register_volunteer_contact()
 
-        return super().save(force_insert=force_insert, force_update=force_update, using=using, update_fields=update_fields)
+        super().save(force_insert=force_insert, force_update=force_update,
+                     using=using, update_fields=update_fields)
+
+        # Needs to happen after the save so the M2M relation can be saved properly
+        # when creating an action
+        # Without waiting for the end of the transaction, the volunteer
+        # doesn't actually gets saved
+        transaction.on_commit(self.save_assigned_volunteer, using=using)
+
+    def save_assigned_volunteer(self):
+        """
+        Ensures the assigned_volunteer is within the list of interested volunteers
+        """
+        if (self.assigned_volunteer and not self.assigned_volunteer in self.interested_volunteers.all()):
+            self.interested_volunteers.add(self.assigned_volunteer)
+            logger.debug(self.interested_volunteers.all())
+            logger.debug(self.assigned_volunteer.actions_interested_in)
+            logger.debug(self.interested_volunteers.all())
+            logger.debug(self.assigned_volunteer.actions_interested_in)
 
     def register_volunteer_contact(self):
         self.volunteer_made_contact_on = timezone.now()
