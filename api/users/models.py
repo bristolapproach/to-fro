@@ -195,15 +195,18 @@ class Volunteer(UserProfileMixin, Person):
             .annotate(missed_requirements=Count('requirements',
                                                 filter=~Q(requirements__in=self.requirements.all()))) \
             .filter(missed_requirements=0) \
+            .annotate(has_volunteered=Count('interested_volunteers',
+                                            filter=Q(interested_volunteers__id=self.id))) \
+            .filter(has_volunteered=0) \
             .filter(resident__ward__in=self.wards.all()) \
             .filter(help_type__in=self.help_types.all())
 
     @property
     def upcoming_actions(self):
-        return self.action_set.exclude(
-            Q(action_status=action_models.ActionStatus.ONGOING) |
-            Q(action_status=action_models.ActionStatus.COMPLETED) |
-            Q(action_status=action_models.ActionStatus.COULDNT_COMPLETE))
+        # select_related needs to happen here rather
+        # than outside of the query due to the `union`
+        return self.actions_interested_in.filter(action_status__in=(
+            action_models.ActionStatus.ASSIGNED, action_models.ActionStatus.INTEREST))
 
     @property
     def completed_actions(self):
