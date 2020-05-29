@@ -67,7 +67,7 @@ def create_action_notifications(action):
         already_received = set([r.id for n in notifications for r in n.recipients.all()])
         recipients = [v for v in action.interested_volunteers.all() 
             if v.id not in already_received and 
-            v is not action.assigned_volunteer]
+            v.id != action.assigned_volunteer.id]
         
         if len(recipients) > 0:
             create(recipients, action=action, 
