@@ -120,6 +120,12 @@ class ActionAdmin(ModelAdminWithExtraContext):
         })
     )
 
+    def has_delete_permission(self, request, obj=None):
+        """
+        Prevent deletion of actions
+        """
+        return False
+
     def get_form(self, request, obj=None, change=False, **kwargs):
         """
         Customize the form class to provide initial data based on the request
