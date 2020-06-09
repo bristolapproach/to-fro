@@ -3,6 +3,7 @@ from categories.models import HelpType
 
 # Register our models with the admin site.
 from django.contrib import admin
+from django.contrib.admin.widgets import AutocompleteSelect
 from django.utils import timezone
 from django.db import models
 from django import forms
@@ -93,7 +94,39 @@ class MadeContactFilter(admin.SimpleListFilter):
         return queryset
 
 
+class AssignedVolunteerAutocompleteSelect(AutocompleteSelect):
+
+    def __init__(self, existing_widget, model_instance):
+        self.rel = existing_widget.rel
+        self.admin_site = existing_widget.admin_site
+        self.db = existing_widget.db
+        self.choices = existing_widget.choices
+        self.attrs = existing_widget.attrs
+        self.model_instance = model_instance
+
+    def build_attrs(self, base_attrs, extra_attrs=None):
+        attrs = super().build_attrs(base_attrs, extra_attrs=extra_attrs)
+        url = attrs['data-ajax--url']
+        query_param = f"with_interest_for={self.model_instance.pk}"
+        join_char = "&" if "?" in url else "?"
+        attrs['data-ajax--url'] = f"{url}{join_char}{query_param}"
+        return attrs
+
+
+class ActionAdminForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super(ActionAdminForm, self).__init__(*args, **kwargs)
+        self.fields['assigned_volunteer'].widget.widget = AssignedVolunteerAutocompleteSelect(
+            self.fields['assigned_volunteer'].widget.widget,
+            self.instance)
+
+    class Meta:
+        model = Action
+        fields = '__all__'
+
+
 class ActionAdmin(ModelAdminWithExtraContext):
+    form = ActionAdminForm
     list_display = ('id', 'resident', 'help_type',
                     'requested_datetime', 'has_volunteer_made_contact',  'action_status', 'assigned_volunteer', )
     list_filter = ('action_status',
