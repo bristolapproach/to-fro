@@ -1,0 +1,2 @@
+A volunteer marked action {{ action_id }} as ongoing:
+{{ admin_action_url }}

@@ -88,7 +88,14 @@ def create_action_notifications(action):
         create([action.coordinator], action=action,
             notification_type=NotificationTypes.ACTION_NOT_COMPLETED,
             context={"action_id": action.id})
-    
+
+
+    # Coordinators are notified when an action is set to ongoing.
+    elif action.action_status == ActionStatus.ONGOING and \
+    not notification_exists(action, NotificationTypes.ACTION_ONGOING):
+        create([action.coordinator], action=action, 
+            notification_type=NotificationTypes.ACTION_ONGOING,
+            context={"action_id": action.id})
 
 def notification_exists(action, notification_type):
     """True if a notification has been sent for this Action and NotificationType."""
