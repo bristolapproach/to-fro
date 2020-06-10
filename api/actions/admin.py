@@ -95,6 +95,10 @@ class MadeContactFilter(admin.SimpleListFilter):
 
 
 class AssignedVolunteerAutocompleteSelect(AutocompleteSelect):
+    """
+    Custom AutocompletSelect widget for the assigned volunteer
+    that appends the ID of the action to the AJAX URL
+    """
 
     def __init__(self, existing_widget, model_instance):
         self.rel = existing_widget.rel
@@ -114,8 +118,17 @@ class AssignedVolunteerAutocompleteSelect(AutocompleteSelect):
 
 
 class ActionAdminForm(forms.ModelForm):
+    """
+    Custom form for the Action admin that
+    replaces the widget for `assigned_volunteer`
+    """
+
     def __init__(self, *args, **kwargs):
         super(ActionAdminForm, self).__init__(*args, **kwargs)
+        # The widget is actually a RelatedFieldWidgetWrapper
+        # (the one that provides the add, edit and delete shortcuts)
+        # so it's actually its `widget` that holds
+        # the original AutocompleteSelect widget
         self.fields['assigned_volunteer'].widget.widget = AssignedVolunteerAutocompleteSelect(
             self.fields['assigned_volunteer'].widget.widget,
             self.instance)
