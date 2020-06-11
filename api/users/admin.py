@@ -121,8 +121,8 @@ class VolunteerAutocompleteJsonView(AutocompleteJsonView):
     def get_context_data(self, **kwargs):
         data = super().get_context_data(**kwargs)
         for volunteer in data['object_list']:
-            prefix = "I - " if getattr(volunteer, 'interested', False) else ""
-            suffix = " *" if getattr(volunteer, 'has_helped', False) else ""
+            prefix = "✋ " if getattr(volunteer, 'interested', False) else ""
+            suffix = " ⭐️" if getattr(volunteer, 'has_helped', False) else ""
             volunteer.label = f"{prefix}{volunteer.full_name}{suffix}"
         return data
 
