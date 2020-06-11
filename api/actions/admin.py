@@ -159,7 +159,7 @@ class ActionAdmin(ModelAdminWithExtraContext):
             'fields': ('public_description', 'private_description')
         }),
         ('Help received', {
-            'fields': ('action_status', 'interested_volunteers', 'assigned_volunteer', 'volunteer_made_contact_on', 'time_taken', 'notes')
+            'fields': ('action_status', 'assigned_volunteer', 'volunteer_made_contact_on', 'time_taken', 'notes')
         }),
         ('Call details', {
             'fields': ('added_by', 'call_datetime', 'call_duration')
