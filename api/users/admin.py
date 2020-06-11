@@ -140,7 +140,7 @@ class VolunteerAdminAutocomplete(admin.ModelAdmin):
     def get_search_results(self, request, queryset, search_term):
         # Update the search results thanks to the extra query param
         queryset, use_distinct = super().get_search_results(request, queryset, search_term)
-        action_id = request.GET['with_interest_for']
+        action_id = request.GET.get('with_interest_for')
         queryset = self.sort_search_results(queryset, action_id)
         return (queryset, use_distinct)
 

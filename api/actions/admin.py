@@ -196,6 +196,12 @@ class ActionAdmin(ModelAdminWithExtraContext):
 
         return form
 
+    def get_changelist_form(self, request, **kwargs):
+        """
+        Allows using the custom autocomplete for the changelist too
+        """
+        return ActionAdminForm
+
     def extra_context(self, object_id=None):
         # Query the help types only once
         help_types = HelpType.objects.prefetch_related('requirements').all()
