@@ -133,6 +133,15 @@ class ActionAdminForm(forms.ModelForm):
             self.fields['assigned_volunteer'].widget.widget,
             self.instance)
 
+    def clean(self):
+        super().clean()
+        if (not self.cleaned_data['assigned_volunteer']
+                and self.cleaned_data['action_status'] not in Action.STATUSES_WITHOUT_ASSIGNED_VOLUNTEER):
+            raise forms.ValidationError(
+                _("Please make sure to update the action status when no volunteer are assigned"),
+                code='invalid-status-for-unassigning-volunteer'
+            )
+
     class Meta:
         model = Action
         fields = '__all__'
