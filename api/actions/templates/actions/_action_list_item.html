@@ -15,7 +15,7 @@
           action_date_{{action.id}} 
           action_status_{{action.id}}">
         <span id="action_label_{{action.id}}">
-          <strong>{{action.help_type}}</strong> near <strong>{{action.ward}}</strong>
+          <strong>{{action.help_type}}</strong> <span class="text-muted h6 font-weight-normal">{{action.ward}}</span>
         </span>
       </a>
     </h2>
@@ -24,23 +24,23 @@
       <span class="text-muted small">({{action.requested_datetime|naturaltime}})</span>
     </time>
     {% if action|is_awaiting_confirmation_for:user.volunteer %}
-      <i class="btn btn-icon-only action-list-item__icon action-list-item__action" id="action_status_{{action.id}}">
+      <i class="text-muted action-list-item__action" id="action_status_{{action.id}}">
         {% embed_fontawesome 'pause-circle' %}
         <span class="sr-only">Pending approval</span>
       </i>
     {% elif action.is_completed %}
-      <i class="btn btn-icon-only action-list-item__icon text-success action-list-item__action" id="action_status_{{action.id}}">
+      <i class="text-success action-list-item__action" id="action_status_{{action.id}}">
         {% embed_fontawesome 'check-circle'  %}
         <span class="sr-only">Completed</span>
       </i>
     {% elif action.is_failed%}
-      <i class="btn btn-icon-only action-list-item__icon text-danger action-list-item__action" id="action_status_{{action.id}}">
+      <i class="text-danger action-list-item__action" id="action_status_{{action.id}}">
         {% embed_fontawesome 'times-circle' %}
         <span class="sr-only">Could not be completed</span>
       </i>
     {% else %}
-      <i class="btn btn-icon-only text-primary action-list-item__icon action-list-item__action" role="presentation" id="action_status_{{action.id}}">
-        {% embed_fontawesome 'info-circle' %}
+      <i class="text-primary action-list-item__action" role="presentation" id="action_status_{{action.id}}">
+        {% embed_fontawesome 'chevron-circle-right' %}
       </i>
     {% endif %}
   </li>
