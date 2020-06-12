@@ -91,20 +91,29 @@ def detail(request, action_id):
             action.save()
         else:
             # Check if the action still needs volunteers to register interest.
-            if action.action_status == ActionStatus.PENDING \
-                    or action.action_status == ActionStatus.INTEREST:
 
-                if request.POST.get('_action') == 'withdraw_help':
+            if request.POST.get('_action') == 'withdraw_help':
+                if action.action_status == ActionStatus.PENDING \
+                        or action.action_status == ActionStatus.INTEREST:
+
                     action.withdraw_interest_from(volunteer)
                     messages.info(
                         request, 'Noted! Sorry to hear you can no longer help.')
+
                 else:
+                    if (action.assigned_volunteer == volunteer):
+                        messages.error(request,
+                                       'Sorry, looks like your help was already accepted. Please contact a coordinator make arrangements.')
+            else:
+                if action.action_status == ActionStatus.PENDING \
+                        or action.action_status == ActionStatus.INTEREST:
 
                     action.register_interest_from(volunteer)
                     messages.success(request, 'Thanks for volunteering!')
-            else:
-                messages.error(
-                    request, 'Thanks, but someone has already volunteered to help')
+
+                else:
+                    messages.error(
+                        request, 'Thanks, but someone has already volunteered to help')
         return redirect('actions:detail', action_id=action.id)
 
     context = {
