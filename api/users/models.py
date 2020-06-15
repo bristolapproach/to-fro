@@ -30,8 +30,6 @@ class Person(models.Model):
         max_length=15, null=True, blank=True, help_text="Secondary phone number for the user.")
     email = models.CharField(max_length=50, null=True,
                              blank=True, help_text="Main email for the user.")
-    email_secondary = models.CharField(
-        max_length=50, null=True, blank=True, help_text="Secondary email for the user.")
     notes = models.TextField(null=True, blank=True,
                              help_text="Any other notes?")
 

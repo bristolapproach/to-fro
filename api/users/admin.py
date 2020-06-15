@@ -69,7 +69,7 @@ class CoordinatorAdmin(ModelAdminWithExtraContext):
             'fields': ('user', 'user_without_account')
         }),
         ('Contact Details', {
-            'fields': ('phone', 'phone_secondary', 'email', 'email_secondary')
+            'fields': ('phone', 'phone_secondary', 'email')
         }),
         (None, {
             'fields': ('notes',)
@@ -92,7 +92,7 @@ class ResidentAdmin(admin.ModelAdmin):
             'fields': ('first_name', 'last_name')
         }),
         ('Contact Details', {
-            'fields': ('phone', 'phone_secondary', 'email', 'email_secondary')
+            'fields': ('phone', 'phone_secondary', 'email')
         }),
         ('Address', {
             'fields': ('address_line_1', 'address_line_2', 'address_line_3', 'postcode', 'ward')
@@ -206,7 +206,7 @@ class VolunteerAdmin(VolunteerAdminAutocomplete, ModelAdminWithExtraContext):
             'fields': ('user', 'user_without_account')
         }),
         ('Contact Details', {
-            'fields': ('phone', 'phone_secondary', 'email', 'email_secondary')
+            'fields': ('phone', 'phone_secondary', 'email')
         }),
         ('External Links', {
             'fields': ('external_volunteer_id',)
