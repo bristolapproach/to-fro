@@ -3,45 +3,51 @@
 {% load actions %}
 
 
-  <li class="list-group-item list-group-item-action action-list-item">
-    <i class="btn btn-icon-only action-list-item__icon action-list-item__type" role="presentation">
-      {% embed_fontawesome action.help_type.icon_name fallback='hands-helping'%}
-    </i>
-    <h2 class="h5 mb-1">
-      <a class="action-list-item-link stretched-link" 
-         href="{% url 'actions:detail' action.id %}"
-         aria-labelledby="
-          action_label_{{action.id}} 
-          action_date_{{action.id}} 
-          action_status_{{action.id}}">
-        <span id="action_label_{{action.id}}">
-          <strong>{{action.help_type}}</strong> <span class="text-muted h6 font-weight-normal">{{action.ward}}</span>
-        </span>
-      </a>
-    </h2>
-    <time datetime="{{action.requested_datetime|date:"c"}}" class="text-right">
-      <span id="action_date_{{action.id}}">{{action.requested_datetime|date:"D d M"}}</span>
-      <span class="text-muted small">({{action.requested_datetime|naturaltime}})</span>
-    </time>
+<li class="
+    list-group-item 
+    list-group-item-action 
+    action-list-item
     {% if action|is_awaiting_confirmation_for:user.volunteer %}
-      <i class="text-muted action-list-item__action" id="action_status_{{action.id}}">
-        {% embed_fontawesome 'pause-circle' %}
-        <span class="sr-only">Pending approval</span>
-      </i>
-    {% elif action.is_completed %}
-      <i class="text-success action-list-item__action" id="action_status_{{action.id}}">
-        {% embed_fontawesome 'check-circle'  %}
-        <span class="sr-only">Completed</span>
-      </i>
-    {% elif action.is_failed%}
-      <i class="text-danger action-list-item__action" id="action_status_{{action.id}}">
-        {% embed_fontawesome 'times-circle' %}
-        <span class="sr-only">Could not be completed</span>
-      </i>
-    {% else %}
-      <i class="text-primary action-list-item__action" role="presentation" id="action_status_{{action.id}}">
-        {% embed_fontawesome 'chevron-circle-right' %}
-      </i>
-    {% endif %}
-  </li>
-</a>
+      text-muted
+    {%endif%}
+  ">
+  <i class="btn btn-icon-only action-list-item__icon action-list-item__type" role="presentation">
+    {% embed_fontawesome action.help_type.icon_name fallback='hands-helping'%}
+  </i>
+  <h3 class="h5 mb-1">
+    <a class="action-list-item-link stretched-link" 
+        href="{% url 'actions:detail' action.id %}"
+        aria-labelledby="
+        action_label_{{action.id}} 
+        action_date_{{action.id}} 
+        action_status_{{action.id}}">
+      <span id="action_label_{{action.id}}">
+        <strong>{{action.help_type}}</strong> <span class="text-muted h6 font-weight-normal">{{action.ward}}</span>
+      </span>
+    </a>
+  </h3>
+  <time datetime="{{action.requested_datetime|date:"c"}}" class="text-right">
+    <span id="action_date_{{action.id}}">{{action.requested_datetime|date:"D d M"}}</span>
+    <span class="text-muted small">({{action.requested_datetime|naturaltime}})</span>
+  </time>
+  {% if action|is_awaiting_confirmation_for:user.volunteer %}
+    <i class="text-muted action-list-item__action" id="action_status_{{action.id}}">
+      {% embed_fontawesome 'pause-circle' %}
+      <span class="sr-only">Pending approval</span>
+    </i>
+  {% elif action.is_completed %}
+    <i class="text-success action-list-item__action" id="action_status_{{action.id}}">
+      {% embed_fontawesome 'check-circle'  %}
+      <span class="sr-only">Completed</span>
+    </i>
+  {% elif action.is_failed%}
+    <i class="text-danger action-list-item__action" id="action_status_{{action.id}}">
+      {% embed_fontawesome 'times-circle' %}
+      <span class="sr-only">Could not be completed</span>
+    </i>
+  {% comment %} {% else %}
+    <i class="text-primary action-list-item__action" role="presentation" id="action_status_{{action.id}}">
+      {% embed_fontawesome 'play-circle' %}
+    </i> {% endcomment %}
+  {% endif %}
+</li>

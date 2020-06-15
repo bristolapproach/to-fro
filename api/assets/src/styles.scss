@@ -28,6 +28,7 @@ img {
 
 svg {
   fill: currentColor;
+  height: auto;
 }
 
 input[type=number] {
@@ -77,7 +78,6 @@ input[type=number] {
   > svg,
   > img {
     display: block;
-    height: auto;
     width: 1em;
   }
 
@@ -157,11 +157,6 @@ input[type=number] {
   padding-left: 2.5rem;
   padding-right: 3rem; // A little more to make the icon centered
 
-  &:hover {
-    .action-list-item__icon {
-      background-color: $list-group-hover-bg;
-    }
-  }
 
   // Extend the stretched link to encompass the elements
   // popping out on the sides
@@ -179,9 +174,15 @@ input[type=number] {
 }
 
 .action-list-item__icon {
-  background-color: white;
-  border: solid 1px $border-color;
-  color: $text-muted;
+  // Inherit everything from parent
+  // so the values are set to enable offsetting it
+  // but vary when state changes
+  background-color: inherit;
+  border: solid 1px $list-group-border-color;
+  color: inherit;
+  // Remove transition to make the background
+  // change at the same time as the rest of it
+  transition: none;
 }
 
 .action-list-item__type {

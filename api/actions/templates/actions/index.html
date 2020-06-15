@@ -1,6 +1,7 @@
 {% extends 'layouts/application.html' %}
 
 {% load humanize %}
+{% load actions %}
 
 {% block 'content' %}
 <nav aria-label="Action types" class="overflow-auto py-1">
@@ -32,9 +33,18 @@
   </ul>
 </nav>
 {% if actions %}
-<ul class="list-group bg-white list-unstyled action-list">
   {% for action in actions %}
-  {% include './_action_list_item.html' with action=action %}
+  {% ifchanged action.action_status %}
+    {% if action|is_awaiting_confirmation_for:user.volunteer%}
+      </ul>
+      <h2 class="maf-2 h6 text-center text-muted font-weight-bold">Awaiting approval</h2>
+    {% else %}
+      <h2 class="sr-only">Actions</h2>
+    {% endif %}
+
+    <ul class="list-group bg-white list-unstyled action-list maf-5">
+  {% endifchanged %}
+  {% include './_action_list_item.html' with action=action volunteer=volunteer %}
   {% endfor %}
 </ul>
 {% if page_obj.has_other_pages %}
