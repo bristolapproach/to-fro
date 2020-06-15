@@ -4,7 +4,7 @@
 {% load sitetree %}
 
 <!doctype html>
-<html lang="{% get_current_language as LANGUAGE_CODE %}">
+<html lang="en">
 
 <head>
   <meta charset="utf-8">
@@ -30,7 +30,9 @@
       <h2 id="navbarNavHeading" hidden>Account navigation</h2>
       <ul class="navbar-nav ml-auto">
         {% if user.is_staff %}
+        <li class="nav-item">
           <a class="nav-link" href="{% url 'admin:index' %}">Co-ordinator view</a>
+        </li>
         {% endif %}
         <li class="nav-item">
           <a class="nav-link" href="{% url 'password_change' %}">Change password</a>
@@ -43,7 +45,7 @@
     {% endif %}
   </header>
   {% include './_messages.html' %}
-  <div class="container container--small py-5 space-4">
+  <main class="container container--small py-5 space-4">
     <div class="heading-container d-flex justify-content-between">
       {% if back_url %}
       <a href="{{back_url}}" class="btn btn-icon-only rounded-circle align-self-start mt-2">
@@ -63,7 +65,7 @@
       {% endif %}
     </div>
     {% block 'content'%}{% endblock %}
-  </div>
+  </main>
   <footer class="send-to-bottom site-footer">
     © 2020 To/Fro. {% sitetree_menu from "footer_navigation" include "trunk" %}
   </footer>
