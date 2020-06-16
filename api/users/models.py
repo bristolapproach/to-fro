@@ -40,7 +40,11 @@ class Person(models.Model):
         return f"{self.first_name} {self.last_name}"
 
     def __str__(self):
-        return self.full_name
+        # A bit dirty, but don't know of a quick way to
+        # implement some kind of wrapper that passes
+        # all calls through just to present Volunteers
+        # differently in the AJAX calls from the AutocompleteWidgets
+        return getattr(self, 'label', None) or self.full_name
 
 
 class UserProfileMixin(models.Model):

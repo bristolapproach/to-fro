@@ -5,8 +5,9 @@ from django.contrib.auth.models import User
 from django.contrib.auth.admin import UserAdmin
 from django import forms
 from django.utils.translation import gettext as _
-from django.db.models import Q
+from django.db.models import Q, IntegerField, Case, When, Value
 from core.admin import ModelAdminWithExtraContext
+from django.contrib.admin.views.autocomplete import AutocompleteJsonView
 
 import logging
 logger = logging.getLogger(__name__)
@@ -110,7 +111,77 @@ class VolunteerForm(UserProfileForm):
         fields = '__all__'
 
 
-class VolunteerAdmin(ModelAdminWithExtraContext):
+class VolunteerAutocompleteJsonView(AutocompleteJsonView):
+    """
+    Custom AutocompleteJsonView for the Volunteer admin
+    to highlight when the Volunteer is interested in an action
+    or has helped the resident already
+    """
+
+    def get_context_data(self, **kwargs):
+        data = super().get_context_data(**kwargs)
+        for volunteer in data['object_list']:
+            prefix = "✋ " if getattr(volunteer, 'interested', False) else ""
+            suffix = " ⭐️" if getattr(volunteer, 'has_helped', False) else ""
+            volunteer.label = f"{prefix}{volunteer.full_name}{suffix}"
+        return data
+
+
+class VolunteerAdminAutocomplete(admin.ModelAdmin):
+    """
+    Mixin wrapping the customisations of the autocomplete
+    for the Volunteer admin
+    """
+
+    def autocomplete_view(self, request):
+        # Return our custom autocomplete view
+        return VolunteerAutocompleteJsonView.as_view(model_admin=self)(request)
+
+    def get_search_results(self, request, queryset, search_term):
+        # Update the search results thanks to the extra query param
+        queryset, use_distinct = super().get_search_results(request, queryset, search_term)
+        action_id = request.GET.get('with_interest_for')
+        queryset = self.sort_search_results(queryset, action_id)
+        return (queryset, use_distinct)
+
+    def sort_search_results(self, queryset, action_id):
+        """
+        Updates the queryset with some extra information and sorting
+        regarding whether the volunteer helped the resident already
+        and is interested in the action
+        """
+        if (action_id):
+            # Grab a list of the IDs of interested volunteers
+            # and voluteers that helped the resitent already
+            # to simplify the upcoming query.
+            interested_volunteer_ids = Volunteer.objects.filter(
+                actions_interested_in__id=action_id).values_list('id', flat=True)
+            volunteers_who_helped_resident_ids = Volunteer.objects.filter(
+                action__resident__action__id=action_id
+            ).distinct().values_list('id', flat=True)
+
+            # Add a couple of extra information to the query
+            # and sort according to them to get volunteers:
+            #
+            # - interested and that helped
+            # - interested
+            # - that helped
+            # - other
+            return queryset.annotate(
+                interested=Case(
+                    When(id__in=interested_volunteer_ids, then=Value(1)),
+                    default=Value(0),
+                    output_field=IntegerField()),
+                has_helped=Case(
+                    When(id__in=volunteers_who_helped_resident_ids, then=Value(1)),
+                    default=Value(0),
+                    output_field=IntegerField()
+                )
+            ).order_by('-interested', '-has_helped')
+        return queryset
+
+
+class VolunteerAdmin(VolunteerAdminAutocomplete, ModelAdminWithExtraContext):
     form = VolunteerForm
 
     def extra_context(self, object_id=None): return {

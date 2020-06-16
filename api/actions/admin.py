@@ -3,6 +3,7 @@ from categories.models import HelpType
 
 # Register our models with the admin site.
 from django.contrib import admin
+from django.contrib.admin.widgets import AutocompleteSelect
 from django.utils import timezone
 from django.db import models
 from django import forms
@@ -93,7 +94,61 @@ class MadeContactFilter(admin.SimpleListFilter):
         return queryset
 
 
+class AssignedVolunteerAutocompleteSelect(AutocompleteSelect):
+    """
+    Custom AutocompletSelect widget for the assigned volunteer
+    that appends the ID of the action to the AJAX URL
+    """
+
+    def __init__(self, existing_widget, model_instance):
+        self.rel = existing_widget.rel
+        self.admin_site = existing_widget.admin_site
+        self.db = existing_widget.db
+        self.choices = existing_widget.choices
+        self.attrs = existing_widget.attrs
+        self.model_instance = model_instance
+
+    def build_attrs(self, base_attrs, extra_attrs=None):
+        attrs = super().build_attrs(base_attrs, extra_attrs=extra_attrs)
+        url = attrs['data-ajax--url']
+        query_param = f"with_interest_for={self.model_instance.pk}"
+        join_char = "&" if "?" in url else "?"
+        attrs['data-ajax--url'] = f"{url}{join_char}{query_param}"
+        return attrs
+
+
+class ActionAdminForm(forms.ModelForm):
+    """
+    Custom form for the Action admin that
+    replaces the widget for `assigned_volunteer`
+    """
+
+    def __init__(self, *args, **kwargs):
+        super(ActionAdminForm, self).__init__(*args, **kwargs)
+        # The widget is actually a RelatedFieldWidgetWrapper
+        # (the one that provides the add, edit and delete shortcuts)
+        # so it's actually its `widget` that holds
+        # the original AutocompleteSelect widget
+        self.fields['assigned_volunteer'].widget.widget = AssignedVolunteerAutocompleteSelect(
+            self.fields['assigned_volunteer'].widget.widget,
+            self.instance)
+
+    def clean(self):
+        super().clean()
+        if (not self.cleaned_data['assigned_volunteer']
+                and self.cleaned_data['action_status'] not in Action.STATUSES_WITHOUT_ASSIGNED_VOLUNTEER):
+            raise forms.ValidationError(
+                _("Please make sure to update the action status when no volunteer are assigned"),
+                code='invalid-status-for-unassigning-volunteer'
+            )
+
+    class Meta:
+        model = Action
+        fields = '__all__'
+
+
 class ActionAdmin(ModelAdminWithExtraContext):
+    form = ActionAdminForm
     list_display = ('id', 'resident', 'help_type',
                     'requested_datetime', 'has_volunteer_made_contact',  'action_status', 'assigned_volunteer', )
     list_filter = ('action_status',
@@ -113,7 +168,7 @@ class ActionAdmin(ModelAdminWithExtraContext):
             'fields': ('public_description', 'private_description')
         }),
         ('Help received', {
-            'fields': ('action_status', 'interested_volunteers', 'assigned_volunteer', 'volunteer_made_contact_on', 'time_taken', 'notes')
+            'fields': ('action_status', 'assigned_volunteer', 'volunteer_made_contact_on', 'time_taken', 'notes')
         }),
         ('Call details', {
             'fields': ('added_by', 'call_datetime', 'call_duration')
@@ -149,6 +204,12 @@ class ActionAdmin(ModelAdminWithExtraContext):
                         return request.user.coordinator
 
         return form
+
+    def get_changelist_form(self, request, **kwargs):
+        """
+        Allows using the custom autocomplete for the changelist too
+        """
+        return ActionAdminForm
 
     def extra_context(self, object_id=None):
         # Query the help types only once

@@ -98,6 +98,14 @@ class Action(models.Model):
         if (self.action_status in (ActionStatus.ONGOING, ActionStatus.COMPLETED, ActionStatus.COULDNT_COMPLETE) and not self.volunteer_made_contact_on):
             self.register_volunteer_contact()
 
+        # Only for updates as it runs on a related field
+        if self.pk is not None:
+            # Update the status according to whether there are interested_volunteers or not
+            if (self.action_status == ActionStatus.PENDING and self.interested_volunteers.count() > 0):
+                self.action_status = ActionStatus.INTEREST
+            if (self.action_status == ActionStatus.INTEREST and self.interested_volunteers.count() == 0):
+                self.action_status = ActionStatus.PENDING
+
         super().save(force_insert=force_insert, force_update=force_update,
                      using=using, update_fields=update_fields)
 
@@ -113,13 +121,19 @@ class Action(models.Model):
         """
         if (self.assigned_volunteer and not self.assigned_volunteer in self.interested_volunteers.all()):
             self.interested_volunteers.add(self.assigned_volunteer)
-            logger.debug(self.interested_volunteers.all())
-            logger.debug(self.assigned_volunteer.actions_interested_in)
-            logger.debug(self.interested_volunteers.all())
-            logger.debug(self.assigned_volunteer.actions_interested_in)
 
     def register_volunteer_contact(self):
         self.volunteer_made_contact_on = timezone.now()
+
+    def register_interest_from(self, volunteer):
+        if volunteer not in self.interested_volunteers.all():
+            self.interested_volunteers.add(volunteer)
+            self.save()
+
+    def withdraw_interest_from(self, volunteer):
+        if volunteer in self.interested_volunteers.all():
+            self.interested_volunteers.remove(volunteer)
+            self.save()
 
     @property
     def ward(self):

@@ -2,6 +2,12 @@
 
 {% if volunteer in action.interested_volunteers.all %}
   <p class="text-center">Please wait whilst we check things through. This is to maximise the privacy and safety of everyone involved. We'll be back in touch soon!</p>
+  <form method="POST">
+    {% csrf_token %}
+    <button class="btn d-table mx-auto btn-outline-danger" name="_action" value="withdraw_help">
+      Sorry, I can't help anymore.
+    </button>
+  </form>
 {% else %}
   <form method="POST">
     {% csrf_token %}
