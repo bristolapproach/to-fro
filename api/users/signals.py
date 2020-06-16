@@ -35,9 +35,14 @@ def post_save_user(sender, instance, created, **kwargs):
 
 
 def update_profile_info(profile, user):
-    profile.first_name = user.first_name
-    profile.last_name = user.last_name
-    profile.email = user.email
+    # Little security to not wipe things
+    # When the admin user is created
+    if user.first_name:
+        profile.first_name = user.first_name
+    if user.last_name:
+        profile.last_name = user.last_name
+    if user.email:
+        profile.email = user.email
     profile.save()
 
 
