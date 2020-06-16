@@ -76,7 +76,8 @@ class UserProfileMixin(models.Model):
         the password reset form be customized to show a different
         message for the first reset
         """
-        user = User(username=self.email, email=self.email)
+        user = User(username=self.email, email=self.email,
+                    first_name=self.first_name, last_name=self.last_name)
         user.is_staff = self.profile_related_name == 'coordinator'
         user.is_superuser = self.profile_related_name == 'coordinator'
         setattr(user, self.profile_related_name, self)

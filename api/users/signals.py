@@ -1,7 +1,10 @@
-from django.db.models.signals import post_save
+from django.db.models.signals import post_save, post_delete
 from django.dispatch import receiver
 from categories.models import HelpType, Ward
-from users.models import Volunteer
+from users.models import Volunteer, UserProfileMixin
+
+import logging
+logger = logging.getLogger(__name__)
 
 
 @receiver(post_save, sender=HelpType, dispatch_uid="HelpTypeOptIn")
@@ -14,3 +17,11 @@ def post_save_category(sender, instance, created, **kwargs):
     if created:
         instance.volunteers.set(Volunteer.objects.all())
         instance.save()
+
+
+@receiver(post_delete, sender=UserProfileMixin, dispatch_uid="UserProfileDeleted")
+def post_delete_user_profile(sender, instance, **kwargs):
+    """
+    Automatically delete users if there's no profile attached to them
+    """
+    logger.debug(sender)
