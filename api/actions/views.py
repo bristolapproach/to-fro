@@ -1,13 +1,12 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import permission_required
 from django.contrib.auth.decorators import login_required
-from actions.models import Action, ActionStatus, ActionFeedback
+from actions.models import Action, ActionStatus
 from django.core.paginator import Paginator
 from django.contrib import messages
 from django.views import generic
 from django.urls import reverse
 from .forms import ActionFeedbackForm
-from datetime import datetime
 
 
 LIST_DEFINITIONS = {
@@ -124,9 +123,7 @@ def complete(request, action_id):
     if action.action_status != ActionStatus.ASSIGNED or action.assigned_volunteer != volunteer:
         return redirect('actions:detail', action_id=action.id)
 
-    # Get feedback from the volunteer.
-    feedback = ActionFeedback(action=action, created_date_time=datetime.utcnow())
-    form = ActionFeedbackForm(request.POST or None, instance=feedback, action=action)
+    form = ActionFeedbackForm(request.POST or None, instance=action)
     if request.method == "POST" and form.is_valid():
         form.save()
         messages.success(request, 'Nice work! Thanks for helping out!')
