@@ -1,7 +1,7 @@
 from django.forms import ModelForm, BooleanField, MultiWidget, NumberInput, Select
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Field
-from .models import Action, ActionStatus
+from .models import Action, ActionStatus, ActionFeedback
 from datetime import timedelta
 from django.utils.translation import ugettext_lazy as _
 
@@ -62,6 +62,7 @@ class ActionFeedbackForm(ModelForm):
         Set up CrispyForm
         """
         super().__init__(*args, **kwargs)
+        self.action = kwargs.pop('action')
         self.helper = FormHelper(self)
         self.helper.use_custom_control = True
         self.helper.form_tag = False
@@ -74,7 +75,7 @@ class ActionFeedbackForm(ModelForm):
 
     # Customize which fields will get rendered
     class Meta:
-        model = Action
+        model = ActionFeedback
         widgets = {
             'time_taken': SplitDuration(legend=_("How long did it take?"))
         }
@@ -91,6 +92,7 @@ class ActionFeedbackForm(ModelForm):
             'time_taken': None,
             'notes': None
         }
+
     # And add form specific fields
     will_be_ongoing = BooleanField(
         required=False, label=_("I've scheduled with the person to help them recurrently"))
@@ -102,8 +104,14 @@ class ActionFeedbackForm(ModelForm):
         return initial
 
     def save(self, commit=True):
+        # Create the feedback instance.
+        self.instance.notes=self.cleaned_data['notes']
+        self.instance.time_taken=self.cleaned_data['time_taken']
+
+        # Set a new ActionStatus.
         if self.cleaned_data['will_be_ongoing']:
-            self.instance.action_status = ActionStatus.ONGOING
+            self.action.action_status = ActionStatus.ONGOING
         else:
-            self.instance.action_status = ActionStatus.COMPLETED
+            self.action.action_status = ActionStatus.COMPLETED
+        self.action.save()
         super().save()
