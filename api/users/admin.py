@@ -230,6 +230,10 @@ class ToFroUserAdmin(UserAdmin):
     Customization of the user admin to allow filtering of the autocomplete
     so it returns only Users that don't already have a profile
     """
+    fieldsets = (
+        (None, {'fields': ('first_name', 'last_name', 'email', 'password')}),
+        ('Access', {'fields': ('is_active', 'is_staff', 'is_superuser')})
+    )
 
     def get_search_results(self, request, queryset, search_term):
         queryset, use_distinct = super().get_search_results(request, queryset, search_term)

@@ -78,8 +78,6 @@ class UserProfileMixin(models.Model):
         """
         user = User(username=self.email, email=self.email,
                     first_name=self.first_name, last_name=self.last_name)
-        user.is_staff = self.profile_related_name == 'coordinator'
-        user.is_superuser = self.profile_related_name == 'coordinator'
         setattr(user, self.profile_related_name, self)
         user.save()
 
@@ -228,6 +226,20 @@ class Coordinator(UserProfileMixin, Person):
     profile_related_name = 'coordinator'
     user = models.OneToOneField(User, null=True, blank=True,
                                 on_delete=models.SET_NULL, related_name=profile_related_name)
+
+    def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
+        is_creation = not bool(self.pk)
+
+        result = super().save(force_insert=force_insert, force_update=force_update,
+                              using=using, update_fields=update_fields)
+        if is_creation:
+            logger.debug('Adding priviledges to user')
+            # Add staff and superuser to
+            self.user.is_staff = True
+            self.user.is_superuser = True
+            self.user.save()
+
+        return result
 
 
 # Add computed helper properties to the User class.

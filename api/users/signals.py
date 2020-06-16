@@ -44,16 +44,25 @@ def update_profile_info(profile, user):
 @receiver(post_delete, sender=Coordinator, dispatch_uid="CoordinatorDeleted")
 def post_delete_coordinator(sender, instance, **kwargs):
     """
-
+    Automatically delete users if there's no profile attached to them
+    or adjust privileges
     """
     if not instance.user.is_volunteer:
         instance.user.delete()
+    else:
+        # Remove superuser and staff privileges
+        # for non-coordinator users
+        user = instance.user
+        user.is_staff = False
+        user.is_superuser = False
+        user.coordinator = None
+        user.save()
 
 
 @receiver(post_delete, sender=Volunteer, dispatch_uid="VolunteerDeleted")
 def post_delete_user_profile(sender, instance, **kwargs):
     """
-    TODO: Automatically delete users if there's no profile attached to them
+    Automatically delete users if there's no profile attached to them
     """
     if not instance.user.is_coordinator:
         instance.user.delete()
