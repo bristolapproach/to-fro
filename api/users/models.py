@@ -3,6 +3,8 @@ from actions import models as action_models
 from django.contrib.auth.models import User
 from django.db.models import Q, Count
 from django.db import models
+from model_utils import FieldTracker
+
 import logging
 
 
@@ -32,6 +34,10 @@ class Person(models.Model):
                              blank=True, help_text="Main email for the user.")
     notes = models.TextField(null=True, blank=True,
                              help_text="Any other notes?")
+
+    # Track changes to the model so we can access the previous status
+    # when it changes, and propagate those if needed
+    tracker = FieldTracker()
 
     @property
     def full_name(self):

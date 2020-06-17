@@ -22,6 +22,35 @@ def post_save_category(sender, instance, created, **kwargs):
 
 User = get_user_model()
 
+FIELDS_TO_SYNC = (
+    'first_name',
+    'last_name',
+    'email'
+)
+
+
+def some(iterable, function):
+    """
+    Alternative to the native `any()` which
+    accepts a lambda for computing whether to return True
+    """
+    for value in iterable:
+        if function(value):
+            return True
+    return False
+
+
+@receiver(post_save, sender=Volunteer, dispatch_uid="VolunteerSaved")
+@receiver(post_save, sender=Coordinator, dispatch_uid="CoordinatorSaved")
+def post_save_volunteer(sender, instance, created, **kwargs):
+    if not created:
+        changed_fields = instance.tracker.changed().keys()
+        if some(FIELDS_TO_SYNC, lambda field_name: field_name in changed_fields):
+            # Always save the user, to ensure changes
+            # get propagated to the other profile
+            sync(instance, instance.user)
+            instance.user.save()
+
 
 @receiver(post_save, sender=User, dispatch_uid="UserSaved")
 def post_save_user(sender, instance, created, **kwargs):
@@ -35,15 +64,32 @@ def post_save_user(sender, instance, created, **kwargs):
 
 
 def update_profile_info(profile, user):
-    # Little security to not wipe things
-    # When the admin user is created
-    if user.first_name:
-        profile.first_name = user.first_name
-    if user.last_name:
-        profile.last_name = user.last_name
-    if user.email:
-        profile.email = user.email
-    profile.save()
+    # Only save if there's been a change,
+    # to avoid looping infinitely
+    if sync(user, profile):
+        profile.save()
+
+
+def sync(source, target, attrs=FIELDS_TO_SYNC):
+    """
+    Synchronises attributes of the source object
+    to the target object
+
+    Returns whether values have been changed on the target
+    during the synchronisation
+    """
+    changed = False
+    for attr in FIELDS_TO_SYNC:
+        value = getattr(source, attr)
+        # Little security to not wipe things
+        # When the admin user is created
+        logger.debug('Syncing %s: %s (existing %s)',
+                     attr, value, getattr(target, attr))
+        if (value and value != getattr(target, attr)):
+            logger.debug('Setting %s', attr)
+            changed = True
+            setattr(target, attr, value)
+    return changed
 
 
 @receiver(post_delete, sender=Coordinator, dispatch_uid="CoordinatorDeleted")
