@@ -22,10 +22,15 @@ def post_save_category(sender, instance, created, **kwargs):
 
 User = get_user_model()
 
-FIELDS_TO_SYNC = (
+USER_FIELDS_TO_SYNC = (
     'first_name',
     'last_name',
     'email'
+)
+
+PROFILES_FIELDS_TO_SYNC = USER_FIELDS_TO_SYNC + (
+    'phone',
+    'phone_secondary'
 )
 
 
@@ -45,11 +50,25 @@ def some(iterable, function):
 def post_save_volunteer(sender, instance, created, **kwargs):
     if not created:
         changed_fields = instance.tracker.changed().keys()
-        if some(FIELDS_TO_SYNC, lambda field_name: field_name in changed_fields):
-            # Always save the user, to ensure changes
-            # get propagated to the other profile
-            sync(instance, instance.user)
-            instance.user.save()
+        # Sync can only happen for users that have an account
+        if not instance.user_without_account:
+            # Sync with the user info
+            if some(USER_FIELDS_TO_SYNC, lambda field_name: field_name in changed_fields) and sync(instance, instance.user):
+                instance.user.save()
+
+            # Sync with a potential other profile
+            if some(PROFILES_FIELDS_TO_SYNC, lambda field_name: field_name in changed_fields):
+                if sender == Volunteer:
+                    if (instance.user.is_coordinator) \
+                        and sync(instance, instance.user.coordinator,
+                                 attrs=PROFILES_FIELDS_TO_SYNC):
+                        instance.user.coordinator.save()
+
+                if sender == Coordinator:
+                    if (instance.user.is_volunteer) \
+                        and sync(instance, instance.user.volunteer,
+                                 attrs=PROFILES_FIELDS_TO_SYNC):
+                        instance.user.volunteer.save()
 
 
 @receiver(post_save, sender=User, dispatch_uid="UserSaved")
@@ -70,7 +89,7 @@ def update_profile_info(profile, user):
         profile.save()
 
 
-def sync(source, target, attrs=FIELDS_TO_SYNC):
+def sync(source, target, attrs=USER_FIELDS_TO_SYNC):
     """
     Synchronises attributes of the source object
     to the target object
@@ -79,14 +98,11 @@ def sync(source, target, attrs=FIELDS_TO_SYNC):
     during the synchronisation
     """
     changed = False
-    for attr in FIELDS_TO_SYNC:
+    for attr in attrs:
         value = getattr(source, attr)
         # Little security to not wipe things
         # When the admin user is created
-        logger.debug('Syncing %s: %s (existing %s)',
-                     attr, value, getattr(target, attr))
         if (value and value != getattr(target, attr)):
-            logger.debug('Setting %s', attr)
             changed = True
             setattr(target, attr, value)
     return changed
