@@ -62,14 +62,11 @@ class CoordinatorAdmin(ModelAdminWithExtraContext):
 
     # Fields displayed when editing a User.
     fieldsets = (
-        ('Account Details', {
-            'fields': ('first_name', 'last_name')
+        ('Personal details', {
+            'fields': ('first_name', 'last_name', 'email', 'phone', 'phone_secondary', )
         }),
         ('Authentication', {
             'fields': ('user', 'user_without_account')
-        }),
-        ('Contact Details', {
-            'fields': ('phone', 'phone_secondary', 'email')
         }),
         (None, {
             'fields': ('notes',)
@@ -88,11 +85,8 @@ class ResidentAdmin(admin.ModelAdmin):
     search_fields = ['first_name', 'last_name']
 
     fieldsets = (
-        (None, {
-            'fields': ('first_name', 'last_name')
-        }),
-        ('Contact Details', {
-            'fields': ('phone', 'phone_secondary', 'email')
+        ('Personal details', {
+            'fields': ('first_name', 'last_name', 'email', 'phone', 'phone_secondary', )
         }),
         ('Address', {
             'fields': ('address_line_1', 'address_line_2', 'address_line_3', 'postcode', 'ward')
@@ -199,14 +193,11 @@ class VolunteerAdmin(VolunteerAdminAutocomplete, ModelAdminWithExtraContext):
     filter_horizontal = ('wards', 'help_types', 'requirements')
 
     fieldsets = (
-        (None, {
-            'fields': ('first_name', 'last_name')
+        ('Personal details', {
+            'fields': ('first_name', 'last_name', 'email', 'phone', 'phone_secondary', )
         }),
         ('Authentication', {
             'fields': ('user', 'user_without_account')
-        }),
-        ('Contact Details', {
-            'fields': ('phone', 'phone_secondary', 'email')
         }),
         ('External Links', {
             'fields': ('external_volunteer_id',)
