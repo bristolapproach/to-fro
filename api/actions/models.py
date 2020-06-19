@@ -174,7 +174,7 @@ class Action(models.Model):
 
     @property
     def can_give_feedback(self):
-        return self.action_status == ActionStatus.ASSIGNED
+        return self.action_status == ActionStatus.ASSIGNED or self.action_status == ActionStatus.ONGOING
 
     @property
     def potential_volunteers(self):
@@ -207,4 +207,4 @@ class ActionFeedback(models.Model):
         super().save(force_insert=force_insert, force_update=force_update, using=using, update_fields=update_fields)
 
     def __str__(self):
-        return f"Feedback {self.id} for action {self.action.id}"
+        return f"{self.id}: feedback for action {self.action.id}"

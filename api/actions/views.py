@@ -132,7 +132,7 @@ def complete(request, action_id):
     volunteer = request.user.volunteer
     action = get_object_or_404(Action, pk=action_id)
 
-    if action.action_status != ActionStatus.ASSIGNED or action.assigned_volunteer != volunteer:
+    if action.assigned_volunteer != volunteer or not action.can_give_feedback:
         return redirect('actions:detail', action_id=action.id)
 
     # Get feedback from the volunteer.

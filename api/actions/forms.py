@@ -61,8 +61,8 @@ class ActionFeedbackForm(ModelForm):
         """
         Set up CrispyForm
         """
-        super().__init__(*args, **kwargs)
         self.action = kwargs.pop('action')
+        super().__init__(*args, **kwargs)
         self.helper = FormHelper(self)
         self.helper.use_custom_control = True
         self.helper.form_tag = False
@@ -100,7 +100,7 @@ class ActionFeedbackForm(ModelForm):
     def get_initial_for_field(self, field, field_name):
         initial = super().get_initial_for_field(field, field_name)
         if (field_name == 'will_be_ongoing'):
-            return self.instance.action_status == ActionStatus.ONGOING
+            return self.action.action_status == ActionStatus.ONGOING
         return initial
 
     def save(self, commit=True):
