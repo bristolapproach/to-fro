@@ -194,8 +194,17 @@ class ActionFeedback(models.Model):
         help_text="How long did it take to complete the action?")
     notes = models.TextField(max_length=500, null=True, blank=True,
         help_text="Notes from the volunteer")
-    created_date_time = models.DateTimeField(
-        null=True, help_text="This field is updated automatically.")
+    created_date_time = models.DateTimeField(null=True, blank=True, 
+        help_text="This field is updated automatically.")
+    
+    class Meta:
+        verbose_name = 'Feedback'
+        verbose_name_plural = 'Feedback'
+    
+    def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
+        if not self.created_date_time:
+            self.created_date_time = timezone.now()
+        super().save(force_insert=force_insert, force_update=force_update, using=using, update_fields=update_fields)
 
     def __str__(self):
         return f"Feedback {self.id} for action {self.action.id}"
