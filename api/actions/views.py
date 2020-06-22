@@ -137,7 +137,9 @@ def complete(request, action_id):
         return redirect('actions:detail', action_id=action.id)
 
     # Get feedback from the volunteer.
-    feedback = ActionFeedback(action=action, created_date_time=datetime.utcnow())
+    feedback = ActionFeedback(action=action, 
+        volunteer=action.assigned_volunteer, 
+        created_date_time=timezone.now())
     form = ActionFeedbackForm(request.POST or None, instance=feedback, action=action)
     if request.method == "POST" and form.is_valid():
         form.save()

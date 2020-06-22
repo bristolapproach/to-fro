@@ -263,11 +263,7 @@ class ActionFeedbackAdmin(ModelAdminWithExtraContext):
         return af.action.resident
     resident.short_description = 'Resident'
     resident.admin_order_field = 'action__resident'
-    
-    def volunteer(self, af):
-        return af.action.assigned_volunteer
-    resident.short_description = 'Volunteer'
-    resident.admin_order_field = 'action__volunteer'
+
 
 admin.site.register(Action, ActionAdmin)
 admin.site.register(ActionFeedback, ActionFeedbackAdmin)
