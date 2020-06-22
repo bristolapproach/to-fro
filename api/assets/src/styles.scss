@@ -123,7 +123,8 @@ input[type=number] {
   }
 }
 
-.action-list {
+.action-list,
+.card {
   position: relative;
   z-index: 0;
   &::before {
@@ -150,6 +151,20 @@ input[type=number] {
   // .list-group-item:last-child {
   //   border-bottom-width: 0;
   // }
+}
+
+.action-header {
+  position: relative;
+
+  text-align: center;
+  
+  .action-header__id {
+    position:absolute;
+    bottom: 100%;
+    left: 50%;
+    transform:translateX(-50%);
+    margin: 0;
+  }
 }
 
 .action-list-item{

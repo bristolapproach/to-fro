@@ -119,7 +119,7 @@ def detail(request, action_id):
     context = {
         'action': action,
         'back_url': back_url(action, volunteer),
-        'title': "How you can help",
+        'title': f"{str(action.help_type).title()} - {str(action.ward).title()} (Action no. {action.id})",
         'heading': action.description,
         'volunteer': volunteer
     }

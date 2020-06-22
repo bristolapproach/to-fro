@@ -4,9 +4,19 @@
 {% load markdown %}
 {% load svg %}
 
-{% block 'content' %}
+{% block 'title' %}
+  <div class="action-header">
+    <p class="action-header__id text-muted">Action <span aria-hidden="true">#</span>{{action.id}}</p>
+    <h1 class="m-0">
+      <span>{{action.help_type|title}}</span>
+      ­-
+      <span>{{action.ward|title}}
+    </h1>
+    <p class="text-center text-muted ">{{action.requested_datetime|date:"D d M H:i"}}</p>
+  </div>
+{% endblock%}
 
-<p class="text-center text-muted mt-0">{{action.requested_datetime|date:"D d M H:i"}}</p>
+{% block 'content' %}
 
 {% if action.assigned_volunteer == volunteer and action.can_reveal_private_information %}
   <h2 class="maf-2">Resident details</h2>
