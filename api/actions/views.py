@@ -4,6 +4,7 @@ from django.contrib.auth.decorators import login_required
 from actions.models import Action, ActionStatus, ActionFeedback
 from django.core.paginator import Paginator
 from django.contrib import messages
+from django.utils import timezone
 from django.views import generic
 from django.urls import reverse
 from .forms import ActionFeedbackForm
@@ -88,7 +89,7 @@ def detail(request, action_id):
 
     if request.method == "POST":
         if request.POST.get('_action') == 'contact':
-            action.register_volunteer_contact()
+            action.volunteer_made_contact_on = timezone.now()
             action.save()
         else:
             # Check if the action still needs volunteers to register interest.
