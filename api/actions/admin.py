@@ -1,4 +1,4 @@
-from .models import Action, ActionPriority, ActionStatus
+from .models import Action, ActionPriority, ActionStatus, ActionFeedback
 from categories.models import HelpType
 
 # Register our models with the admin site.
@@ -147,6 +147,12 @@ class ActionAdminForm(forms.ModelForm):
         fields = '__all__'
 
 
+class FeedbackInline(admin.TabularInline):
+    model = ActionFeedback
+    min_num = 0
+    extra = 0
+
+
 class ActionAdmin(ModelAdminWithExtraContext):
     form = ActionAdminForm
     list_display = ('id', 'resident', 'help_type',
@@ -159,6 +165,7 @@ class ActionAdmin(ModelAdminWithExtraContext):
     list_editable = ['action_status', 'assigned_volunteer']
     autocomplete_fields = ['resident', 'assigned_volunteer']
     filter_horizontal = ('requirements', 'interested_volunteers')
+    inlines = (FeedbackInline,)
 
     fieldsets = (
         ('Action Details', {
@@ -167,12 +174,12 @@ class ActionAdmin(ModelAdminWithExtraContext):
         ('Description', {
             'fields': ('public_description', 'private_description')
         }),
-        ('Help received', {
-            'fields': ('action_status', 'assigned_volunteer', 'volunteer_made_contact_on', 'assigned_date', 'completed_date', 'time_taken', 'notes')
-        }),
         ('Call details', {
             'fields': ('added_by', 'call_datetime', 'call_duration')
-        })
+        }),
+        ('Help received', {
+            'fields': ('action_status', 'assigned_volunteer', 'volunteer_made_contact_on', 'assigned_date', 'completed_date')
+        }),
     )
 
     def has_delete_permission(self, request, obj=None):
@@ -248,4 +255,15 @@ class ActionAdmin(ModelAdminWithExtraContext):
     has_volunteer_made_contact.short_description = "Contact"
 
 
+class ActionFeedbackAdmin(ModelAdminWithExtraContext):
+    list_display = ('id', 'action', 'volunteer', 'resident', 'time_taken', 'created_date_time')
+    list_filter = ('volunteer', 'action', 'created_date_time')
+
+    def resident(self, af):
+        return af.action.resident
+    resident.short_description = 'Resident'
+    resident.admin_order_field = 'action__resident'
+
+
 admin.site.register(Action, ActionAdmin)
+admin.site.register(ActionFeedback, ActionFeedbackAdmin)

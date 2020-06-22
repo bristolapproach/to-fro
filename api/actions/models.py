@@ -58,10 +58,6 @@ class Action(models.Model):
                                      default=ActionStatus.PENDING, help_text="What's the status of this action?")
     action_priority = models.CharField(max_length=1, choices=ActionPriority.PRIORITIES,
                                        default=ActionPriority.MEDIUM, help_text="What priority should this action be given?")
-    time_taken = models.DurationField(
-        null=True, help_text="How long did it take to complete the action?", blank=True)
-    notes = models.TextField(max_length=500, null=True,
-                             blank=True, help_text="Notes from the volunteer.")
     public_description = models.TextField(max_length=500, null=True, blank=True,
                                           help_text="Text that gets displayed to volunteers who are browsing actions.")
     private_description = models.TextField(
@@ -193,7 +189,7 @@ class Action(models.Model):
 
     @property
     def can_give_feedback(self):
-        return self.action_status == ActionStatus.ASSIGNED
+        return self.action_status == ActionStatus.ASSIGNED or self.action_status == ActionStatus.ONGOING
 
     @property
     def potential_volunteers(self):
@@ -204,3 +200,28 @@ class Action(models.Model):
 
     def __str__(self):
         return f"Action {self.id} - {self.resident.full_name}"
+
+
+class ActionFeedback(models.Model):
+    action = models.ForeignKey(Action, on_delete=models.PROTECT,
+        null=False, help_text="The feedback subject")
+    volunteer = models.ForeignKey(user_models.Volunteer, on_delete=models.PROTECT,
+        null=True, help_text="Who wrote the feedback")
+    time_taken = models.DurationField(null=True, blank=True,
+        help_text="How long did it take to complete the action?")
+    notes = models.TextField(max_length=500, null=True, blank=True,
+        help_text="Notes from the volunteer")
+    created_date_time = models.DateTimeField(null=True, blank=True, 
+        help_text="This field is updated automatically.")
+    
+    class Meta:
+        verbose_name = 'Feedback'
+        verbose_name_plural = 'Feedback'
+    
+    def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
+        if not self.created_date_time:
+            self.created_date_time = timezone.now()
+        super().save(force_insert=force_insert, force_update=force_update, using=using, update_fields=update_fields)
+
+    def __str__(self):
+        return f"Feedback {self.id} - Action {self.action.id}"
