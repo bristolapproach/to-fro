@@ -19,7 +19,7 @@ class ActionPriority:
 
 class ActionStatus:
     PENDING, INTEREST, ASSIGNED, ONGOING, COMPLETED, \
-        COULDNT_COMPLETE = '1', '2', '3', '4', '5', '6'
+        COULDNT_COMPLETE, NO_LONGER_NEEDED = '1', '2', '3', '4', '5', '6', '7'
     STATUSES = [
         (PENDING, 'Pending volunteer interest'),
         (INTEREST, 'Volunteer interest'),
@@ -27,6 +27,7 @@ class ActionStatus:
         (ONGOING, 'Ongoing'),
         (COMPLETED, 'Completed'),
         (COULDNT_COMPLETE, 'Couldn\'t complete'),
+        (NO_LONGER_NEEDED, 'No longer needed')
     ]
 
 
@@ -66,6 +67,12 @@ class Action(models.Model):
     requirements = models.ManyToManyField(Requirement, blank=True, related_name="actions",
                                           help_text="Only volunteers matching these requirements will see the action.")
     volunteer_made_contact_on = models.DateTimeField(null=True, blank=True)
+    assigned_date = models.DateTimeField(
+        null=True, blank=True, verbose_name="Assigned on"
+    )
+    completed_date = models.DateTimeField(
+        null=True, blank=True, verbose_name="Completed on"
+    )
 
     # Track changes to the model so we can access the previous status
     # when it changes, and update the volunteer accordingly if it swapped
@@ -92,7 +99,18 @@ class Action(models.Model):
         # Track the contact date when setting the status
         # to one implying that contact would have happened
         if (self.action_status in (ActionStatus.ONGOING, ActionStatus.COMPLETED, ActionStatus.COULDNT_COMPLETE) and not self.volunteer_made_contact_on):
-            self.register_volunteer_contact()
+            self.volunteer_made_contact_on = timezone.now()
+
+        # Track other interesting dates
+        if (self.action_status not in self.STATUSES_WITHOUT_ASSIGNED_VOLUNTEER and not self.assigned_date):
+            self.assigned_date = timezone.now()
+        # if (self.action_status in self.STATUSES_WITHOUT_ASSIGNED_VOLUNTEER and self.assigned_date):
+        #     self.assigned_date = None
+
+        if (self.action_status == ActionStatus.COMPLETED and not self.completed_date):
+            self.completed_date = timezone.now()
+        # if (self.action_status != ActionStatus.COMPLETED and self.completed_date):
+        #     self.completed_date = None
 
         # Only for updates as it runs on a related field
         if self.pk is not None:
@@ -117,9 +135,6 @@ class Action(models.Model):
         """
         if (self.assigned_volunteer and not self.assigned_volunteer in self.interested_volunteers.all()):
             self.interested_volunteers.add(self.assigned_volunteer)
-
-    def register_volunteer_contact(self):
-        self.volunteer_made_contact_on = timezone.now()
 
     def register_interest_from(self, volunteer):
         if volunteer not in self.interested_volunteers.all():

@@ -178,8 +178,8 @@ class ActionAdmin(ModelAdminWithExtraContext):
             'fields': ('added_by', 'call_datetime', 'call_duration')
         }),
         ('Help received', {
-            'fields': ('action_status', 'assigned_volunteer', 'volunteer_made_contact_on')
-        })
+            'fields': ('action_status', 'assigned_volunteer', 'volunteer_made_contact_on', 'assigned_date', 'completed_date')
+        }),
     )
 
     def has_delete_permission(self, request, obj=None):
