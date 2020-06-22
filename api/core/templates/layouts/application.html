@@ -53,11 +53,13 @@
         <span class="sr-only">Back</span>
       </a>
       {% endif %}
-      <h1 class="text-center mx-auto">
-        {% block 'heading' %}
-        {{heading|safe}}
-        {% endblock %}
-      </h1>
+      {% block 'title' %}
+        <h1 class="text-center mx-auto">
+          {% block 'heading' %}
+          {{heading|safe}}
+          {% endblock %}
+        </h1>
+      {% endblock %}
       {% if back_url %}
       <a class="invisible btn btn-icon-only rounded-circle" role="presentation">
         {% embed_svg 'node_modules/@fortawesome/fontawesome-free/svgs/solid/arrow-left.svg' %}

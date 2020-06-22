@@ -209,8 +209,8 @@ class Volunteer(UserProfileMixin, Person):
     def upcoming_actions(self):
         # select_related needs to happen here rather
         # than outside of the query due to the `union`
-        return self.actions_interested_in.filter(action_status__in=(
-            action_models.ActionStatus.ASSIGNED, action_models.ActionStatus.INTEREST))
+        return self.actions_interested_in.filter(Q(action_status=action_models.ActionStatus.INTEREST) |
+                                                 Q(action_status=action_models.ActionStatus.ASSIGNED, assigned_volunteer=self))
 
     @property
     def completed_actions(self):

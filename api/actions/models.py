@@ -184,7 +184,7 @@ class Action(models.Model):
             .all()
 
     def __str__(self):
-        return f"Action: {self.id}"
+        return f"Action {self.id} - {self.resident.full_name}"
 
 
 class ActionFeedback(models.Model):
@@ -207,4 +207,4 @@ class ActionFeedback(models.Model):
         super().save(force_insert=force_insert, force_update=force_update, using=using, update_fields=update_fields)
 
     def __str__(self):
-        return f"{self.id}: feedback for action {self.action.id}"
+        return f"Feedback {self.id} - Action {self.action.id}"
