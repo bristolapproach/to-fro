@@ -190,6 +190,8 @@ class Action(models.Model):
 class ActionFeedback(models.Model):
     action = models.ForeignKey(Action, on_delete=models.PROTECT,
         null=False, help_text="The feedback subject")
+    volunteer = models.ForeignKey(user_models.Volunteer, on_delete=models.PROTECT,
+        null=True, help_text="Who wrote the feedback")
     time_taken = models.DurationField(null=True, blank=True,
         help_text="How long did it take to complete the action?")
     notes = models.TextField(max_length=500, null=True, blank=True,

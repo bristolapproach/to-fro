@@ -257,6 +257,7 @@ class ActionAdmin(ModelAdminWithExtraContext):
 
 class ActionFeedbackAdmin(ModelAdminWithExtraContext):
     list_display = ('id', 'action', 'volunteer', 'resident', 'time_taken', 'created_date_time')
+    list_filter = ('volunteer', 'action', 'created_date_time')
 
     def resident(self, af):
         return af.action.resident
