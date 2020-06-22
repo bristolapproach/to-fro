@@ -188,4 +188,4 @@ class Action(models.Model):
             .all()
 
     def __str__(self):
-        return f"Action: {self.id}"
+        return f"Action {self.id} - {self.resident.full_name}"
