@@ -19,7 +19,7 @@ class ActionPriority:
 
 class ActionStatus:
     PENDING, INTEREST, ASSIGNED, ONGOING, COMPLETED, \
-        COULDNT_COMPLETE = '1', '2', '3', '4', '5', '6'
+        COULDNT_COMPLETE, NO_LONGER_NEEDED = '1', '2', '3', '4', '5', '6', '7'
     STATUSES = [
         (PENDING, 'Pending volunteer interest'),
         (INTEREST, 'Volunteer interest'),
@@ -27,6 +27,7 @@ class ActionStatus:
         (ONGOING, 'Ongoing'),
         (COMPLETED, 'Completed'),
         (COULDNT_COMPLETE, 'Couldn\'t complete'),
+        (NO_LONGER_NEEDED, 'No longer needed')
     ]
 
 
@@ -35,6 +36,8 @@ class Action(models.Model):
     STATUSES_WITHOUT_ASSIGNED_VOLUNTEER = (
         ActionStatus.INTEREST, ActionStatus.PENDING)
 
+    external_action_id = models.CharField(
+        max_length=50, null=True, blank=True, help_text="The ID of the action in an external system")
     added_by = models.ForeignKey(user_models.Coordinator, related_name='added_by',
                                  on_delete=models.PROTECT, help_text="What's your name?")
     coordinator = models.ForeignKey(user_models.Coordinator, related_name='coordinator',
@@ -57,10 +60,6 @@ class Action(models.Model):
                                      default=ActionStatus.PENDING, help_text="What's the status of this action?")
     action_priority = models.CharField(max_length=1, choices=ActionPriority.PRIORITIES,
                                        default=ActionPriority.MEDIUM, help_text="What priority should this action be given?")
-    time_taken = models.DurationField(
-        null=True, help_text="How long did it take to complete the action?", blank=True)
-    notes = models.TextField(max_length=500, null=True,
-                             blank=True, help_text="Notes from the volunteer.")
     public_description = models.TextField(max_length=500, null=True, blank=True,
                                           help_text="Text that gets displayed to volunteers who are browsing actions.")
     private_description = models.TextField(
@@ -70,6 +69,10 @@ class Action(models.Model):
     requirements = models.ManyToManyField(Requirement, blank=True, related_name="actions",
                                           help_text="Only volunteers matching these requirements will see the action.")
     volunteer_made_contact_on = models.DateTimeField(null=True, blank=True)
+    assigned_date = models.DateTimeField(
+        null=True, blank=True, verbose_name="Assigned on")
+    completed_date = models.DateTimeField(
+        null=True, blank=True, verbose_name="Completed on")
 
     # Track changes to the model so we can access the previous status
     # when it changes, and update the volunteer accordingly if it swapped
@@ -96,7 +99,18 @@ class Action(models.Model):
         # Track the contact date when setting the status
         # to one implying that contact would have happened
         if (self.action_status in (ActionStatus.ONGOING, ActionStatus.COMPLETED, ActionStatus.COULDNT_COMPLETE) and not self.volunteer_made_contact_on):
-            self.register_volunteer_contact()
+            self.volunteer_made_contact_on = timezone.now()
+
+        # Track other interesting dates
+        if (self.action_status not in self.STATUSES_WITHOUT_ASSIGNED_VOLUNTEER and not self.assigned_date):
+            self.assigned_date = timezone.now()
+        # if (self.action_status in self.STATUSES_WITHOUT_ASSIGNED_VOLUNTEER and self.assigned_date):
+        #     self.assigned_date = None
+
+        if (self.action_status == ActionStatus.COMPLETED and not self.completed_date):
+            self.completed_date = timezone.now()
+        # if (self.action_status != ActionStatus.COMPLETED and self.completed_date):
+        #     self.completed_date = None
 
         # Only for updates as it runs on a related field
         if self.pk is not None:
@@ -121,9 +135,6 @@ class Action(models.Model):
         """
         if (self.assigned_volunteer and not self.assigned_volunteer in self.interested_volunteers.all()):
             self.interested_volunteers.add(self.assigned_volunteer)
-
-    def register_volunteer_contact(self):
-        self.volunteer_made_contact_on = timezone.now()
 
     def register_interest_from(self, volunteer):
         if volunteer not in self.interested_volunteers.all():
@@ -178,7 +189,7 @@ class Action(models.Model):
 
     @property
     def can_give_feedback(self):
-        return self.action_status == ActionStatus.ASSIGNED
+        return self.action_status == ActionStatus.ASSIGNED or self.action_status == ActionStatus.ONGOING
 
     @property
     def potential_volunteers(self):
@@ -189,3 +200,28 @@ class Action(models.Model):
 
     def __str__(self):
         return f"Action {self.id} - {self.resident.full_name}"
+
+
+class ActionFeedback(models.Model):
+    action = models.ForeignKey(Action, on_delete=models.PROTECT,
+        null=False, help_text="The feedback subject")
+    volunteer = models.ForeignKey(user_models.Volunteer, on_delete=models.PROTECT,
+        null=True, help_text="Who wrote the feedback")
+    time_taken = models.DurationField(null=True, blank=True,
+        help_text="How long did it take to complete the action?")
+    notes = models.TextField(max_length=500, null=True, blank=True,
+        help_text="Notes from the volunteer")
+    created_date_time = models.DateTimeField(null=True, blank=True, 
+        help_text="This field is updated automatically.")
+    
+    class Meta:
+        verbose_name = 'Feedback'
+        verbose_name_plural = 'Feedback'
+    
+    def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
+        if not self.created_date_time:
+            self.created_date_time = timezone.now()
+        super().save(force_insert=force_insert, force_update=force_update, using=using, update_fields=update_fields)
+
+    def __str__(self):
+        return f"Feedback {self.id} - Action {self.action.id}"

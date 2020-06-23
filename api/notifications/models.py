@@ -20,6 +20,7 @@ class NotificationTypes:
     VOLUNTEER_INTEREST = 'VOLUNTEER_INTEREST'
     VOLUNTEER_ASSIGNED = 'VOLUNTEER_ASSIGNED'
     VOLUNTEER_NOT_ASSIGNED = 'VOLUNTEER_NOT_ASSIGNED'
+    VOLUNTEER_CONTACT = 'VOLUNTEER_CONTACT'
     ACTION_COMPLETED = 'ACTION_COMPLETED'
     ACTION_NOT_COMPLETED = 'ACTION_NOT_COMPLETED'
     ACTION_ONGOING = 'ACTION_ONGOING'
@@ -28,6 +29,7 @@ class NotificationTypes:
         (VOLUNTEER_INTEREST, 'Volunteed manifested interest'),
         (VOLUNTEER_ASSIGNED, 'Volunteer was assigned'),
         (VOLUNTEER_NOT_ASSIGNED, 'Volunteer was not assigned'),
+        (VOLUNTEER_CONTACT, 'Volunteer made contact with the resident'),
         (ACTION_COMPLETED, 'Volunteer completed the action'),
         (ACTION_NOT_COMPLETED, 'Volunteer could not complete the action'),
         (ACTION_ONGOING, 'Volunteer marked action as ongoing')
