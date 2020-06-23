@@ -1,9 +1,9 @@
-Hi {{ recipient }},
+Hi there,
 
 We have a request for help that is time sensitive.
 
 Info:
-{{ public_description }}
+{{ action.public_description }}
 
 If you’re able to help please respond here:
 {{ action_url }}

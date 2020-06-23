@@ -1,1 +1,1 @@
-A volunteer has made contact with a resident
+{{ action.coordinator.first_name }} ({{ action.coordinator.id }}) | Update for action #{{ action_id }}

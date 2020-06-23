@@ -38,6 +38,7 @@
     EMAIL_PORT: "{{ email_port }}"
     EMAIL_HOST_USER: "{{ email_host_user }}"
     EMAIL_HOST_PASSWORD: "{{ email_host_password }}"
+    COORDINATOR_EMAIL: "{{ coordinator_email }}"
 
     VOLUNTEER_DIGEST_HOUR: "{{ volunteer_digest_hour }}"
     VOLUNTEER_DIGEST_MINUTE: "{{ volunteer_digest_minute }}"

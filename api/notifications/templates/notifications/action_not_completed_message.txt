@@ -1,6 +1,14 @@
-Hi {{ recipient }},
+Hi {{ action.coordinator.first_name }},
 
-A volunteer could not complete action no. {{ action_id }}:
-{{admin_action_url}}
+{{ action.assigned_volunteer.first_name }} could not complete this action.
+
+Details for action #{{ action.id }}:
+Coordinator | {{ action.coordinator.first_name }} ({{ action.coordinator.id }})
+Volunteer   | {{ action.assigned_volunteer.first_name }} ({{ action.assigned_volunteer.id }})
+Resident    | {{ action.resident.first_name }} ({{ action.resident.id }})
+Due         | {{ action.requested_datetime }}
+
+See more information here:
+{{ admin_action_url }}
 
 Many thanks and best wishes from the KW Support Hub Team

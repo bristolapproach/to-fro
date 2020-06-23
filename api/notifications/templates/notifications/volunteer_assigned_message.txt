@@ -1,4 +1,4 @@
-Hi {{ recipient }},
+Hi there,
 
 Thanks so much for offering to help.
 
