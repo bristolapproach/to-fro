@@ -119,6 +119,8 @@ class Volunteer(UserProfileMixin, Person):
     profile_related_name = 'volunteer'
     user = models.OneToOneField(User, null=True, blank=True,
                                 on_delete=models.SET_NULL, related_name=profile_related_name)
+    external_volunteer_id = models.CharField(
+        max_length=50, null=True, blank=True, help_text="The ID of the volunteer in an external system")
     dbs_number = models.CharField(max_length=12, null=True, blank=True,
                                   help_text="The user's DBS certificate number, if they have one.")
     access_to_car = models.BooleanField(

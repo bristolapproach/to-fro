@@ -36,6 +36,8 @@ class Action(models.Model):
     STATUSES_WITHOUT_ASSIGNED_VOLUNTEER = (
         ActionStatus.INTEREST, ActionStatus.PENDING)
 
+    external_action_id = models.CharField(
+        max_length=50, null=True, blank=True, help_text="The ID of the action in an external system")
     added_by = models.ForeignKey(user_models.Coordinator, related_name='added_by',
                                  on_delete=models.PROTECT, help_text="What's your name?")
     coordinator = models.ForeignKey(user_models.Coordinator, related_name='coordinator',
@@ -68,11 +70,9 @@ class Action(models.Model):
                                           help_text="Only volunteers matching these requirements will see the action.")
     volunteer_made_contact_on = models.DateTimeField(null=True, blank=True)
     assigned_date = models.DateTimeField(
-        null=True, blank=True, verbose_name="Assigned on"
-    )
+        null=True, blank=True, verbose_name="Assigned on")
     completed_date = models.DateTimeField(
-        null=True, blank=True, verbose_name="Completed on"
-    )
+        null=True, blank=True, verbose_name="Completed on")
 
     # Track changes to the model so we can access the previous status
     # when it changes, and update the volunteer accordingly if it swapped

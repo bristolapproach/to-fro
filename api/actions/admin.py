@@ -171,6 +171,9 @@ class ActionAdmin(ModelAdminWithExtraContext):
         ('Action Details', {
             'fields': ('resident', 'requested_datetime', 'help_type', 'action_priority', 'coordinator', 'requirements')
         }),
+        ('External Links', {
+            'fields': ('external_action_id',)
+        }),
         ('Description', {
             'fields': ('public_description', 'private_description')
         }),

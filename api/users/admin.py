@@ -208,6 +208,9 @@ class VolunteerAdmin(VolunteerAdminAutocomplete, ModelAdminWithExtraContext):
         ('Contact Details', {
             'fields': ('phone', 'phone_secondary', 'email', 'email_secondary')
         }),
+        ('External Links', {
+            'fields': ('external_volunteer_id',)
+        }),
         ('Volunteering preferences', {
             'fields': ('wards', 'help_types')
         }),
