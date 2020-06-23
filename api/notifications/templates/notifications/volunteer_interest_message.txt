@@ -4,7 +4,6 @@ Hi {{ action.coordinator.first_name }},
 
 Details for action #{{ action.id }}:
 Coordinator | {{ action.coordinator.first_name }} ({{ action.coordinator.id }})
-Volunteer   | {{ action.assigned_volunteer.first_name }} ({{ action.assigned_volunteer.id }})
 Resident    | {{ action.resident.first_name }} ({{ action.resident.id }})
 Due         | {{ action.requested_datetime }}
 
