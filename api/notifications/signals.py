@@ -1,7 +1,7 @@
 from notifications.models import Notification
 from notifications import notifications
 from django.db.models.signals import post_save
-from django.contrib.auth.models import User
+from users.models import Coordinator, Volunteer
 from django.dispatch import receiver
 from actions.models import Action
 import django_rq
@@ -14,9 +14,10 @@ site_url = os.getenv("SITE_URL", "http://0.0.0.0:80")
 logger = logging.getLogger(__name__)
 
 
-@receiver(post_save, sender=User, dispatch_uid="UserSave")
+@receiver(post_save, sender=Volunteer, dispatch_uid="VolunteerSave")
+@receiver(post_save, sender=Coordinator, dispatch_uid="CoordinatorSave")
 def post_save_user(sender, instance, created, **kwargs):
-    """Send an email invite if the User has just been created."""
+    """Send an email invite if the user has just been created."""
     if created:
         notifications.send_invite(instance)
 

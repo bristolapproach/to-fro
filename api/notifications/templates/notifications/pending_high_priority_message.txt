@@ -1,4 +1,4 @@
-Hello,
+Hi {{ recipient }},
 
 We have a request for help that is time sensitive.
 

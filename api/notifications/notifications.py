@@ -3,7 +3,6 @@ from notifications.models import Notification, NotificationTypes
 from notifications.utils import gen_subject_and_message
 from actions.models import ActionPriority, ActionStatus
 from django.core.mail import EmailMessage
-from users.models import Volunteer
 from django.utils import timezone
 import logging
 import os
@@ -14,17 +13,20 @@ site_url = os.getenv("SITE_URL", "http://0.0.0.0:80")
 logger = logging.getLogger(__name__)
 
 
-def send_invite(user):
-    """Sends an email invite to a User instance,
+def send_invite(person):
+    """Sends an email invite to a Person instance,
     using Django's PasswordResetForm.
     """
-    if user.email:
-        form = PasswordResetForm({'email': user.email})
+    if not person.user_without_account and person.email:
+        form = PasswordResetForm({'email': person.email})
         form.is_valid()  # Needed for the `save()` to work.
         form.save(domain_override=site_url.split('://')[-1],
                 email_template_name='registration/invitation_email.txt',
                 subject_template_name='registration/invitation_subject.txt',
-                extra_email_context={'site_url': site_url})
+                extra_email_context={
+                    'recipient': person.first_name,
+                    'site_url': site_url
+                })
 
 
 def create_action_notifications(action):
@@ -38,8 +40,10 @@ def create_action_notifications(action):
     and not notification_exists(action, NotificationTypes.PENDING_HIGH_PRIORITY):
         create(action.potential_volunteers, action=action,
             notification_type=NotificationTypes.PENDING_HIGH_PRIORITY, 
-            context={"public_description": action.public_description})
-
+            context={
+                "public_description": action.public_description,
+                "action_id": action.id
+            })
 
     # Action coordinator is notified when a volunteer shows interest in an action.
     elif action.action_status == ActionStatus.INTEREST \
@@ -59,7 +63,8 @@ def create_action_notifications(action):
         or action.assigned_volunteer.id != get_latest_notification(action,
         NotificationTypes.VOLUNTEER_ASSIGNED).recipients.first().id:
             create([action.assigned_volunteer], action=action,
-                notification_type=NotificationTypes.VOLUNTEER_ASSIGNED)
+                notification_type=NotificationTypes.VOLUNTEER_ASSIGNED,
+                context={"action_id": action.id})
         
         # 2. Let those not assigned know.
         # Only send a notification to volunteers that have not received this email for this action.
@@ -71,7 +76,8 @@ def create_action_notifications(action):
         
         if len(recipients) > 0:
             create(recipients, action=action, 
-                notification_type=NotificationTypes.VOLUNTEER_NOT_ASSIGNED)
+                notification_type=NotificationTypes.VOLUNTEER_NOT_ASSIGNED,
+                context={"action_id": action.id})
 
 
     # Action coordinator is notified when a volunteer completes an action.
@@ -127,10 +133,15 @@ def get_all_notifications(action, notification_type):
             .all()
 
 
-def create(recipients, subject=None, message=None, action=None, notification_type=None, context=None):
+def create(recipients, subject=None, message=None, action=None, notification_type=None, context={}):
     """Instantiates notifications.
     Generates a notification subject and message, depending on the notification_type.
     """
+    # Set the name for the email recipient. This is their first name, or generic if a batch email.
+    if len(recipients) == 1:
+        context['recipient'] = recipients[0].first_name
+    else:
+        context['recipient'] = "there"
 
     # Generate a subject and message based on the notification_type.
     gen_subject, gen_message = gen_subject_and_message(site_url, notification_type, action, context)

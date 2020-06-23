@@ -1,2 +1,6 @@
+Hi {{ recipient }},
+
 A volunteer just completed action no. {{ action_id }}:
 {{admin_action_url}}
+
+Many thanks and best wishes from the KW Support Hub Team

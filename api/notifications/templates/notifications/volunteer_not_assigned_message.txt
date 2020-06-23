@@ -1,4 +1,4 @@
-Hello,
+Hi {{ recipient }},
 
 Many thanks for putting your hand up and offering to help for this action:
 {{action_url}}

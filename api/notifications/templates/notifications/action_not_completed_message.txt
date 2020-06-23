@@ -1,2 +1,6 @@
+Hi {{ recipient }},
+
 A volunteer could not complete action no. {{ action_id }}:
 {{admin_action_url}}
+
+Many thanks and best wishes from the KW Support Hub Team

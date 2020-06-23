@@ -1,2 +1,6 @@
+Hi {{ recipient }},
+
 The assigned volunteer for action {{ action_id }} has made contact with the resident. See the action here:
 {{admin_action_url}}
+
+Many thanks and best wishes from the KW Support Hub Team
