@@ -96,6 +96,12 @@ def create_action_notifications(action):
         create([action.coordinator], action=action, 
             notification_type=NotificationTypes.ACTION_ONGOING,
             context={"action_id": action.id})
+    
+    if action.volunteer_made_contact_on \
+    and not notification_exists(action, NotificationTypes.VOLUNTEER_CONTACT):
+        create([action.coordinator], action=action,
+            notification_type=NotificationTypes.VOLUNTEER_CONTACT,
+            context={"action_id": action.id})
 
 def notification_exists(action, notification_type):
     """True if a notification has been sent for this Action and NotificationType."""
