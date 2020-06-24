@@ -7,7 +7,7 @@ from django.contrib import messages
 from django.utils import timezone
 from django.views import generic
 from django.urls import reverse
-from .forms import ActionFeedbackForm
+from .forms import ActionFeedbackForm, ActionCancellationForm
 from datetime import datetime
 
 
@@ -129,7 +129,14 @@ def detail(request, action_id):
     return render(request, 'actions/detail.html', context)
 
 
-def complete(request, action_id):
+def stop_ongoing(request, action_id):
+    return action_feedback(request, action_id, template_name="actions/stop_ongoing.html", Form=ActionCancellationForm, extra_context={
+        'title': 'Stop collaboration',
+        'heading': 'Stop collaboration'
+    })
+
+
+def action_feedback(request, action_id, template_name='actions/complete.html', Form=ActionFeedbackForm, extra_context={}):
     volunteer = request.user.volunteer
     action = get_object_or_404(Action, pk=action_id)
 
@@ -137,10 +144,11 @@ def complete(request, action_id):
         return redirect('actions:detail', action_id=action.id)
 
     # Get feedback from the volunteer.
-    feedback = ActionFeedback(action=action, 
-        volunteer=action.assigned_volunteer, 
-        created_date_time=timezone.now())
-    form = ActionFeedbackForm(request.POST or None, instance=feedback, action=action)
+    feedback = ActionFeedback(action=action,
+                              volunteer=action.assigned_volunteer,
+                              created_date_time=timezone.now())
+    form = Form(request.POST or None,
+                instance=feedback, action=action)
     if request.method == "POST" and form.is_valid():
         form.save()
         messages.success(request, 'Nice work! Thanks for helping out!')
@@ -151,7 +159,8 @@ def complete(request, action_id):
         'back_url': reverse('actions:detail', kwargs={'action_id': action.id}),
         'title': 'How did it go?',
         'heading': 'How did it go?',
-        'form': form
+        'form': form,
+        **extra_context
     }
 
-    return render(request, 'actions/complete.html', context)
+    return render(request, template_name, context)

@@ -8,7 +8,7 @@
     We would recommend you shield your telephone number when doing this.
   </p>
   <div class="d-flex flex-wrap justify-content-around mt-n2">
-    <a class="btn btn-link mt-2" href="{% url 'actions:complete' action.id%}">
+    <a class="btn btn-link px-0 mt-2" href="{% url 'actions:complete' action.id%}">
       I went and helped!
     </a>
     <form method="POST" class="mt-2">
@@ -19,13 +19,24 @@
       </button>
     </form>
   </div>
+{% elif action.is_ongoing %}
+  <h3 class="h5 text-center">
+    You've arranged to help this person regularly.</h3>
+  <p>
+    Please let us know when you go and help them, or if your collaboration with them is stopping.
+  </p>
+  <div class="d-flex flex-wrap justify-content-around mt-n2">
+    <a class="btn btn-link mt-2 px-0" href="{% url 'actions:cancel' action.id%}">
+      This won't happen anymore.
+    </a>
+    <a class="btn btn-primary mt-2" href="{% url 'actions:complete' action.id%}">
+      {% embed_fontawesome 'check' class_attribute="align-icon" %}
+      I checked in with them!
+    </a>
+  </div>
 {% else %}
   <a class="btn btn-primary d-table mx-auto mt-2" href="{% url 'actions:complete' action.id%}">
     {% embed_fontawesome 'check' class_attribute="align-icon" %}
-    {% if action.is_ongoing %}
-      Check-in
-    {% else %}
-      I went and helped!
-    {% endif %}
+    I went and helped!
   </a>
 {% endif %}

@@ -1,0 +1,15 @@
+{% extends 'layouts/application.html' %}
+
+{% load svg %}
+{% load crispy_forms_tags %}
+
+{% block 'content' %}
+<form class="card p-3" method="POST">
+  {% csrf_token %}
+  {% crispy form form.helper%}
+  <button name="outcome" value="ok" class="btn btn-danger d-table mx-auto mt-4">
+    Stop collaboration
+  </button>  
+</form>
+{% include './_problem_help.html' with action=action volunteer=volunteer%}
+{% endblock %}
