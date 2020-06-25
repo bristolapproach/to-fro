@@ -224,26 +224,28 @@ CRISPY_TEMPLATE_PACK = 'bootstrap4'
 # Redirect to home URL after login (Default redirects to /accounts/profile/)
 LOGIN_REDIRECT_URL = '/actions/'
 
-LOGGING = {
-    'version': 1,
-    'disable_existing_loggers': False,
-    'handlers': {
-        'console': {
-            'class': 'logging.StreamHandler',
-        },
-    },
-    'root': {
-        'handlers': ['console'],
-        'level': 'INFO',
-    },
-    'loggers': {
-        'django': {
-            'handlers': ['console'],
-            'level': 'DEBUG' if DEBUG else 'INFO',
-            'propagate': False,
-        },
-    },
+LOGGING = copy.deepcopy(DEFAULT_LOGGING)
+
+# Add a root logger that'll catch the logs of our own apps
+LOGGING['loggers'][''] = {
+    'handlers': ['console'],
+    'level': 'INFO'
 }
+# Prevent Django's logs to be emitted a second time
+# by being propaggated to the root logger
+LOGGING['loggers']['django']['propagate'] = False
+
+# Customize the logging configuration for development
+if DEBUG:
+    # Lower the threshold for the console logger
+    LOGGING['handlers']['console']['level'] = 'DEBUG'
+    LOGGING['loggers']['']['level'] = 'DEBUG'
+    LOGGING['loggers']['django.server']['level'] = 'WARNING'
+    # Uncomment to log the DB queries (lots of noise though)
+    # LOGGING['loggers']['django.db.backends'] = {
+    #     'level': 'DEBUG',
+    #     'handlers': ['console'],
+    # }
 
 # Help configure contact email
 CONTACT_EMAIL = os.getenv('CONTACT_EMAIL', 'contact@example.com')
