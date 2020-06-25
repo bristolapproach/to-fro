@@ -35,7 +35,7 @@ services:
     container_name: tofro-redis-worker
     restart: unless-stopped
     environment:
-      - DEBUG=${DEBUG}
+      - DEBUG=True
       - POSTGRES_DB=${POSTGRES_DB}
       - POSTGRES_USER=${POSTGRES_USER}
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
@@ -52,7 +52,7 @@ services:
     container_name: tofro-redis-scheduler
     restart: unless-stopped
     environment:
-      - DEBUG=${DEBUG}
+      - DEBUG=True
       - POSTGRES_DB=${POSTGRES_DB}
       - POSTGRES_USER=${POSTGRES_USER}
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}

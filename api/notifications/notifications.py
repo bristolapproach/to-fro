@@ -161,6 +161,7 @@ def send(notification):
         notification.save()
 
 def send_email(subject, message, recipients):
+    logger.log(logging.INFO, f"Sending email: {subject}")
     EmailMessage(
         subject, message,
         bcc=recipients
