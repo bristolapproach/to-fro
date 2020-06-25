@@ -17,5 +17,9 @@
     #     docker_users:
     #       - "{{ ansible_user }}"
 
+    # Configure the server for redis.
+    - role: redis-env
+      become: yes
+
     # Install the To-Fro applications.
     - role: tofro

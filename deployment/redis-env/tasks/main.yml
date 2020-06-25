@@ -1,0 +1,23 @@
+---
+- name: Allow overcommit memory so Redis can save with low memory
+  sysctl:
+    name: vm.overcommit_memory
+    value: '1'
+    state: present
+  notify:
+    - Reboot
+
+- name: Disable transparent huge pages for Redis
+  copy:
+    src: disable-thp.service
+    dest: /etc/systemd/system/
+  notify:
+    - Reboot
+
+
+  # lineinfile:
+  #   path: /etc/default/grub
+  #   regexp: ^GRUB_CMDLINE_LINUX_DEFAULT=
+  #   line: GRUB_CMDLINE_LINUX_DEFAULT="console=tty0 console=ttyS0,115200 no_timer_check nofb nomodeset vga=normal transparent_hugepage=never"
+  # notify:
+  #   - Reboot
