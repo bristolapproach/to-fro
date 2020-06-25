@@ -101,6 +101,7 @@ services:
       - DJANGO_HTTPS=${DJANGO_HTTPS}
       - HOSTNAME=${HOSTNAME}
     depends_on:
+      - redis
       - redis-worker
       - redis-scheduler
 
