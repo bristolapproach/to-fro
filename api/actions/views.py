@@ -131,8 +131,8 @@ def detail(request, action_id):
 
 def stop_ongoing(request, action_id):
     return action_feedback(request, action_id, template_name="actions/stop_ongoing.html", Form=ActionCancellationForm, extra_context={
-        'title': 'Stop collaboration',
-        'heading': 'Stop collaboration'
+        'title': 'Your collaboration is stopping',
+        'heading': 'Your collaboration is stopping'
     })
 
 
