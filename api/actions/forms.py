@@ -99,7 +99,7 @@ class ActionFeedbackForm(ModelForm):
 
     # And add form specific fields
     will_be_ongoing = BooleanField(
-        required=False, label=_("I've scheduled with the person to help them recurrently"))
+        required=False, label=_("I've scheduled with the person to help them regularly"))
 
     def get_initial_for_field(self, field, field_name):
         initial = super().get_initial_for_field(field, field_name)
