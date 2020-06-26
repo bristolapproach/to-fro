@@ -107,6 +107,8 @@ class Resident(Person):
     shielded = models.BooleanField(
         default=False, help_text="Is this person shielded?")
 
+    time_received = models.DurationField(null=True, blank=True)
+
     @property
     def address(self, join_char=', '):
         filled_lines = [line for line in (

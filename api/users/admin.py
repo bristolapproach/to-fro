@@ -83,9 +83,11 @@ class CoordinatorAdmin(ModelAdminWithExtraContext):
 
 class ResidentAdmin(admin.ModelAdmin):
     model = Resident
-    list_display = ('first_name', 'last_name', 'phone', 'email')
+    list_display = ('first_name', 'last_name',
+                    'phone', 'email', 'time_received')
     list_filter = ('first_name', 'last_name', 'phone', 'email')
     search_fields = ['first_name', 'last_name']
+    readonly_fields = ['time_received']
 
     fieldsets = (
         (None, {

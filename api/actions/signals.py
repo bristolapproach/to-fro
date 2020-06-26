@@ -13,6 +13,8 @@ def post_save_action_feedback(sender, instance, *args, **kwargs):
                       feedback_queryset=instance.volunteer.actionfeedback_set)
     update_time_total(instance.action, total_attr='time_taken',
                       feedback_queryset=instance.action.actionfeedback_set)
+    update_time_total(instance.action.resident, total_attr='time_received',
+                      feedback_queryset=ActionFeedback.objects.filter(action__resident=instance.action.resident))
 
 
 def update_time_total(instance, total_attr='', feedback_queryset=''):
