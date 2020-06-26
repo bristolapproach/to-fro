@@ -1,12 +1,4 @@
-Hi {{ action.coordinator.first_name }},
-
-{{ action.assigned_volunteer.first_name }} marked this action as ongoing.
-
-Details for action #{{ action.id }}:
-Coordinator | {{ action.coordinator.first_name }} ({{ action.coordinator.id }})
-Volunteer   | {{ action.assigned_volunteer.first_name }} ({{ action.assigned_volunteer.id }})
-Resident    | {{ action.resident.first_name }} ({{ action.resident.id }})
-Due         | {{ action.requested_datetime }}
+{{ action.assigned_volunteer.first_name }} marked action #{{ action.id }} as ongoing.
 
 See more information here:
 {{ admin_action_url }}

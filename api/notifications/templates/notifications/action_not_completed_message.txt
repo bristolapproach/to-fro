@@ -1,12 +1,4 @@
-Hi {{ action.coordinator.first_name }},
-
-{{ action.assigned_volunteer.first_name }} could not complete this action.
-
-Details for action #{{ action.id }}:
-Coordinator | {{ action.coordinator.first_name }} ({{ action.coordinator.id }})
-Volunteer   | {{ action.assigned_volunteer.first_name }} ({{ action.assigned_volunteer.id }})
-Resident    | {{ action.resident.first_name }} ({{ action.resident.id }})
-Due         | {{ action.requested_datetime }}
+{{ action.assigned_volunteer.first_name }} could not complete action #{{ action.id }}.
 
 See more information here:
 {{ admin_action_url }}

@@ -1,11 +1,4 @@
-Hi {{ action.coordinator.first_name }},
-
-{{ action.assigned_volunteer.first_name }} has registered interest in this action. Please review their application.
-
-Details for action #{{ action.id }}:
-Coordinator | {{ action.coordinator.first_name }} ({{ action.coordinator.id }})
-Resident    | {{ action.resident.first_name }} ({{ action.resident.id }})
-Due         | {{ action.requested_datetime }}
+{{ action.assigned_volunteer.first_name }} has registered interest in action #{{ action.id }}. Please review their application.
 
 See more information here:
 {{ admin_action_url }}
