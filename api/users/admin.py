@@ -83,9 +83,11 @@ class CoordinatorAdmin(ModelAdminWithExtraContext):
 
 class ResidentAdmin(admin.ModelAdmin):
     model = Resident
-    list_display = ('first_name', 'last_name', 'phone', 'email')
+    list_display = ('first_name', 'last_name',
+                    'phone', 'email', 'time_received')
     list_filter = ('first_name', 'last_name', 'phone', 'email')
     search_fields = ['first_name', 'last_name']
+    readonly_fields = ['time_received']
 
     fieldsets = (
         (None, {
@@ -193,10 +195,11 @@ class VolunteerAdmin(VolunteerAdminAutocomplete, ModelAdminWithExtraContext):
 
     autocomplete_fields = ['user']
 
-    list_display = ('first_name', 'last_name', 'phone', 'email')
+    list_display = ('first_name', 'last_name', 'phone', 'email', 'time_given')
     list_filter = ('first_name', 'last_name', 'phone', 'email')
     search_fields = ['first_name', 'last_name']
     filter_horizontal = ('wards', 'help_types', 'requirements')
+    readonly_fields = ('time_given',)
 
     fieldsets = (
         (None, {
@@ -211,8 +214,8 @@ class VolunteerAdmin(VolunteerAdminAutocomplete, ModelAdminWithExtraContext):
         ('External Links', {
             'fields': ('external_volunteer_id',)
         }),
-        ('Volunteering preferences', {
-            'fields': ('wards', 'help_types')
+        ('Volunteering', {
+            'fields': ('time_given', 'wards', 'help_types')
         }),
         ('Checks', {
             'fields': (

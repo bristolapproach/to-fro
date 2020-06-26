@@ -177,6 +177,7 @@ class ActionAdmin(ModelAdminWithExtraContext):
                    )
     list_editable = ['action_status', 'assigned_volunteer']
     autocomplete_fields = ['resident', 'assigned_volunteer']
+    readonly_fields = ['time_taken']
     filter_horizontal = ('requirements', 'interested_volunteers')
     inlines = (FeedbackInline,)
 
@@ -194,7 +195,7 @@ class ActionAdmin(ModelAdminWithExtraContext):
             'fields': ('added_by', 'call_datetime', 'call_duration')
         }),
         ('Help received', {
-            'fields': ('action_status', 'assigned_volunteer', 'volunteer_made_contact_on', 'assigned_date', 'completed_date')
+            'fields': ('action_status', 'assigned_volunteer', 'time_taken', 'volunteer_made_contact_on', 'assigned_date', 'completed_date',)
         }),
     )
 
@@ -277,7 +278,8 @@ class ActionAdmin(ModelAdminWithExtraContext):
 
 
 class ActionFeedbackAdmin(ModelAdminWithExtraContext):
-    list_display = ('id', 'action', 'volunteer', 'resident', 'time_taken', 'created_date_time')
+    list_display = ('id', 'action', 'volunteer', 'resident',
+                    'time_taken', 'created_date_time')
     list_filter = ('volunteer', 'action', 'created_date_time')
 
     def resident(self, af):
