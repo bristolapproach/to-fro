@@ -12,5 +12,5 @@ def gen_subject_and_message(site_url, notification_type, action=None, context={}
     context['admin_action_url'] = f'{site_url}/admin/actions/action/{action.id}/change'
 
     # Return the subject and message, removing line breaks from the subject.
-    return (render_to_string(f'notifications/{notification_type.lower()}_subject.txt').replace('\n', ' ').replace('\r', ' '),
+    return (render_to_string(f'notifications/{notification_type.lower()}_subject.txt', context).replace('\n', ' ').replace('\r', ' '),
             render_to_string(f'notifications/{notification_type.lower()}_message.txt', context))
