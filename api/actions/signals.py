@@ -11,6 +11,8 @@ def post_save_action_feedback(sender, instance, *args, **kwargs):
     # if we want to tally on actions or resident
     update_time_total(instance.volunteer, total_attr='time_given',
                       feedback_queryset=instance.volunteer.actionfeedback_set)
+    update_time_total(instance.action, total_attr='time_taken',
+                      feedback_queryset=instance.action.actionfeedback_set)
 
 
 def update_time_total(instance, total_attr='', feedback_queryset=''):

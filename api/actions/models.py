@@ -74,6 +74,8 @@ class Action(models.Model):
     completed_date = models.DateTimeField(
         null=True, blank=True, verbose_name="Completed on")
 
+    time_taken = models.DurationField(null=True, blank=True)
+
     # Track changes to the model so we can access the previous status
     # when it changes, and update the volunteer accordingly if it swapped
     # to a status that doesn't have a volunteer assigned
@@ -204,24 +206,25 @@ class Action(models.Model):
 
 class ActionFeedback(models.Model):
     action = models.ForeignKey(Action, on_delete=models.PROTECT,
-        null=False, help_text="The feedback subject")
+                               null=False, help_text="The feedback subject")
     volunteer = models.ForeignKey(user_models.Volunteer, on_delete=models.PROTECT,
-        null=True, help_text="Who wrote the feedback")
+                                  null=True, help_text="Who wrote the feedback")
     time_taken = models.DurationField(null=True, blank=True,
-        help_text="How long did it take to complete the action?")
+                                      help_text="How long did it take to complete the action?")
     notes = models.TextField(max_length=500, null=True, blank=True,
-        help_text="Notes from the volunteer")
-    created_date_time = models.DateTimeField(null=True, blank=True, 
-        help_text="This field is updated automatically.")
-    
+                             help_text="Notes from the volunteer")
+    created_date_time = models.DateTimeField(null=True, blank=True,
+                                             help_text="This field is updated automatically.")
+
     class Meta:
         verbose_name = 'Feedback'
         verbose_name_plural = 'Feedback'
-    
+
     def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
         if not self.created_date_time:
             self.created_date_time = timezone.now()
-        super().save(force_insert=force_insert, force_update=force_update, using=using, update_fields=update_fields)
+        super().save(force_insert=force_insert, force_update=force_update,
+                     using=using, update_fields=update_fields)
 
     def __str__(self):
         return f"Feedback {self.id} - Action {self.action.id}"
