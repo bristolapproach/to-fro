@@ -4,7 +4,9 @@ from . import views
 
 app_name = 'actions'
 urlpatterns = [
-    path('<int:action_id>/complete/', views.complete, name="complete"),
+    path('<int:action_id>/cancel/',
+         views.stop_ongoing, name="cancel"),
+    path('<int:action_id>/complete/', views.action_feedback, name="complete"),
     path('<int:action_id>/', views.detail, name="detail"),
     path('available/', views.ActionsListView.as_view(list_type='available'),
          name="available"),

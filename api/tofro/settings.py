@@ -60,6 +60,8 @@ ALLOWED_HOSTS = DJANGO_ALLOWED_HOSTS
 
 # Application definition
 INSTALLED_APPS = [
+    'admin_auto_filters',
+    'django_admin_listfilter_dropdown',
     'actions',
     'assets',
     'categories',

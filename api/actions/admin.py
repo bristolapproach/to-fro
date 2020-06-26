@@ -10,6 +10,8 @@ from django import forms
 import datetime
 from django.utils.translation import gettext_lazy as _
 from core.admin import ModelAdminWithExtraContext
+from admin_auto_filters.filters import AutocompleteFilter
+from django_admin_listfilter_dropdown.filters import ChoiceDropdownFilter
 
 import logging
 logger = logging.getLogger(__name__)
@@ -94,6 +96,16 @@ class MadeContactFilter(admin.SimpleListFilter):
         return queryset
 
 
+class VolunteerFilter(AutocompleteFilter):
+    title = 'Assigned volunteer'
+    field_name = 'assigned_volunteer'
+
+
+class ResidentFilter(AutocompleteFilter):
+    title = 'Resident'
+    field_name = 'resident'
+
+
 class AssignedVolunteerAutocompleteSelect(AutocompleteSelect):
     """
     Custom AutocompletSelect widget for the assigned volunteer
@@ -157,11 +169,12 @@ class ActionAdmin(ModelAdminWithExtraContext):
     form = ActionAdminForm
     list_display = ('id', 'resident', 'help_type',
                     'requested_datetime', 'has_volunteer_made_contact',  'action_status', 'assigned_volunteer', )
-    list_filter = ('action_status',
-                   MadeContactFilter,
+    list_filter = (ResidentFilter,
+                   VolunteerFilter,
                    ('requested_datetime', RequestedDatetimeListFilter),
-                   ('resident', admin.RelatedOnlyFieldListFilter),
-                   ('assigned_volunteer', admin.RelatedOnlyFieldListFilter))
+                   ('action_status', ChoiceDropdownFilter),
+                   MadeContactFilter,
+                   )
     list_editable = ['action_status', 'assigned_volunteer']
     autocomplete_fields = ['resident', 'assigned_volunteer']
     filter_horizontal = ('requirements', 'interested_volunteers')
@@ -184,6 +197,11 @@ class ActionAdmin(ModelAdminWithExtraContext):
             'fields': ('action_status', 'assigned_volunteer', 'volunteer_made_contact_on', 'assigned_date', 'completed_date')
         }),
     )
+
+    # Necessary for multiple autocomplete filters
+    # to be set on the admin it seems
+    class Media:
+        pass
 
     def has_delete_permission(self, request, obj=None):
         """
