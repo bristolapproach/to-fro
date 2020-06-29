@@ -107,6 +107,8 @@ class Resident(Person):
     shielded = models.BooleanField(
         default=False, help_text="Is this person shielded?")
 
+    time_received = models.DurationField(null=True, blank=True)
+
     @property
     def address(self, join_char=', '):
         filled_lines = [line for line in (
@@ -141,6 +143,9 @@ class Volunteer(UserProfileMixin, Person):
     requirements = models.ManyToManyField(
         Requirement, blank=True, related_name="volunteers")
     reference_details = models.CharField(max_length=250, null=True, blank=True)
+
+    time_given = models.DurationField(null=True, blank=True)
+
     available_mon_morning = models.BooleanField(
         default=False, verbose_name="Monday morning")
     available_mon_afternoon = models.BooleanField(
@@ -248,6 +253,15 @@ def is_coordinator(self):
 User.is_volunteer = is_volunteer
 User.is_coordinator = is_coordinator
 
+
+class Settings(models.Model):
+    """
+    A profile to store extra info that's not related to
+    the coordination of help
+    """
+    user = models.OneToOneField(User, null=True, blank=True,
+                                on_delete=models.CASCADE, related_name='settings')
+    terms_accepted_at = models.DateTimeField(null=True, blank=True)
 
 # class Relationship(models.Model):
 #     user_1 = models.ForeignKey(User, on_delete=models.PROTECT, related_name="user_1")
