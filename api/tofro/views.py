@@ -7,6 +7,7 @@ from django.contrib import messages
 
 from actions.views import ActionsListView
 from .lib import has_permission
+from .forms import SetFirstPasswordForm
 
 import logging
 logger = logging.getLogger(__name__)
@@ -44,9 +45,15 @@ class PasswordResetConfirmView(views.PasswordResetConfirmView):
 
     def get_template_names(self):
         if (self.user.password):
-            return [self.template_name]
-        else:
-            return 'registration/password_reset_confirm_invite.html'
+            return super().get_template_names()
+
+        return 'registration/password_reset_confirm_invite.html'
+
+    def get_form_class(self):
+        if (self.user.password):
+            return super().get_form_class()
+
+        return SetFirstPasswordForm
 
     def form_valid(self, form):
         """

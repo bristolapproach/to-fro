@@ -254,6 +254,15 @@ User.is_volunteer = is_volunteer
 User.is_coordinator = is_coordinator
 
 
+class Settings(models.Model):
+    """
+    A profile to store extra info that's not related to
+    the coordination of help
+    """
+    user = models.OneToOneField(User, null=True, blank=True,
+                                on_delete=models.CASCADE, related_name='settings')
+    terms_accepted_at = models.DateTimeField(null=True, blank=True)
+
 # class Relationship(models.Model):
 #     user_1 = models.ForeignKey(User, on_delete=models.PROTECT, related_name="user_1")
 #     user_2 = models.ForeignKey(User, on_delete=models.PROTECT, related_name="user_2")
