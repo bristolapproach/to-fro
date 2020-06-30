@@ -1,1 +1,1 @@
-Action Required: Help Offered
+{{ action.coordinator.first_name }} ({{ action.coordinator.id }}) | Update for action #{{ action.id }}
