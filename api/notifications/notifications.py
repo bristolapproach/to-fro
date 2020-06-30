@@ -48,7 +48,8 @@ def create_action_notifications(action):
     elif action.action_status == ActionStatus.INTEREST \
     and not notification_exists(action, NotificationTypes.VOLUNTEER_INTEREST):
         create([coordinator_email], action=action,
-            notification_type=NotificationTypes.VOLUNTEER_INTEREST)
+            notification_type=NotificationTypes.VOLUNTEER_INTEREST,
+            context={"volunteer_name": action.interested_volunteers.first().first_name})
 
 
     # Volunteers are notified about whether or not they're assigned to an action.
