@@ -168,7 +168,7 @@ class FeedbackInline(admin.TabularInline):
 class ActionAdmin(ModelAdminWithExtraContext):
     form = ActionAdminForm
     list_display = ('id', 'resident', 'help_type',
-                    'requested_datetime', 'has_volunteer_made_contact',  'action_status', 'assigned_volunteer', )
+                    'requested_datetime', 'has_volunteer_made_contact',  'action_status', 'assigned_volunteer', 'time_taken')
     list_filter = (ResidentFilter,
                    VolunteerFilter,
                    ('requested_datetime', RequestedDatetimeListFilter),
