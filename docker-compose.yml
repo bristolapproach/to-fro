@@ -93,6 +93,7 @@ services:
       - EMAIL_PORT=${EMAIL_PORT}
       - EMAIL_HOST_USER=${EMAIL_HOST_USER}
       - EMAIL_HOST_PASSWORD=${EMAIL_HOST_PASSWORD}
+      - COORDINATOR_EMAIL=${COORDINATOR_EMAIL}
 
       - VOLUNTEER_DIGEST_HOUR=${VOLUNTEER_DIGEST_HOUR}
       - VOLUNTEER_DIGEST_MINUTE=${VOLUNTEER_DIGEST_MINUTE}
@@ -101,6 +102,7 @@ services:
       - DJANGO_HTTPS=${DJANGO_HTTPS}
       - HOSTNAME=${HOSTNAME}
     depends_on:
+      - redis
       - redis-worker
       - redis-scheduler
 

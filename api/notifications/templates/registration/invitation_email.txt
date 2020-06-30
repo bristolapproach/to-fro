@@ -1,10 +1,9 @@
-Hello,
+Hi {{ recipient }},
 
 You're receiving this email because you'd like to volunteer to help during this crisis. 
 
-An account has been set up for you on {{site_name}}. Please complete registration by setting a password via this link:
-
-{{site_url}}{% url 'password_reset_confirm' uidb64=uid token=token %}
+An account has been set up for you on {{ site_name }}. Please complete registration by setting a password via this link:
+{{ site_url }}{% url 'password_reset_confirm' uidb64=uid token=token %}
 
 Thanks for offering to help!
 

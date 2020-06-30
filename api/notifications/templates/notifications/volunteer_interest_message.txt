@@ -1,2 +1,6 @@
-A volunteer has shown interest in action {{ action_id }}, please review their application now:
-{{admin_action_url}}
+{{ volunteer_name }} has registered interest in action #{{ action.id }}. Please review the application.
+
+See more information here:
+{{ admin_action_url }}
+
+Many thanks and best wishes from the KW Support Hub Team

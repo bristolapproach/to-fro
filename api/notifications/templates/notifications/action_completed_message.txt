@@ -1,2 +1,6 @@
-A volunteer just completed action no. {{ action_id }}:
-{{admin_action_url}}
+{{ action.assigned_volunteer.first_name }} just completed action #{{ action.id }}.
+
+See more information here:
+{{ admin_action_url }}
+
+Many thanks and best wishes from the KW Support Hub Team

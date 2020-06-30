@@ -3,13 +3,14 @@ from notifications.models import Notification, NotificationTypes
 from notifications.utils import gen_subject_and_message
 from actions.models import ActionPriority, ActionStatus
 from django.core.mail import EmailMessage
-from users.models import Volunteer
 from django.utils import timezone
 import logging
 import os
 
 
+coordinator_email = os.getenv("COORDINATOR_EMAIL", "coordinators@test.com")
 from_email = os.getenv("EMAIL_HOST_USER", "test@test.com")
+site_name = os.getenv("ADMIN_SITE_TITLE", "TestTitle")
 site_url = os.getenv("SITE_URL", "http://0.0.0.0:80")
 logger = logging.getLogger(__name__)
 
@@ -24,7 +25,11 @@ def send_invite(user):
         form.save(domain_override=site_url.split('://')[-1],
                 email_template_name='registration/invitation_email.txt',
                 subject_template_name='registration/invitation_subject.txt',
-                extra_email_context={'site_url': site_url})
+                extra_email_context={
+                    'recipient': user.first_name,
+                    'site_name': site_name,
+                    'site_url': site_url
+                })
 
 
 def create_action_notifications(action):
@@ -36,17 +41,15 @@ def create_action_notifications(action):
     if action.action_priority == ActionPriority.HIGH \
     and action.action_status == ActionStatus.PENDING \
     and not notification_exists(action, NotificationTypes.PENDING_HIGH_PRIORITY):
-        create(action.potential_volunteers, action=action,
-            notification_type=NotificationTypes.PENDING_HIGH_PRIORITY, 
-            context={"public_description": action.public_description})
-
+        create([v.email for v in action.potential_volunteers], action=action,
+            notification_type=NotificationTypes.PENDING_HIGH_PRIORITY)
 
     # Action coordinator is notified when a volunteer shows interest in an action.
     elif action.action_status == ActionStatus.INTEREST \
     and not notification_exists(action, NotificationTypes.VOLUNTEER_INTEREST):
-        create([action.coordinator], action=action,
+        create([coordinator_email], action=action,
             notification_type=NotificationTypes.VOLUNTEER_INTEREST,
-            context={"action_id": action.id})
+            context={"volunteer_name": action.interested_volunteers.first().first_name})
 
 
     # Volunteers are notified about whether or not they're assigned to an action.
@@ -56,17 +59,17 @@ def create_action_notifications(action):
         # If this notification hasn't been sent before, or if it was previously
         # sent to someone else, we should send it to the assigned volunteer.
         if not notification_exists(action, NotificationTypes.VOLUNTEER_ASSIGNED) \
-        or action.assigned_volunteer.id != get_latest_notification(action,
-        NotificationTypes.VOLUNTEER_ASSIGNED).recipients.first().id:
-            create([action.assigned_volunteer], action=action,
+        or action.assigned_volunteer.email != get_latest_notification(action,
+        NotificationTypes.VOLUNTEER_ASSIGNED).recipients[0]:
+            create([action.assigned_volunteer.email], action=action,
                 notification_type=NotificationTypes.VOLUNTEER_ASSIGNED)
         
         # 2. Let those not assigned know.
         # Only send a notification to volunteers that have not received this email for this action.
         notifications = get_all_notifications(action, NotificationTypes.VOLUNTEER_NOT_ASSIGNED)
-        already_received = set([r.id for n in notifications for r in n.recipients.all()])
-        recipients = [v for v in action.interested_volunteers.all() 
-            if v.id not in already_received and 
+        already_received = set([r for n in notifications for r in n.recipients])
+        recipients = [v.email for v in action.interested_volunteers.all() 
+            if v.email not in already_received and 
             v.id != action.assigned_volunteer.id]
         
         if len(recipients) > 0:
@@ -77,31 +80,27 @@ def create_action_notifications(action):
     # Action coordinator is notified when a volunteer completes an action.
     elif action.action_status == ActionStatus.COMPLETED \
     and not notification_exists(action, NotificationTypes.ACTION_COMPLETED):
-        create([action.coordinator], action=action,
-            notification_type=NotificationTypes.ACTION_COMPLETED,
-            context={"action_id": action.id})
+        create([coordinator_email], action=action,
+            notification_type=NotificationTypes.ACTION_COMPLETED)
 
 
     # Coordinators are notified when a volunteer can't complete an action.
     elif action.action_status == ActionStatus.COULDNT_COMPLETE \
     and not notification_exists(action, NotificationTypes.ACTION_NOT_COMPLETED):
-        create([action.coordinator], action=action,
-            notification_type=NotificationTypes.ACTION_NOT_COMPLETED,
-            context={"action_id": action.id})
+        create([coordinator_email], action=action,
+            notification_type=NotificationTypes.ACTION_NOT_COMPLETED)
 
 
     # Coordinators are notified when an action is set to ongoing.
     elif action.action_status == ActionStatus.ONGOING and \
     not notification_exists(action, NotificationTypes.ACTION_ONGOING):
-        create([action.coordinator], action=action, 
-            notification_type=NotificationTypes.ACTION_ONGOING,
-            context={"action_id": action.id})
+        create([coordinator_email], action=action, 
+            notification_type=NotificationTypes.ACTION_ONGOING)
     
     if action.volunteer_made_contact_on \
     and not notification_exists(action, NotificationTypes.VOLUNTEER_CONTACT):
-        create([action.coordinator], action=action,
-            notification_type=NotificationTypes.VOLUNTEER_CONTACT,
-            context={"action_id": action.id})
+        create([coordinator_email], action=action,
+            notification_type=NotificationTypes.VOLUNTEER_CONTACT)
 
 def notification_exists(action, notification_type):
     """True if a notification has been sent for this Action and NotificationType."""
@@ -127,10 +126,12 @@ def get_all_notifications(action, notification_type):
             .all()
 
 
-def create(recipients, subject=None, message=None, action=None, notification_type=None, context=None):
+def create(recipients, subject=None, message=None, action=None, notification_type=None, context={}):
     """Instantiates notifications.
     Generates a notification subject and message, depending on the notification_type.
     """
+    # Pass the action as context to the email templates.
+    context["action"] = action
 
     # Generate a subject and message based on the notification_type.
     gen_subject, gen_message = gen_subject_and_message(site_url, notification_type, action, context)
@@ -142,26 +143,18 @@ def create(recipients, subject=None, message=None, action=None, notification_typ
         delivered=False,
         created_date_time=timezone.now(),
         subject=subject or gen_subject,
-        message=message or gen_message)
-    notification.save()
-
-    # Add the recipients (two step save due to many-to-many field).
-    notification.recipients.set(recipients)
-
-    # Save the notification - triggering a signal to send the email.
+        message=message or gen_message,
+        recipients=recipients)
     notification.save()
 
 
 def send(notification):
     # Determine if we should send an email.
-    if notification.recipients.exists() \
-    and notification.recipients.count() > 0 \
-    and not notification.delivered:
+    if len(notification.recipients) > 0 and not notification.delivered:
 
         # Send the email.
-        send_email(
-            notification.subject, notification.message,
-            [r.email for r in notification.recipients.all() if r.email])
+        send_email(notification.subject, notification.message, 
+                   notification.recipients)
 
         # Update the data.
         notification.delivered_date_time = timezone.now()
@@ -169,6 +162,7 @@ def send(notification):
         notification.save()
 
 def send_email(subject, message, recipients):
+    logger.log(logging.INFO, f"Sending email: {subject}")
     EmailMessage(
         subject, message,
         bcc=recipients

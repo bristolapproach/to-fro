@@ -1,9 +1,9 @@
-Hello,
+Hi there,
 
 Many thanks for putting your hand up and offering to help for this action:
-{{action_url}}
+{{ action_url }}
 
-On this occasion we’ve had multiple offers and this job has been allocated to another helper.
+On this occasion we’ve had multiple offers, and this job has been allocated to another helper.
 
 Thanks again for being so generous with your time.
 

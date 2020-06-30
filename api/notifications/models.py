@@ -1,4 +1,5 @@
 from django.contrib.auth import get_user_model
+from django.contrib.postgres.fields import ArrayField
 from django.db import models
 from users.models import Coordinator, Resident, Volunteer, Person
 from actions.models import Action
@@ -47,8 +48,8 @@ class Notification(models.Model):
         max_length=1000, null=True, help_text="What's your name?")
     delivered = models.BooleanField(
         default=False, help_text="This field is updated automatically.")
-    recipients = models.ManyToManyField(
-        Person, related_name='notificationrecipient', default=list, help_text="This field is updated automatically.")
+    recipients = ArrayField(
+        models.CharField(max_length=50), null=True, blank=True, help_text="Email addresses of recipients.")
     created_date_time = models.DateTimeField(
         null=True, help_text="This field is updated automatically.")
     delivered_date_time = models.DateTimeField(
