@@ -62,14 +62,11 @@ class CoordinatorAdmin(ModelAdminWithExtraContext):
 
     # Fields displayed when editing a User.
     fieldsets = (
-        ('Account Details', {
-            'fields': ('first_name', 'last_name')
+        ('Personal details', {
+            'fields': ('first_name', 'last_name', 'email', 'phone', 'phone_secondary', )
         }),
         ('Authentication', {
             'fields': ('user', 'user_without_account')
-        }),
-        ('Contact Details', {
-            'fields': ('phone', 'phone_secondary', 'email', 'email_secondary')
         }),
         (None, {
             'fields': ('notes',)
@@ -90,11 +87,8 @@ class ResidentAdmin(admin.ModelAdmin):
     readonly_fields = ['time_received']
 
     fieldsets = (
-        (None, {
-            'fields': ('first_name', 'last_name')
-        }),
-        ('Contact Details', {
-            'fields': ('phone', 'phone_secondary', 'email', 'email_secondary')
+        ('Personal details', {
+            'fields': ('first_name', 'last_name', 'email', 'phone', 'phone_secondary', )
         }),
         ('Address', {
             'fields': ('address_line_1', 'address_line_2', 'address_line_3', 'postcode', 'ward')
@@ -202,14 +196,11 @@ class VolunteerAdmin(VolunteerAdminAutocomplete, ModelAdminWithExtraContext):
     readonly_fields = ('time_given',)
 
     fieldsets = (
-        (None, {
-            'fields': ('first_name', 'last_name')
+        ('Personal details', {
+            'fields': ('first_name', 'last_name', 'email', 'phone', 'phone_secondary', )
         }),
         ('Authentication', {
             'fields': ('user', 'user_without_account')
-        }),
-        ('Contact Details', {
-            'fields': ('phone', 'phone_secondary', 'email', 'email_secondary')
         }),
         ('External Links', {
             'fields': ('external_volunteer_id',)
@@ -233,6 +224,10 @@ class ToFroUserAdmin(UserAdmin):
     Customization of the user admin to allow filtering of the autocomplete
     so it returns only Users that don't already have a profile
     """
+    fieldsets = (
+        (None, {'fields': ('first_name', 'last_name', 'email', 'password')}),
+        ('Access', {'fields': ('is_active', 'is_staff', 'is_superuser')})
+    )
 
     def get_search_results(self, request, queryset, search_term):
         queryset, use_distinct = super().get_search_results(request, queryset, search_term)

@@ -3,6 +3,8 @@ from actions import models as action_models
 from django.contrib.auth.models import User
 from django.db.models import Q, Count
 from django.db import models
+from model_utils import FieldTracker
+
 import logging
 
 
@@ -30,10 +32,12 @@ class Person(models.Model):
         max_length=15, null=True, blank=True, help_text="Secondary phone number for the user.")
     email = models.CharField(max_length=50, null=True,
                              blank=True, help_text="Main email for the user.")
-    email_secondary = models.CharField(
-        max_length=50, null=True, blank=True, help_text="Secondary email for the user.")
     notes = models.TextField(null=True, blank=True,
                              help_text="Any other notes?")
+
+    # Track changes to the model so we can access the previous status
+    # when it changes, and propagate those if needed
+    tracker = FieldTracker()
 
     @property
     def full_name(self):
@@ -78,9 +82,8 @@ class UserProfileMixin(models.Model):
         the password reset form be customized to show a different
         message for the first reset
         """
-        user = User(username=self.email, email=self.email)
-        user.is_staff = self.profile_related_name == 'coordinator'
-        user.is_superuser = self.profile_related_name == 'coordinator'
+        user = User(username=self.email, email=self.email,
+                    first_name=self.first_name, last_name=self.last_name)
         setattr(user, self.profile_related_name, self)
         user.save()
 
@@ -234,6 +237,20 @@ class Coordinator(UserProfileMixin, Person):
     profile_related_name = 'coordinator'
     user = models.OneToOneField(User, null=True, blank=True,
                                 on_delete=models.SET_NULL, related_name=profile_related_name)
+
+    def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
+        is_creation = not bool(self.pk)
+
+        result = super().save(force_insert=force_insert, force_update=force_update,
+                              using=using, update_fields=update_fields)
+        if is_creation:
+            logger.debug('Adding priviledges to user')
+            # Add staff and superuser to
+            self.user.is_staff = True
+            self.user.is_superuser = True
+            self.user.save()
+
+        return result
 
 
 # Add computed helper properties to the User class.
