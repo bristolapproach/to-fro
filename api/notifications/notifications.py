@@ -15,18 +15,18 @@ site_url = os.getenv("SITE_URL", "http://0.0.0.0:80")
 logger = logging.getLogger(__name__)
 
 
-def send_invite(person):
-    """Sends an email invite to a Person instance,
+def send_invite(user):
+    """Sends an email invite to a User instance,
     using Django's PasswordResetForm.
     """
-    if not person.user_without_account and person.email:
-        form = PasswordResetForm({'email': person.email})
+    if user.email:
+        form = PasswordResetForm({'email': user.email})
         form.is_valid()  # Needed for the `save()` to work.
         form.save(domain_override=site_url.split('://')[-1],
                 email_template_name='registration/invitation_email.txt',
                 subject_template_name='registration/invitation_subject.txt',
                 extra_email_context={
-                    'recipient': person.first_name,
+                    'recipient': user.first_name,
                     'site_name': site_name,
                     'site_url': site_url
                 })
