@@ -249,4 +249,4 @@ if DEBUG:
     # }
 
 # Help configure contact email
-CONTACT_EMAIL = os.getenv('CONTACT_EMAIL', 'contact@example.com')
+COORDINATOR_EMAIL = os.getenv('COORDINATOR_EMAIL', 'contact@example.com')
