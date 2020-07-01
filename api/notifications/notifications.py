@@ -9,7 +9,6 @@ import os
 
 
 coordinator_email = os.getenv("COORDINATOR_EMAIL", "coordinators@test.com")
-from_email = os.getenv("EMAIL_HOST_USER", "test@test.com")
 site_name = os.getenv("ADMIN_SITE_TITLE", "TestTitle")
 site_url = os.getenv("SITE_URL", "http://0.0.0.0:80")
 logger = logging.getLogger(__name__)
