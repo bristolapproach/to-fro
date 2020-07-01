@@ -53,3 +53,7 @@ To override a piece of text coming from a 3rd party package:
 4. Compile the messages with:
 
     docker exec -it tofro-django python3 manage.py compilemessages
+
+## Testing
+
+To check that everything works OK, there is a [manual testing plan in the TESTING.md](./TESTING.md) file.
