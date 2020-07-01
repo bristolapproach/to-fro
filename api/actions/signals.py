@@ -1,20 +1,26 @@
 from django.db.models.signals import post_save, post_delete
 from django.dispatch import receiver
 from .models import ActionFeedback
+import django_rq
 import datetime
 
 
 @receiver(post_save, sender=ActionFeedback, dispatch_uid="UpdateTimeAfterSave")
 @receiver(post_delete, sender=ActionFeedback, dispatch_uid="UpdateTimeAfterDelete")
 def post_save_action_feedback(sender, instance, *args, **kwargs):
+    django_rq.enqueue(update_totals, instance, result_ttl=0)
+
+
+def update_totals(feedback):
     # Extracted in a separate function to allow easy reuse
     # if we want to tally on actions or resident
-    update_time_total(instance.volunteer, total_attr='time_given',
-                      feedback_queryset=instance.volunteer.actionfeedback_set)
-    update_time_total(instance.action, total_attr='time_taken',
-                      feedback_queryset=instance.action.actionfeedback_set)
-    update_time_total(instance.action.resident, total_attr='time_received',
-                      feedback_queryset=ActionFeedback.objects.filter(action__resident=instance.action.resident))
+    update_time_total(feedback.volunteer, total_attr='time_given',
+                      feedback_queryset=feedback.volunteer.actionfeedback_set)
+    update_time_total(feedback.action, total_attr='time_taken',
+                      feedback_queryset=feedback.action.actionfeedback_set)
+    update_time_total(feedback.action.resident, total_attr='time_received',
+                      feedback_queryset=ActionFeedback.objects.filter(
+                          action__resident=feedback.action.resident))
 
 
 def update_time_total(instance, total_attr='', feedback_queryset=''):
