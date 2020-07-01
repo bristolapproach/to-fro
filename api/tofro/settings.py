@@ -24,6 +24,7 @@ POSTGRES_USER = os.getenv('POSTGRES_USER', 'friendly')
 POSTGRES_PASSWORD = os.getenv('POSTGRES_PASSWORD', 'Pa55word')
 DATABASE_HOST = os.getenv('DATABASE_HOST', 'postgres-server')
 DATABASE_PORT = os.getenv('DATABASE_PORT', '5432')
+REDIS_PORT = os.getenv('REDIS_PORT', '6379')
 DEBUG = os.getenv("DEBUG", "True") == "True"
 
 
@@ -156,7 +157,7 @@ DATABASES = {
 RQ_QUEUES = {
     'default': {
         'HOST': 'tofro-redis',
-        'PORT': 6379,
+        'PORT': REDIS_PORT,
         'DB': 0,
         'DEFAULT_TIMEOUT': 500
     }

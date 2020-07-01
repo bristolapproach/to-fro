@@ -102,12 +102,15 @@ def create_action_notifications(action):
         create([coordinator_email], action=action,
             notification_type=NotificationTypes.VOLUNTEER_CONTACT)
 
+
 def notification_exists(action, notification_type):
-    """True if a notification has been sent for this Action and NotificationType."""
+    """True if a notification has been sent for
+    this Action and NotificationType."""
     return Notification.objects \
             .filter(action=action) \
             .filter(type=notification_type) \
             .first() is not None
+
 
 def get_latest_notification(action, notification_type):
     """Returns the latest notification for this Action and NotificationType."""
@@ -116,6 +119,7 @@ def get_latest_notification(action, notification_type):
             .filter(type=notification_type) \
             .order_by('-created_date_time') \
             .first()
+
 
 def get_all_notifications(action, notification_type):
     """Returns all notifications for this Action and NotificationType."""
@@ -126,15 +130,18 @@ def get_all_notifications(action, notification_type):
             .all()
 
 
-def create(recipients, subject=None, message=None, action=None, notification_type=None, context={}):
+def create(recipients, subject=None, message=None, action=None, 
+           notification_type=None, context={}):
     """Instantiates notifications.
-    Generates a notification subject and message, depending on the notification_type.
+    Generates a notification subject and message,
+    depending on the notification_type.
     """
     # Pass the action as context to the email templates.
     context["action"] = action
 
     # Generate a subject and message based on the notification_type.
-    gen_subject, gen_message = gen_subject_and_message(site_url, notification_type, action, context)
+    gen_subject, gen_message = gen_subject_and_message(
+        site_url, notification_type, action, context)
 
     # Create the notification.
     notification = Notification(
@@ -153,13 +160,14 @@ def send(notification):
     if len(notification.recipients) > 0 and not notification.delivered:
 
         # Send the email.
-        send_email(notification.subject, notification.message, 
+        send_email(notification.subject, notification.message,
                    notification.recipients)
 
         # Update the data.
         notification.delivered_date_time = timezone.now()
         notification.delivered = True
         notification.save()
+
 
 def send_email(subject, message, recipients):
     logger.log(logging.INFO, f"Sending email: {subject}")

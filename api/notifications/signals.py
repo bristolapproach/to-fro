@@ -27,9 +27,10 @@ def post_save_action(sender, instance, using=None, **kwargs):
     # Create the notification only after the save of the action
     # is commited, to ensure action will be found to satisfy
     # the foreign key on the notifications table
-    transaction.on_commit(lambda:
-                          # django_rq.enqueue(notifications.create_action_notifications, instance, result_ttl=0), using=using)
-                          notifications.create_action_notifications(instance), using=using)
+    transaction.on_commit(
+        lambda: django_rq.enqueue(
+            notifications.create_action_notifications, instance, result_ttl=0
+        ), using=using)
 
 
 @receiver(post_save, sender=Notification, dispatch_uid="NotificationSave")
@@ -37,6 +38,4 @@ def post_save_notification(sender, instance, **kwargs):
     """Send a notification once it is saved."""
     # Determine if we should send an email.
     if len(instance.recipients) > 0 and not instance.delivered:
-        # django_rq.enqueue(notifications.send, instance, result_ttl=0)
-        notifications.send(instance)
- 
+        django_rq.enqueue(notifications.send, instance, result_ttl=0)
