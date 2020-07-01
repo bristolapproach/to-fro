@@ -57,6 +57,10 @@ input[type=number] {
   }
 }
 
+.rounded-inside-card {
+  border-radius: calc(#{$card-border-radius} - #{$card-border-width});
+}
+
 // Make the spacing on the side of containers a bit more generous
 // Enough to allow the width of the icons
 .container{
