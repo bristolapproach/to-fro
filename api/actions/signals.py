@@ -1,14 +1,18 @@
 from django.db.models.signals import post_save, post_delete
 from django.dispatch import receiver
 from .models import ActionFeedback
+from django.db import transaction
 import django_rq
 import datetime
 
 
 @receiver(post_save, sender=ActionFeedback, dispatch_uid="UpdateTimeAfterSave")
 @receiver(post_delete, sender=ActionFeedback, dispatch_uid="UpdateTimeAfterDelete")
-def post_save_action_feedback(sender, instance, *args, **kwargs):
-    django_rq.enqueue(update_totals, instance, result_ttl=0)
+def post_save_action_feedback(sender, instance, using=None, **kwargs):
+    transaction.on_commit(
+        lambda: django_rq.enqueue(
+            update_totals, instance, result_ttl=0
+        ), using=using)
 
 
 def update_totals(feedback):
