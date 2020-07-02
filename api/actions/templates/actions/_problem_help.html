@@ -1,6 +1,6 @@
 {% if volunteer == action.volunteer and action.has_interest or action.is_assigned or action.is_ongoing %}
     <p class="text-center text-muted small">
         No longer able to take on the action or encountering problems?
-        Please email a co-ordinator at <a href="mailto:{{settings.CONTACT_EMAIL}}">{{settings.CONTACT_EMAIL}}</a>
+        Please email a co-ordinator at <a href="mailto:{{settings.COORDINATOR_EMAIL}}">{{settings.COORDINATOR_EMAIL}}</a>
     </p>
 {% endif %}

@@ -24,6 +24,8 @@ services:
       context: ./redis/
     container_name: tofro-redis
     restart: unless-stopped
+    ports:
+      - "${REDIS_PORT}:${REDIS_PORT}"
     volumes:
       - redis_volume:/data
   
@@ -41,6 +43,14 @@ services:
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
       - DATABASE_PORT=${DATABASE_PORT}
       - DATABASE_HOST=${DATABASE_HOST}
+      - EMAIL_HOST=${EMAIL_HOST}
+      - EMAIL_PORT=${EMAIL_PORT}
+      - EMAIL_HOST_USER=${EMAIL_HOST_USER}
+      - EMAIL_HOST_PASSWORD=${EMAIL_HOST_PASSWORD}
+      - COORDINATOR_EMAIL=${COORDINATOR_EMAIL}
+      - VOLUNTEER_DIGEST_HOUR=${VOLUNTEER_DIGEST_HOUR}
+      - VOLUNTEER_DIGEST_MINUTE=${VOLUNTEER_DIGEST_MINUTE}
+      - REDIS_PORT=${REDIS_PORT}
       - NOTIFICATIONS_FROM=${NOTIFICATIONS_FROM}
     depends_on:
       - redis
@@ -59,6 +69,7 @@ services:
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
       - DATABASE_PORT=${DATABASE_PORT}
       - DATABASE_HOST=${DATABASE_HOST}
+      - REDIS_PORT=${REDIS_PORT}
     depends_on:
       - redis
 
@@ -99,11 +110,13 @@ services:
 
       - VOLUNTEER_DIGEST_HOUR=${VOLUNTEER_DIGEST_HOUR}
       - VOLUNTEER_DIGEST_MINUTE=${VOLUNTEER_DIGEST_MINUTE}
+      - REDIS_PORT=${REDIS_PORT}
 
       # Used in production deployment with Ansible.
       - DJANGO_HTTPS=${DJANGO_HTTPS}
       - HOSTNAME=${HOSTNAME}
     depends_on:
+      - db
       - redis
       - redis-worker
       - redis-scheduler
