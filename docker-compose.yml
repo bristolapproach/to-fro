@@ -52,6 +52,7 @@ services:
       - VOLUNTEER_DIGEST_MINUTE=${VOLUNTEER_DIGEST_MINUTE}
       - REDIS_PORT=${REDIS_PORT}
       - NOTIFICATIONS_FROM=${NOTIFICATIONS_FROM}
+      - SITE_URL=${SITE_URL}
     depends_on:
       - redis
   
