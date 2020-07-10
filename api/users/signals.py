@@ -1,3 +1,4 @@
+import logging
 from django.contrib.auth import get_user_model
 from django.db.models.signals import post_save, post_delete
 from django.dispatch import receiver
@@ -7,7 +8,6 @@ from users.models import Volunteer, Coordinator,  Settings
 
 User = get_user_model()
 
-import logging
 logger = logging.getLogger(__name__)
 
 
@@ -30,6 +30,7 @@ def create_user_settings(sender, instance, created, **kwargs):
     """
     if created:
         Settings(user=instance).save()
+
 
 USER_FIELDS_TO_SYNC = (
     'first_name',
@@ -62,7 +63,7 @@ def post_save_volunteer(sender, instance, created, **kwargs):
         # Sync can only happen for users that have an account
         if not instance.user_without_account:
             # Sync with the user info
-            if some(USER_FIELDS_TO_SYNC, lambda field_name: field_name in changed_fields) and sync(instance, instance.user):
+            if some(USER_FIELDS_TO_SYNC, lambda field_name: field_name in changed_fields) and sync_user(instance, instance.user):
                 instance.user.save()
 
             # Sync with a potential other profile
@@ -108,13 +109,35 @@ def sync(source, target, attrs=USER_FIELDS_TO_SYNC):
     """
     changed = False
     for attr in attrs:
-        value = getattr(source, attr)
-        # Little security to not wipe things
-        # When the admin user is created
-        if (value and value != getattr(target, attr)):
-            changed = True
-            setattr(target, attr, value)
+        changed = sync_attr(source, target, attr)
     return changed
+
+
+def sync_attr(source, target, source_attr, target_attr=None):
+    """
+    Synchronises `source_attr` on the `source` object
+    to `target_attr` of the `target` object.
+
+    If no `target_attr` is given, assume the synchronisation
+    goes to the same attribute on the target
+    """
+    if not target_attr:
+        target_attr = source_attr
+    value = getattr(source, source_attr)
+    # Little security to not wipe things
+    # When the admin user is created
+    if (value and value != getattr(target, target_attr)):
+        setattr(target, target_attr, value)
+        return True
+    return False
+
+
+def sync_user(source, target, attrs=USER_FIELDS_TO_SYNC):
+    """
+    Add synchronisation of username to the synchronisation of user
+    """
+    changed = sync(source, target, attrs)
+    return changed or sync_attr(source, target, 'email', 'username')
 
 
 @receiver(post_delete, sender=Coordinator, dispatch_uid="CoordinatorDeleted")
