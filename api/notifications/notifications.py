@@ -31,7 +31,7 @@ def send_invite(user):
         })
 
 
-def create_action_notifications(action):
+def create_action_notifications(action, priority_has_changed=False):
     """Sends emails related to this action.
     Depending on what notifications have already been sent, 
     and the type of action, appropriate emails will be delivered.
@@ -39,7 +39,7 @@ def create_action_notifications(action):
     # New, high-priority, pending actions trigger an email to appropriate volunteers.
     if action.action_priority == ActionPriority.HIGH \
             and action.action_status == ActionStatus.PENDING \
-            and not notification_exists(action, NotificationTypes.PENDING_HIGH_PRIORITY):
+            and priority_has_changed:
         create([v.email for v in action.potential_volunteers], action=action,
                notification_type=NotificationTypes.PENDING_HIGH_PRIORITY)
 
