@@ -106,6 +106,11 @@ class ResidentFilter(AutocompleteFilter):
     field_name = 'resident'
 
 
+class CoordinatorFilter(AutocompleteFilter):
+    title = 'Coordinator'
+    field_name = 'coordinator'
+
+
 class AssignedVolunteerAutocompleteSelect(AutocompleteSelect):
     """
     Custom AutocompletSelect widget for the assigned volunteer
@@ -171,6 +176,7 @@ class ActionAdmin(ModelAdminWithExtraContext):
                     'requested_datetime', 'has_volunteer_made_contact',  'action_status', 'assigned_volunteer', 'time_taken')
     list_filter = (ResidentFilter,
                    VolunteerFilter,
+                   CoordinatorFilter,
                    ('requested_datetime', RequestedDatetimeListFilter),
                    ('action_status', ChoiceDropdownFilter),
                    MadeContactFilter,
