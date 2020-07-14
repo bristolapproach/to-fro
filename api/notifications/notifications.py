@@ -54,11 +54,9 @@ def create_action_notifications(action, changed={}):
     elif action.action_status == ActionStatus.ASSIGNED:
 
         # 1. Let the assigned volunteer know.
-        # If this notification hasn't been sent before, or if it was previously
-        # sent to someone else, we should send it to the assigned volunteer.
-        if not notification_exists(action, NotificationTypes.VOLUNTEER_ASSIGNED) \
-            or action.assigned_volunteer.email != get_latest_notification(action,
-                                                                          NotificationTypes.VOLUNTEER_ASSIGNED).recipients[0]:
+
+        # Use `in` as the value might be `None`, in case of first assignment
+        if 'assigned_volunteer_id' in changed:
             create([action.assigned_volunteer.email], action=action,
                    notification_type=NotificationTypes.VOLUNTEER_ASSIGNED)
 
