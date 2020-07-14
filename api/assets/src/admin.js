@@ -40,27 +40,25 @@ function getData() {
  */
 function setupHelpTypeDefaultRequirements($, data) {
   if (data.action_requirements_for_help_types) {
-
-    // Grab all the option elements
-    const options = $('.field-requirements option').toArray();
-    // And the two <select> elements containing the available
-    // and chosen requirements
-    const $availableSelect = $('[name="requirements_old"]');
-    const $chosenSelect = $('[name="requirements"]');
-    
+  
     $(document).on('change', '[name="help_type"]', function ({ target }) {
       const defaultRequirements = data.action_requirements_for_help_types[target.value] || [];
-      const chosenOptions = [];
-      const availableOptions = [];
+     
+      // Clear the selected options, using Django's SelectBox API
+      // as there is some caching behind the scene that breaks if 
+      // moving only the HTML elements
+      window.SelectBox.move_all('id_requirements_to','id_requirements_from')
+
+      // We need to grab the list of options each time, 
+      // looks like elements are re-created by the move_all
+      const options = $('.field-requirements option').toArray();
       for (option of options) {
-        if (defaultRequirements.indexOf(parseInt(option.value)) != -1) {
-          chosenOptions.push(option);
-        } else {
-          availableOptions.push(option);
-        }
+        // Mark options as selected as needed by the help type requirements
+        option.selected = defaultRequirements.indexOf(parseInt(option.value)) != -1
       }
-      $availableSelect.html(availableOptions);
-      $chosenSelect.html(chosenOptions);
+    
+      // And move the selected options to the selected box
+      window.SelectBox.move('id_requirements_from','id_requirements_to')
     });
   }
 }
