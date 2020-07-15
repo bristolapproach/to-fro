@@ -1,6 +1,6 @@
-Hello,
+Hi there,
  
-Thank you for your support with this job,  it has now been reassigned to another volunteer:
+This action has now been reassigned to another volunteer. Thanks for your support with it:
 {{ action_url }}
  
 If there is any information you'd like to pass to the new volunteer, please email: info@kwalliance.co.uk.
