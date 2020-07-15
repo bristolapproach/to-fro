@@ -1,0 +1,10 @@
+Hello,
+ 
+Thank you for your support with this job,  it has now been reassigned to another volunteer:
+{{ action_url }}
+ 
+If there is any information you'd like to pass to the new volunteer, please email: info@kwalliance.co.uk.
+ 
+Kind regards
+ 
+The Knowle West Support Hub team

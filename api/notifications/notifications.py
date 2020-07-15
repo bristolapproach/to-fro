@@ -2,6 +2,7 @@ from django.contrib.auth.forms import PasswordResetForm
 from notifications.models import Notification, NotificationTypes
 from notifications.utils import gen_subject_and_message
 from actions.models import ActionPriority, ActionStatus
+from users.models import Volunteer
 from django.core.mail import EmailMessage
 from django.utils import timezone
 import logging
@@ -60,7 +61,14 @@ def create_action_notifications(action, changed={}):
             create([action.assigned_volunteer.email], action=action,
                    notification_type=NotificationTypes.VOLUNTEER_ASSIGNED)
 
-        # 2. Let those not assigned know.
+        # 2. Let the previously assigned volunteer know
+            if (changed.get('assigned_volunteer_id')):
+                previous_volunteer = Volunteer.objects.get(
+                    pk=changed.get('assigned_volunteer_id'))
+                create([previous_volunteer.email], action=action,
+                       notification_type=NotificationTypes.VOLUNTEER_UNASSIGNED)
+
+        # 3. Let those not assigned know.
         # Only send a notification to volunteers that have not received this email for this action.
         notifications = get_all_notifications(
             action, NotificationTypes.VOLUNTEER_NOT_ASSIGNED)
