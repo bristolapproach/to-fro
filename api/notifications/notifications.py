@@ -69,9 +69,9 @@ def create_action_notifications(action, changed={}):
                        notification_type=NotificationTypes.VOLUNTEER_UNASSIGNED)
 
         # 3. Let those not assigned know.
-        # Only send a notification to volunteers that have not received this email for this action.
+        # Only send a notification to volunteers that have not received an email for the assignment of this action.
         notifications = get_all_notifications(
-            action, NotificationTypes.VOLUNTEER_NOT_ASSIGNED)
+            action, (NotificationTypes.VOLUNTEER_NOT_ASSIGNED, NotificationTypes.VOLUNTEER_ASSIGNED, NotificationTypes.VOLUNTEER_UNASSIGNED))
         already_received = set(
             [r for n in notifications for r in n.recipients])
         recipients = [v.email for v in action.interested_volunteers.all()
@@ -124,11 +124,11 @@ def get_latest_notification(action, notification_type):
         .first()
 
 
-def get_all_notifications(action, notification_type):
+def get_all_notifications(action, notification_types):
     """Returns all notifications for this Action and NotificationType."""
     return Notification.objects \
         .filter(action=action) \
-        .filter(type=notification_type) \
+        .filter(type_in=notification_types) \
         .order_by('-created_date_time') \
         .all()
 
