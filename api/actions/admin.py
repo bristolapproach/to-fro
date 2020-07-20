@@ -155,7 +155,7 @@ class ActionAdminForm(forms.ModelForm):
         if (not self.cleaned_data['assigned_volunteer']
                 and self.cleaned_data['action_status'] not in Action.STATUSES_WITHOUT_ASSIGNED_VOLUNTEER + (ActionStatus.NO_LONGER_NEEDED,)):
             raise forms.ValidationError(
-                _("Please make sure to update the action status when no volunteer are assigned"),
+                _("Please make sure to update the action status when no volunteer is assigned"),
                 code='invalid-status-for-unassigning-volunteer'
             )
 
