@@ -62,11 +62,10 @@ def create_action_notifications(action, changed={}):
                    notification_type=NotificationTypes.VOLUNTEER_ASSIGNED)
 
         # 2. Let the previously assigned volunteer know
-            if (changed.get('assigned_volunteer_id')):
-                previous_volunteer = Volunteer.objects.get(
-                    pk=changed.get('assigned_volunteer_id'))
-                create([previous_volunteer.email], action=action,
-                       notification_type=NotificationTypes.VOLUNTEER_UNASSIGNED)
+            previous_volunteer = Volunteer.objects.get(
+                pk=changed['assigned_volunteer_id'])
+            create([previous_volunteer.email], action=action,
+                    notification_type=NotificationTypes.VOLUNTEER_UNASSIGNED)
 
         # 3. Let those not assigned know.
         # Only send a notification to volunteers that have not received an email for the assignment of this action.
