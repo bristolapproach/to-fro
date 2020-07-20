@@ -2,6 +2,7 @@ from django.contrib.auth.forms import PasswordResetForm
 from notifications.models import Notification, NotificationTypes
 from notifications.utils import gen_subject_and_message
 from actions.models import ActionPriority, ActionStatus
+from users.models import Volunteer
 from django.core.mail import EmailMessage
 from django.utils import timezone
 import logging
@@ -31,7 +32,7 @@ def send_invite(user):
         })
 
 
-def create_action_notifications(action):
+def create_action_notifications(action, changed={}):
     """Sends emails related to this action.
     Depending on what notifications have already been sent, 
     and the type of action, appropriate emails will be delivered.
@@ -39,7 +40,7 @@ def create_action_notifications(action):
     # New, high-priority, pending actions trigger an email to appropriate volunteers.
     if action.action_priority == ActionPriority.HIGH \
             and action.action_status == ActionStatus.PENDING \
-            and not notification_exists(action, NotificationTypes.PENDING_HIGH_PRIORITY):
+            and changed.get('action_priority'):
         create([v.email for v in action.potential_volunteers], action=action,
                notification_type=NotificationTypes.PENDING_HIGH_PRIORITY)
 
@@ -54,18 +55,23 @@ def create_action_notifications(action):
     elif action.action_status == ActionStatus.ASSIGNED:
 
         # 1. Let the assigned volunteer know.
-        # If this notification hasn't been sent before, or if it was previously
-        # sent to someone else, we should send it to the assigned volunteer.
-        if not notification_exists(action, NotificationTypes.VOLUNTEER_ASSIGNED) \
-            or action.assigned_volunteer.email != get_latest_notification(action,
-                                                                          NotificationTypes.VOLUNTEER_ASSIGNED).recipients[0]:
+
+        # Use `in` as the value might be `None`, in case of first assignment
+        if 'assigned_volunteer_id' in changed:
             create([action.assigned_volunteer.email], action=action,
                    notification_type=NotificationTypes.VOLUNTEER_ASSIGNED)
 
-        # 2. Let those not assigned know.
-        # Only send a notification to volunteers that have not received this email for this action.
+        # 2. Let the previously assigned volunteer know
+            if (changed.get('assigned_volunteer_id')):
+                previous_volunteer = Volunteer.objects.get(
+                    pk=changed.get('assigned_volunteer_id'))
+                create([previous_volunteer.email], action=action,
+                       notification_type=NotificationTypes.VOLUNTEER_UNASSIGNED)
+
+        # 3. Let those not assigned know.
+        # Only send a notification to volunteers that have not received an email for the assignment of this action.
         notifications = get_all_notifications(
-            action, NotificationTypes.VOLUNTEER_NOT_ASSIGNED)
+            action, (NotificationTypes.VOLUNTEER_NOT_ASSIGNED, NotificationTypes.VOLUNTEER_ASSIGNED, NotificationTypes.VOLUNTEER_UNASSIGNED))
         already_received = set(
             [r for n in notifications for r in n.recipients])
         recipients = [v.email for v in action.interested_volunteers.all()
@@ -118,11 +124,11 @@ def get_latest_notification(action, notification_type):
         .first()
 
 
-def get_all_notifications(action, notification_type):
+def get_all_notifications(action, notification_types):
     """Returns all notifications for this Action and NotificationType."""
     return Notification.objects \
         .filter(action=action) \
-        .filter(type=notification_type) \
+        .filter(type__in=notification_types) \
         .order_by('-created_date_time') \
         .all()
 

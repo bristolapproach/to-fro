@@ -20,6 +20,7 @@ class NotificationTypes:
     PENDING_HIGH_PRIORITY = 'PENDING_HIGH_PRIORITY'
     VOLUNTEER_INTEREST = 'VOLUNTEER_INTEREST'
     VOLUNTEER_ASSIGNED = 'VOLUNTEER_ASSIGNED'
+    VOLUNTEER_UNASSIGNED = 'VOLUNTEER_UNASSIGNED'
     VOLUNTEER_NOT_ASSIGNED = 'VOLUNTEER_NOT_ASSIGNED'
     VOLUNTEER_CONTACT = 'VOLUNTEER_CONTACT'
     ACTION_COMPLETED = 'ACTION_COMPLETED'
@@ -29,6 +30,7 @@ class NotificationTypes:
         (PENDING_HIGH_PRIORITY, 'High priority action is pending'),
         (VOLUNTEER_INTEREST, 'Volunteed manifested interest'),
         (VOLUNTEER_ASSIGNED, 'Volunteer was assigned'),
+        (VOLUNTEER_UNASSIGNED, 'Volunteer was unassigned'),
         (VOLUNTEER_NOT_ASSIGNED, 'Volunteer was not assigned'),
         (VOLUNTEER_CONTACT, 'Volunteer made contact with the resident'),
         (ACTION_COMPLETED, 'Volunteer completed the action'),

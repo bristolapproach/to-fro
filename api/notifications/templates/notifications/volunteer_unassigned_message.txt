@@ -1,0 +1,10 @@
+Hi there,
+ 
+This action has now been reassigned to another volunteer. Thanks for your support with it:
+{{ action_url }}
+ 
+If there is any information you'd like to pass to the new volunteer, please email: {{ coordinator_email }}.
+ 
+Kind regards
+ 
+The Knowle West Support Hub team
