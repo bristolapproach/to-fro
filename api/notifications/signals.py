@@ -38,7 +38,7 @@ def post_save_action(sender, instance, using=None, **kwargs):
         ), using=using)
 
 
-@ receiver(post_save, sender=Notification, dispatch_uid="NotificationSave")
+@receiver(post_save, sender=Notification, dispatch_uid="NotificationSave")
 def post_save_notification(sender, instance, **kwargs):
     """Send a notification once it is saved."""
     # Determine if we should send an email.
