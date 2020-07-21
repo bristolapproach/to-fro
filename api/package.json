@@ -4,8 +4,8 @@
   "description": "We're working on a system that can be used by different communities to help self organise, keep track of need and effectively deploy help.",
   "main": "front-end/index.js",
   "scripts": {
-    "dev": "parcel assets/src/* -d assets/static",
-    "build": "parcel build assets/src/* -d assets/static"
+    "dev": "parcel assets/src/* -d assets/static --public-url '.'",
+    "build": "parcel build assets/src/* -d assets/static --public-url '.'"
   },
   "repository": {
     "type": "git",
@@ -23,7 +23,6 @@
     "sass": "^1.26.5"
   },
   "dependencies": {
-    "@fortawesome/fontawesome-free": "^5.13.0",
-    "postcss-preset-env": "^6.7.0"
+    "@fortawesome/fontawesome-free": "^5.13.0"
   }
 }

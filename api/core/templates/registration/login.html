@@ -30,11 +30,10 @@
   <button class="btn btn-primary">Login</button>
   <input type="hidden" name="next" value="{{ next }}" />
   {% csrf_token %}
+  {# Assumes you set up the password_reset view in your URLconf #}
+  <p class="text-center mt-4 pt-3 border-top">
+    <a href="{% url 'password_reset' %}">Lost password?</a>
+  </p>
 </form>
-
-{# Assumes you setup the password_reset view in your URLconf #}
-<p class="text-center">
-  <a href="{% url 'password_reset' %}">Lost password?</a>
-</p>
 
 {% endblock %}
