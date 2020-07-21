@@ -69,6 +69,28 @@ input[type=number] {
 }
 
 // Components
+.with-kites {
+  &::before {
+    background-image: url(svg/TO_FRO_kites_01-04.svg);
+    background-position: bottom right;
+    // Scale background according to viewport width
+    // but make it appear wider on narrower viewports
+    background-size: calc(35vw + 60 / 100 * #{320rem / 16}) auto;
+    background-repeat: no-repeat;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    content: '';
+    z-index: -1;
+    opacity: 0.5;
+  }
+}
+
+.link-darker {
+  color: $link-hover-color;
+}
 
 .copy {
   font-size: 1rem;
