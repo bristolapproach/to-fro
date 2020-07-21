@@ -16,8 +16,10 @@ def embed_svg(path, width=20, height=20, role="presentation", class_attribute=No
         content = content_file.read()
     if (class_attribute):
         class_attribute = f' class="{class_attribute}"'
+
+    role_attribute = f' role={role}' if role else ''
     content = content.replace(
-        '<svg', f'<svg role={role} width="{width}" height="{height}" {class_attribute}')
+        '<svg', f'<svg focusable="false" width="{width}" height="{height}" {class_attribute} {role_attribute}')
     return mark_safe(content)
 
 
