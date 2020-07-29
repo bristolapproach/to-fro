@@ -13,7 +13,23 @@ import logging
 logger = logging.getLogger(__name__)
 
 
-class LoginView(views.LoginView):
+class LoginRedirection:
+    """
+    Mixin for sharing the redirections after login
+    """
+
+    def get_redirect_url_for_user(self, user):
+        """
+        Pick where to redirect the user depending on 
+        the profiles they have
+        """
+        if user.is_volunteer:
+            return reverse('home')
+
+        return reverse('admin:index')
+
+
+class LoginView(LoginRedirection, views.LoginView):
     """
     Custom LoginView that redirects users after login
     differently depending on whether they're staff (to admin)
@@ -26,22 +42,17 @@ class LoginView(views.LoginView):
         url = self.get_redirect_url()
         return url or self.get_redirect_url_for_user(self.request.user) or resolve_url(settings.LOGIN_REDIRECT_URL)
 
-    def get_redirect_url_for_user(self, user):
-        if user.is_staff:
-            return reverse('admin:index')
 
-
-class PasswordResetConfirmView(views.PasswordResetConfirmView):
+class PasswordResetConfirmView(LoginRedirection, views.PasswordResetConfirmView):
     """
     Custom password reset view to display a more welcoming page
     for first resets
     """
     # Save the user some time by logging them in automatically
     post_reset_login = True
-    # Redirect them to the homepage
-    # reverse_lazy as the URLs are not yet configured
-    # when this is called
-    success_url = reverse_lazy('home')
+
+    def get_success_url(self):
+        return self.get_redirect_url_for_user(self.user)
 
     def get_template_names(self):
         if (self.user.password):
