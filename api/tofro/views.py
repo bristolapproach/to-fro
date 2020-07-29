@@ -29,6 +29,14 @@ class LoginRedirection:
         return reverse('admin:index')
 
 
+class LogoutView(views.LogoutView):
+    next_page = reverse_lazy('home')
+
+    def get_next_page(self):
+        messages.success(self.request, "You're now logged out!")
+        return super().get_next_page()
+
+
 class LoginView(LoginRedirection, views.LoginView):
     """
     Custom LoginView that redirects users after login
