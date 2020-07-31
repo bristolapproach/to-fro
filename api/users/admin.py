@@ -50,6 +50,19 @@ class CoordinatorForm(UserProfileForm):
         model = Coordinator
         fields = '__all__'
 
+    # Ideally this should be handled at model level
+    # or through signals, but can't track if user has
+    # been modified there as the tracker for modified
+    # attributes doesn't seem to track the changed
+    # for the OneToOne relation OK here
+    def is_valid(self, *args, **kwargs):
+        """
+        `is_valid` implementation to store previous user
+        `save` is too late, the instance has already been replaced
+        """
+        self.instance.previous_user = self.instance.user
+        return super().is_valid(*args, **kwargs)
+
 
 class CoordinatorAdmin(ModelAdminWithExtraContext):
     form = CoordinatorForm
