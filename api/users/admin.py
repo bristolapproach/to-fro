@@ -14,6 +14,14 @@ logger = logging.getLogger(__name__)
 
 
 class UserProfileForm(forms.ModelForm):
+
+    def clean_email(self):
+        """
+        Makes sure the email is lowercased so that emails with different
+        cases don't end up creating duplicate accounts
+        """
+        return self.cleaned_data['email'].lower()
+
     def clean(self):
         super().clean()
         if (not self.cleaned_data.get('user_without_account')):
