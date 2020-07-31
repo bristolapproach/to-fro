@@ -155,11 +155,11 @@ def sync_user(source, target, attrs=USER_FIELDS_TO_SYNC):
 def transfer_coordinator_status(sender, instance, **kwargs):
     previous_user = instance.previous_user
     new_user = instance.user
-
-    previous_user.is_staff = False
-    previous_user.is_superuser = False
-    previous_user.coordinator = None
-    previous_user.save()
+    if previous_user:
+        previous_user.is_staff = False
+        previous_user.is_superuser = False
+        previous_user.coordinator = None
+        previous_user.save()
 
     new_user.is_staff = True
     new_user.is_superuser = True
