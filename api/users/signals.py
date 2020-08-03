@@ -10,6 +10,10 @@ User = get_user_model()
 
 logger = logging.getLogger(__name__)
 
+###
+# Wards and help types
+###
+
 
 @receiver(post_save, sender=HelpType, dispatch_uid="HelpTypeOptIn")
 @receiver(post_save, sender=Ward, dispatch_uid="WardOptIn")
@@ -22,6 +26,10 @@ def post_save_category(sender, instance, created, **kwargs):
         instance.volunteers.set(Volunteer.objects.all())
         instance.save()
 
+###
+# Settings profile
+###
+
 
 @receiver(post_save, sender=User, dispatch_uid="CreateUserSettings")
 def create_user_settings(sender, instance, created, **kwargs):
@@ -30,6 +38,10 @@ def create_user_settings(sender, instance, created, **kwargs):
     """
     if created:
         Settings(user=instance).save()
+
+###
+# Personal information synchronisation
+###
 
 
 USER_FIELDS_TO_SYNC = (
@@ -81,17 +93,6 @@ def post_save_volunteer(sender, instance, created, **kwargs):
                         instance.user.volunteer.save()
 
 
-@receiver(post_save, sender=User, dispatch_uid="UserSaved")
-def post_save_user(sender, instance, created, **kwargs):
-    if not created:
-        # Need to check before accessing relations
-        # as it would throw a NotFoundException
-        if (instance.is_volunteer):
-            update_profile_info(instance.volunteer, instance)
-        if (instance.is_coordinator):
-            update_profile_info(instance.coordinator, instance)
-
-
 def update_profile_info(profile, user):
     # Only save if there's been a change,
     # to avoid looping infinitely
@@ -139,6 +140,32 @@ def sync_user(source, target, attrs=USER_FIELDS_TO_SYNC):
     changed = sync(source, target, attrs)
     return changed or sync_attr(source, target, 'email', 'username')
 
+###
+# User status synchronisation for coordiantors
+###
+
+
+# Ideally, if this could be moved in the Coordinator class
+# so that the code creating the user with the right permissions
+# and the one adjusting their permission was in the same place,
+# that would be ideal
+
+
+@receiver(post_save, sender=Coordinator, dispatch_uid="CoordinatorUpdated")
+def transfer_coordinator_status(sender, instance, **kwargs):
+    previous_user = instance.previous_user
+    new_user = instance.user
+    if previous_user:
+        previous_user.is_staff = False
+        previous_user.is_superuser = False
+        previous_user.coordinator = None
+        previous_user.save()
+
+    new_user.is_staff = True
+    new_user.is_superuser = True
+    # No need to set coordinator as it is already set by Django
+    new_user.save()
+
 
 @receiver(post_delete, sender=Coordinator, dispatch_uid="CoordinatorDeleted")
 def post_delete_coordinator(sender, instance, **kwargs):
@@ -146,22 +173,27 @@ def post_delete_coordinator(sender, instance, **kwargs):
     Automatically delete users if there's no profile attached to them
     or adjust privileges
     """
-    if not instance.user.is_volunteer:
-        instance.user.delete()
-    else:
-        # Remove superuser and staff privileges
-        # for non-coordinator users
-        user = instance.user
-        user.is_staff = False
-        user.is_superuser = False
-        user.coordinator = None
-        user.save()
+    # Remove superuser and staff privileges
+    # for non-coordinator users
+    user = instance.user
+    user.is_staff = False
+    user.is_superuser = False
+    user.coordinator = None
+    user.save()
+
+###
+# User information coordination
+###
 
 
-@receiver(post_delete, sender=Volunteer, dispatch_uid="VolunteerDeleted")
-def post_delete_user_profile(sender, instance, **kwargs):
-    """
-    Automatically delete users if there's no profile attached to them
-    """
-    if not instance.user.is_coordinator:
-        instance.user.delete()
+@receiver(post_save, sender=User, dispatch_uid="UserSaved")
+def post_save_user(sender, instance, created, **kwargs):
+    if not created:
+        # Need to check before accessing relations
+        # as it would throw a NotFoundException
+        if (instance.is_volunteer):
+            update_profile_info(instance.volunteer, instance)
+        if (instance.is_coordinator):
+            update_profile_info(instance.coordinator, instance)
+        if not instance.is_coordinator and not instance.is_volunteer:
+            instance.delete()
