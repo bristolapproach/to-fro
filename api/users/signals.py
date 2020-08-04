@@ -5,6 +5,7 @@ from django.dispatch import receiver
 from django.contrib.auth import get_user_model
 from categories.models import HelpType, Ward
 from users.models import Volunteer, Coordinator,  Settings
+import os
 
 User = get_user_model()
 
@@ -195,5 +196,12 @@ def post_save_user(sender, instance, created, **kwargs):
             update_profile_info(instance.volunteer, instance)
         if (instance.is_coordinator):
             update_profile_info(instance.coordinator, instance)
-        if not instance.is_coordinator and not instance.is_volunteer:
+
+        # Get the admin username from the environment.
+        admin_user = os.getenv("DJANGO_ADMIN_FIRSTNAME", "admin")
+
+        # Delete users that are no longer coordinators or volunteers, or admin.
+        if not (instance.is_coordinator
+                or instance.is_volunteer
+                or instance.username == admin_user):
             instance.delete()
