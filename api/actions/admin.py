@@ -128,9 +128,10 @@ class AssignedVolunteerAutocompleteSelect(AutocompleteSelect):
     def build_attrs(self, base_attrs, extra_attrs=None):
         attrs = super().build_attrs(base_attrs, extra_attrs=extra_attrs)
         url = attrs['data-ajax--url']
-        query_param = f"with_interest_for={self.model_instance.pk}"
-        join_char = "&" if "?" in url else "?"
-        attrs['data-ajax--url'] = f"{url}{join_char}{query_param}"
+        if (self.model_instance.pk):
+            query_param = f"with_interest_for={self.model_instance.pk}"
+            join_char = "&" if "?" in url else "?"
+            attrs['data-ajax--url'] = f"{url}{join_char}{query_param}"
         return attrs
 
 
