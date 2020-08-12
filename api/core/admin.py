@@ -1,6 +1,10 @@
 from django.contrib import admin
 
 
+class ModelAdminWithDefaultPagination(admin.ModelAdmin):
+    list_per_page = 20
+
+
 class ModelAdminWithExtraContext(admin.ModelAdmin):
     """
     Base class for creating an admin that automatically adds some

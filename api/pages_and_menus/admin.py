@@ -1,6 +1,7 @@
 from django.contrib import admin
 from django.utils.translation import ugettext_lazy as _
 from sitetree import admin as sitetree_admin, models
+from core.admin import ModelAdminWithDefaultPagination
 from django.urls import reverse
 from django.contrib.sites.models import Site
 from django.contrib.flatpages import admin as flatpages_admin, models
@@ -10,7 +11,7 @@ import logging
 logger = logging.getLogger(__name__)
 
 
-class TreeAdmin(sitetree_admin.TreeAdmin):
+class TreeAdmin(ModelAdminWithDefaultPagination, sitetree_admin.TreeAdmin):
     """
     Reduce options to add/remove menus in the admin
     So that only the main navigation appears and cannot be removed
@@ -24,7 +25,7 @@ class TreeAdmin(sitetree_admin.TreeAdmin):
         return False
 
 
-class TreeItemAdmin(sitetree_admin.TreeItemAdmin):
+class TreeItemAdmin(ModelAdminWithDefaultPagination, sitetree_admin.TreeItemAdmin):
     """
     Reduce fields available when editing TreeItems
     """
@@ -42,7 +43,7 @@ sitetree_admin.override_tree_admin(TreeAdmin)
 sitetree_admin.override_item_admin(TreeItemAdmin)
 
 
-class FlatPageAdmin(flatpages_admin.FlatPageAdmin):
+class FlatPageAdmin(ModelAdminWithDefaultPagination, flatpages_admin.FlatPageAdmin):
     """
     Customization of the FlatPageAdmin
     """
