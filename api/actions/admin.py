@@ -9,7 +9,7 @@ from django.db import models
 from django import forms
 import datetime
 from django.utils.translation import gettext_lazy as _
-from core.admin import ModelAdminWithExtraContext
+from core.admin import ModelAdminWithDefaultPagination, ModelAdminWithExtraContext
 from admin_auto_filters.filters import AutocompleteFilter
 from django_admin_listfilter_dropdown.filters import ChoiceDropdownFilter
 
@@ -171,7 +171,7 @@ class FeedbackInline(admin.TabularInline):
     extra = 0
 
 
-class ActionAdmin(ModelAdminWithExtraContext):
+class ActionAdmin(ModelAdminWithDefaultPagination, ModelAdminWithExtraContext):
     form = ActionAdminForm
     list_display = ('id', 'resident', 'help_type',
                     'requested_datetime', 'has_volunteer_made_contact',  'action_status', 'assigned_volunteer', 'time_taken')
@@ -284,7 +284,7 @@ class ActionAdmin(ModelAdminWithExtraContext):
     has_volunteer_made_contact.short_description = "Contact"
 
 
-class ActionFeedbackAdmin(ModelAdminWithExtraContext):
+class ActionFeedbackAdmin(ModelAdminWithDefaultPagination, ModelAdminWithExtraContext):
     list_display = ('id', 'action', 'volunteer', 'resident',
                     'time_taken', 'created_date_time')
     list_filter = ('volunteer', 'action', 'created_date_time')

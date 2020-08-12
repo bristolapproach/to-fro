@@ -6,7 +6,7 @@ from django.contrib.auth.admin import UserAdmin
 from django import forms
 from django.utils.translation import gettext as _
 from django.db.models import Q, IntegerField, Case, When, Value
-from core.admin import ModelAdminWithExtraContext
+from core.admin import ModelAdminWithDefaultPagination, ModelAdminWithExtraContext
 from django.contrib.admin.views.autocomplete import AutocompleteJsonView
 
 import logging
@@ -64,7 +64,7 @@ class CoordinatorForm(UserProfileForm):
         return super().is_valid(*args, **kwargs)
 
 
-class CoordinatorAdmin(ModelAdminWithExtraContext):
+class CoordinatorAdmin(ModelAdminWithDefaultPagination, ModelAdminWithExtraContext):
     form = CoordinatorForm
 
     def extra_context(self, object_id=None):
@@ -99,7 +99,7 @@ class CoordinatorAdmin(ModelAdminWithExtraContext):
     ordering = ('last_name', 'email')
 
 
-class ResidentAdmin(admin.ModelAdmin):
+class ResidentAdmin(ModelAdminWithDefaultPagination):
     model = Resident
     list_display = ('first_name', 'last_name',
                     'phone', 'email', 'time_received')
@@ -144,7 +144,7 @@ class VolunteerAutocompleteJsonView(AutocompleteJsonView):
         return data
 
 
-class VolunteerAdminAutocomplete(admin.ModelAdmin):
+class VolunteerAdminAutocomplete(ModelAdminWithDefaultPagination):
     """
     Mixin wrapping the customisations of the autocomplete
     for the Volunteer admin
@@ -240,7 +240,7 @@ class VolunteerAdmin(VolunteerAdminAutocomplete, ModelAdminWithExtraContext):
     )
 
 
-class ToFroUserAdmin(UserAdmin):
+class ToFroUserAdmin(ModelAdminWithDefaultPagination, UserAdmin):
     """
     Customization of the user admin to allow filtering of the autocomplete
     so it returns only Users that don't already have a profile

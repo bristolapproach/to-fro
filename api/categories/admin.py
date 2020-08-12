@@ -2,14 +2,15 @@ from django import forms
 from django.contrib import admin
 from .models import Ward, HelpType, Requirement
 
+from core.admin import ModelAdminWithDefaultPagination
 from django.utils.translation import gettext as _
 from markup_help.templatetags.svg import fontawesome_icon_exists
 
 import logging
 logger = logging.getLogger(__name__)
 
-admin.site.register(Ward)
-admin.site.register(Requirement)
+admin.site.register(Ward, ModelAdminWithDefaultPagination)
+admin.site.register(Requirement, ModelAdminWithDefaultPagination)
 
 
 class HelpTypeForm(forms.ModelForm):
@@ -29,7 +30,7 @@ class HelpTypeForm(forms.ModelForm):
         fields = '__all__'
 
 
-class HelpTypeAdmin(admin.ModelAdmin):
+class HelpTypeAdmin(ModelAdminWithDefaultPagination):
     form = HelpTypeForm
     fieldsets = (
         (None, {'fields': ('name', 'icon_name')}),
