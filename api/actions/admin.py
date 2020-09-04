@@ -153,12 +153,71 @@ class ActionAdminForm(forms.ModelForm):
 
     def clean(self):
         super().clean()
-        if (not self.cleaned_data['assigned_volunteer']
-                and self.cleaned_data['action_status'] not in Action.STATUSES_WITHOUT_ASSIGNED_VOLUNTEER + (ActionStatus.NO_LONGER_NEEDED,)):
+
+        assigned_volunteer = self.get_field_value('assigned_volunteer')
+        action_status = self.get_field_value('action_status')
+
+        # Not plainly accessing cleaned_data.get('requirements')
+        # is important here, as the list form does not send requirements
+        requirements = self.get_field_value('requirements').all()
+
+        self.validate_assigned_volunteer_for_status(
+            assigned_volunteer, action_status)
+        self.validate_missing_requirements(assigned_volunteer, requirements)
+
+    def validate_assigned_volunteer_for_status(self, assigned_volunteer, action_status):
+        """
+        Ensure a volunteer is set when the status requires it
+        """
+        if (not assigned_volunteer
+                and action_status not in Action.STATUSES_WITHOUT_ASSIGNED_VOLUNTEER + (ActionStatus.NO_LONGER_NEEDED,)):
             raise forms.ValidationError(
                 _("Please make sure to update the action status when no volunteer is assigned"),
                 code='invalid-status-for-unassigning-volunteer'
             )
+
+    def validate_missing_requirements(self, assigned_volunteer, requirements):
+        """
+        Ensure the assigned volunteer has all necessary requirements
+
+        Only runs if the volunteer or requirements has changed to avoid
+        querying the database on all saves
+        """
+
+        # Need to compare the list of requirements
+        # https://stackoverflow.com/a/54117086
+        has_requirements_changed = set(
+            self.instance.requirements.all()) != set(requirements)
+
+        # Volunteer gives us the volunteer instance straight away though
+        has_volunteer_changed = assigned_volunteer != self.instance.assigned_volunteer
+
+        # Cast the QuerySet to boolean to ensure proper value
+        should_validate = bool(requirements) and bool(assigned_volunteer) and (
+            has_requirements_changed or has_volunteer_changed)
+
+        if (should_validate):
+            missing_requirements = assigned_volunteer.missing_requirements(
+                requirements)
+            if (missing_requirements):
+                raise forms.ValidationError(
+                    _("The assigned volunteer is missing the following requirements: %(requirements)s"),
+                    code="assigned-volunteer-missing-requirements",
+                    params={
+                        'requirements': ', '.join([r.name for r in missing_requirements])
+                    }
+                )
+
+    def get_field_value(self, field_name):
+        """
+        Reads the value of given `field_name`,
+        using the submitted data if it exists,
+        and using the instance value otherwise
+        """
+        if (field_name in self.cleaned_data):
+            return self.cleaned_data.get(field_name)
+        else:
+            return getattr(self.instance, field_name)
 
     class Meta:
         model = Action
