@@ -232,6 +232,12 @@ class Volunteer(UserProfileMixin, Person):
     def ongoing_actions(self):
         return self.action_set.filter(action_status=action_models.ActionStatus.ONGOING)
 
+    def missing_requirements(self, requirements):
+        """
+        Lists Requirements from given list that this volunteer is missin
+        """
+        return requirements.filter(~Q(pk__in=self.requirements.all()))
+
 
 class Coordinator(UserProfileMixin, Person):
     profile_related_name = 'coordinator'
