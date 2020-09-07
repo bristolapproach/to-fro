@@ -183,18 +183,27 @@ class ActionAdminForm(forms.ModelForm):
         Only runs if the volunteer or requirements has changed to avoid
         querying the database on all saves
         """
+        # Django will break if trying to access the requirements
+        # relation before the object is actually created
+        # so we need to differenciate whether the object was created or not
+        created = not self.instance.pk
 
         # Need to compare the list of requirements
         # https://stackoverflow.com/a/54117086
-        has_requirements_changed = set(
+        # On creation, we can consider that the requirements have changed
+        # as having no requirement will skip validation. `created` needs
+        # to be the first check to prevent `self.instance.requirements` call
+        # on creation (too early access to a relationship)
+        has_requirements_changed = created or set(
             self.instance.requirements.all()) != set(requirements)
 
         # Volunteer gives us the volunteer instance straight away though
-        has_volunteer_changed = assigned_volunteer != self.instance.assigned_volunteer
+        # Same reasoning as for the requirements on creation
+        has_volunteer_changed = created or assigned_volunteer != self.instance.assigned_volunteer
 
         # Cast the QuerySet to boolean to ensure proper value
         should_validate = bool(requirements) and bool(assigned_volunteer) and (
-            has_requirements_changed or has_volunteer_changed)
+            has_volunteer_changed or has_requirements_changed)
 
         if (should_validate):
             missing_requirements = assigned_volunteer.missing_requirements(
@@ -217,6 +226,13 @@ class ActionAdminForm(forms.ModelForm):
         if (field_name in self.cleaned_data):
             return self.cleaned_data.get(field_name)
         else:
+            # This might need some more subtlety
+            # if trying to access a field representing a relation
+            # that is not submitted by the form
+            # when the instance is being created.
+            #
+            # Django will raise an exception for using the relation
+            # before the instance is saved
             return getattr(self.instance, field_name)
 
     class Meta:
