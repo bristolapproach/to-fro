@@ -17,6 +17,16 @@ services:
       - POSTGRES_BCC_PASSWORD=${POSTGRES_BCC_PASSWORD}
     volumes:
       - data_volume:/var/lib/postgresql/data
+  
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: tofro-pgadmin
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=${EMAIL_HOST_USER}
+      - PGADMIN_DEFAULT_PASSWORD=${EMAIL_HOST_PASSWORD}
+      - PGADMIN_LISTEN_PORT=5050
+    ports:
+      - "5050:5050"
     
   # Redis, used for Django cache and message queue.
   redis:
