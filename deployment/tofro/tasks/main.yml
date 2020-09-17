@@ -40,6 +40,7 @@
     EMAIL_HOST_PASSWORD: "{{ email_host_password }}"
     NOTIFICATIONS_FROM: "{{ notifications_from }}"
     COORDINATOR_EMAIL: "{{ coordinator_email }}"
+    PG_ADMIN_PASSWORD: "{{ pg_admin_password }}"
 
     VOLUNTEER_DIGEST_HOUR: "{{ volunteer_digest_hour }}"
     VOLUNTEER_DIGEST_MINUTE: "{{ volunteer_digest_minute }}"
