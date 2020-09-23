@@ -37,10 +37,13 @@ def create_action_notifications(action, changed={}):
     Depending on what notifications have already been sent, 
     and the type of action, appropriate emails will be delivered.
     """
+
     # New, high-priority, pending actions trigger an email to appropriate volunteers.
+    # Test if action_priority has changed to not email on each save
+    # but should only look for presence as the value is `None` when creating actions
     if action.action_priority == ActionPriority.HIGH \
             and action.action_status == ActionStatus.PENDING \
-            and changed.get('action_priority'):
+            and ('action_priority' in changed):
         create([v.email for v in action.potential_volunteers], action=action,
                notification_type=NotificationTypes.PENDING_HIGH_PRIORITY)
 
