@@ -2,6 +2,8 @@
 
 We're working on a system that can be used by different communities to help self organise, keep track of need and effectively deploy help.
 
+Find instructions for deployment in the `deployment` directory.
+
 ## Development environment
 
 To get running locally and quickly, download docker, clone this repository, then start the applications using this command:
