@@ -3,19 +3,19 @@
   gather_facts: no
 
   roles:
-    # # Update yum.
-    # - role: linuxhq.yum
-    #   yum_update: yes
+    # Update yum.
+    - role: linuxhq.yum
+      yum_update: yes
 
-    # # Install Extra Packages for Enterprise Linux.
-    # - role: geerlingguy.repo-epel
+    # Install Extra Packages for Enterprise Linux.
+    - role: geerlingguy.repo-epel
 
-    # # Install Docker.
-    # - role: geerlingguy.docker
-    #   vars:
-    #     ansible_become: yes
-    #     docker_users:
-    #       - "{{ ansible_user }}"
+    # Install Docker.
+    - role: geerlingguy.docker
+      vars:
+        ansible_become: yes
+        docker_users:
+          - "{{ ansible_user }}"
 
     # Configure the server for redis.
     - role: redis-env
