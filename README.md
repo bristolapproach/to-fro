@@ -4,19 +4,24 @@ We're working on a system that can be used by different communities to help self
 
 ## Development environment
 
-To get started, download docker, clone this repository, then start the database and the Django server in the foreground using this command:
+To get running locally and quickly, download docker, clone this repository, then start the applications using this command:
 
     docker-compose up --build
 
 Configuration is handled via the `.env` file. Environment variables will override what's defined in the `.env` file.
 
-If `DEBUG=True`, then Django's development server will be used. This includes hot-reload from code changes, and additional log information. If `DEBUG=False`, a production `gunicorn` server will be used.
+If `DEBUG=True`, then Django's development server will be used. This server includes hot-reload functionality and additional log information. If `DEBUG=False`, a production `gunicorn` server will be used.
 
-During development, you can enable Django's hot-reload functionality by mounting the source code as a volume into the container. This maps your local directory with a directory in the docker container. To do this, change the command above to:
+During development, you should mount your local copy of the source code into the container. This is volume mount is encapsulated in the `development.yml` file. Do this by changing the command above to:
 
     docker-compose -f docker-compose.yml -f development.yml up --build
 
-The benefit of mounting your local filesystem into the docker container is both avoiding installing dependencies locally, and to avoid reloading the container every time you write some code.
+There are a couple of key benefits to mounting the source code as a volume.
+
+1. Local changes to code get copied to the running container, enabling Django to hot-reload the application.
+2. Changes to the filesystem in the container get copied to your local filesystem. This becomes useful when [adding apps to Django](https://docs.djangoproject.com/en/3.1/intro/tutorial01/#creating-the-polls-app).
+
+## Useful commands
 
 To execute a python command on the docker container, use a command like this:
 
