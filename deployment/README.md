@@ -27,8 +27,8 @@
    # Activate the ansible environment
    source ~/ansible-env/bin/activate
 
-   # Install project's Ansible requirements
-   ansible-galaxy install -r requirements.yml
+   # Install project's ansible-galaxy requirements
+   ansible-galaxy install -r ansible-requirements.yml
    ```
 
 5. Get the `vault_password` file from the project administrator
