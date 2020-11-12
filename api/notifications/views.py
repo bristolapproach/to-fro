@@ -61,7 +61,7 @@ def daily_digest_volunteer_email_preview(request, volunteer_pk):
     new_available_actions = volunteer.available_actions.order_by(
         'requested_datetime', '-action_priority'
     ).filter(call_datetime__gte=twenty_four_hours_ago)
-    
+
     #high priority that are older than 24 hrs
     old_hp_available_actions = volunteer.available_actions.order_by(
         'requested_datetime', '-action_priority'
@@ -87,7 +87,9 @@ def daily_digest_volunteer_email_preview(request, volunteer_pk):
 
     context = {
         'volunteer': volunteer,
-        'action_sections': action_sections
+        'action_sections': action_sections,
+        'today': today,
+        'tomorrow': tomorrow
     }
 
     return render(request, 'notifications/action_digest_email.html', context)

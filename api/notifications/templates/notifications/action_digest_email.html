@@ -61,7 +61,7 @@
           <tr>
             <td style="font-size: 0;">
               <div class="action-column" style="font-size: 1rem;">
-                <h3 class="list-heading" style="background-color: #037171;">Added Today</h3>
+                <h3 class="list-heading" style="background-color: #037171;">New Today</h3>
                 <table border="0" cellpadding="0" cellspacing="0" class="action-table" id="newActions">
                   {% for action in action_sections.new_available_actions|slice:"3" %}
                     {% include 'notifications/_action_list_item_email.html' with action=action volunteer=volunteer %}
@@ -78,7 +78,7 @@
                 </table>
               </div>
               <div class="action-column" style="font-size: 1rem;">
-                <h3 class="list-heading">Unfilled High Priority</h3>
+                <h3 class="list-heading">High Priority</h3>
                 <table border="0" cellpadding="0" cellspacing="0" class="action-table" id="newActions">
                   {% for action in action_sections.old_hp_available_actions|slice:"4" %}
                     {% include 'notifications/_action_list_item_email.html' with action=action volunteer=volunteer %}
@@ -124,7 +124,7 @@
           <tr>
             <td id="yourActions" style="font-size: 0;">
               <div class="action-column" style="font-size: 1rem;">
-                <h3 class="list-heading">Today <br><span class="day">{% now "l"%}</span></h3>
+                <h3 class="list-heading">Today <br><span class="day">{{today|date:"l"}}</span></h3>
                 <table border="0" cellpadding="0" cellspacing="0" class="action-table" id="actionsToday">
                   {% for action in action_sections.upcoming_actions_today %}
                     {% include 'notifications/_your_action_list_item_email.html' with action=action volunteer=volunteer %}
@@ -132,7 +132,7 @@
                 </table>
               </div>
               <div class="action-column" style="font-size: 1rem;">
-                <h3 class="list-heading" style="background-color: #037171;">Tomorrow <br><span class="day">{% now "l"%}</span></h3>
+                <h3 class="list-heading" style="background-color: #037171;">Tomorrow <br><span class="day">{{tomorrow|date:"l"}}</span></h3>
                 <table border="0" cellpadding="0" cellspacing="0" class="action-table" id="actionsTomorrow">
                   {% for action in action_sections.upcoming_actions_tomorrow %}
                     {% include 'notifications/_your_action_list_item_email.html' with action=action volunteer=volunteer %}
