@@ -15,6 +15,9 @@
     {% endblock %}
     To/Fro</title>
   <link rel="stylesheet" href="{% static 'styles.css' %}">
+
+  {% block extra_head %}
+  {% endblock %}
 </head>
 
 <body {%if show_kites %}class="with-kites"{%endif%}>
@@ -34,10 +37,16 @@
         </li>
         {% endif %}
         <li class="nav-item">
-          <a class="nav-link" href="{% url 'password_change' %}">Change password</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="{% url 'logout' %}">Log out</a>
+          <div class="dropdown dropleft">
+            <a class="btn btn-secondary dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                {% embed_fontawesome 'user' class_attribute="fa-lg" %}
+            </a>
+            <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+              <a class="dropdown-item" href="{% url 'user-settings' %}">Account settings</a>
+              <div class="dropdown-divider"></div>
+              <a class="dropdown-item" href="{% url 'logout' %}">Log out</a>
+            </div>
+          </div>
         </li>
       </ul>
     </nav>

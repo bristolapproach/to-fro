@@ -1,0 +1,23 @@
+{% extends 'layouts/email_base.html' %}
+
+{#% load humanize %#}
+{#% load actions %#}
+
+{% block 'content' %}
+
+
+{% for title, actions in action_sections %}
+  {% if actions %}
+    <h4> {{ title }} ({{ actions.count }})</h4>
+    <ul class="d-flex space-x-3 list-unstyled">
+      {% for action in actions|slice:"4" %}
+        {% include 'actions/_action_list_item.html' with action=action volunteer=volunteer %}
+      {% endfor %}
+    </ul>
+    {% if not forloop.last %}
+      <hr/>
+    {% endif %}
+  {% endif %}
+{% endfor %}
+
+{% endblock %}

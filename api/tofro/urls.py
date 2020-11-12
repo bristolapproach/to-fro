@@ -10,9 +10,11 @@ from django.urls import include, path
 from django.conf import settings
 from django.conf.urls import url
 from django.contrib import admin
+from django.contrib.flatpages.views import flatpage
+
 from tofro.views import LoginView, LogoutView, PasswordResetConfirmView, homepage
 from tofro.lib import login_required
-from django.contrib.flatpages import views
+from users.views import UserSettingsView
 
 
 urlpatterns = [
@@ -24,9 +26,11 @@ urlpatterns = [
     path('accounts/', include('django.contrib.auth.urls')),
     path('actions/', decorator_include(login_required, ('actions.urls', 'actions'))),
     path('accounts/login', LoginView.as_view(), name="login"),
-    path('accounts/logout', LogoutView.as_view(), name="logout")
+    path('accounts/logout', LogoutView.as_view(), name="logout"),
+    path('accounts/settings', UserSettingsView.as_view(), name='user-settings'),
+    path('notifications/', include('notifications.urls')),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT) + [
-    re_path(r'^(?P<url>.*/)$', views.flatpage, name="page"),
+    re_path(r'^(?P<url>.*/)$', flatpage, name="page"),
 ]
 
 
