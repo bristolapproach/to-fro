@@ -89,7 +89,8 @@ def daily_digest_volunteer_email_preview(request, volunteer_pk):
         'volunteer': volunteer,
         'action_sections': action_sections,
         'today': today,
-        'tomorrow': tomorrow
+        'tomorrow': tomorrow,
+        'title': 'Volunteer Daily Digest',
     }
 
     return render(request, 'notifications/action_digest_email.html', context)
@@ -100,6 +101,7 @@ def weekly_digest_volunteer_email_preview(request, volunteer_pk):
 
     volunteer = get_object_or_404(Volunteer, pk=volunteer_pk)
     two_hours_ago = datetime.datetime.now() - datetime.timedelta(hours=2)
+    one_week_ago = datetime.datetime.now() - datetime.timedelta(days=7)
 
     sections_common = _get_digest_actions_common(volunteer)
 
@@ -108,15 +110,20 @@ def weekly_digest_volunteer_email_preview(request, volunteer_pk):
         '-action_status', 'requested_datetime', '-action_priority'
     ).filter(requested_datetime__gte=two_hours_ago)
 
+    # x upcoming total (ones they have been approved for that are in the future)
+    new_available_actions = volunteer.available_actions.order_by(
+        'requested_datetime', '-action_priority'
+    ).filter(requested_datetime__gte=one_week_ago)
+
     action_sections = {
-        'upcoming_actions': {
-            'section_title': 'Upcoming actions', 'actions': upcoming_actions
-        }
+        'upcoming_actions': upcoming_actions,
+        'new_available_actions': new_available_actions,
     }
     action_sections.update(sections_common)
 
     context = {
         'volunteer': volunteer,
-        'action_sections': action_sections
+        'action_sections': action_sections,
+        'title': 'Volunteer Weekly Digest',
     }
-    return render(request, 'notifications/action_digest_email.html', context)
+    return render(request, 'notifications/weekly_digest_email.html', context)
