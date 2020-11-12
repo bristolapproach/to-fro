@@ -78,6 +78,7 @@ def daily_digest_volunteer_email_preview(request, volunteer_pk):
         ('Upcoming today', upcoming_actions_today),
         ('Upcoming tomorrow', upcoming_actions_tomorrow),
     ]
+    action_sections = [tup for tup in action_sections if tup[1].count() > 0]
 
     context = {
         'volunteer': volunteer,
@@ -103,6 +104,7 @@ def weekly_digest_volunteer_email_preview(request, volunteer_pk):
     action_sections = sections_common + [
         ('Upcoming actions', upcoming_actions),
     ]
+    action_sections = [tup for tup in action_sections if tup[1].count() > 0]
 
     context = {
         'volunteer': volunteer,
