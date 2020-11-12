@@ -39,15 +39,9 @@ def _get_digest_actions_common(volunteer):
     available_actions, actions_awaiting_approval = all_actions, all_actions
 
     sections = {
-        'available_actions': {
-            'title': 'Actions available', 'actions': available_actions
-        },
-        'hp_available_actions': {
-            'title': 'High-priority actions', 'actions': hp_available_actions
-        },
-        'ongoing_actions': {
-            'title': 'Your actions - awaiting approval', 'actions': ongoing_actions
-        }
+        'available_actions': available_actions,
+        'hp_available_actions': hp_available_actions,
+        'ongoing_actions': ongoing_actions
     }
     return sections
 
@@ -79,15 +73,9 @@ def daily_digest_volunteer_email_preview(request, volunteer_pk):
     ).filter(requested_datetime__date=tomorrow)
 
     action_sections = {
-        'new_available_actions': {
-            'title': 'New actions available', 'actions': new_available_actions
-        },
-        'upcoming_actions_today': {
-            'title': 'Upcoming today', 'actions': upcoming_actions_today
-        },
-        'upcoming_actions_tomorrow': {
-            'title': 'Upcoming tomorrow', 'actions': upcoming_actions_tomorrow
-        }
+        'new_available_actions': new_available_actions,
+        'upcoming_actions_today': upcoming_actions_today,
+        'upcoming_actions_tomorrow': upcoming_actions_tomorrow,
     }
     action_sections.update(sections_common)
 
@@ -114,7 +102,7 @@ def weekly_digest_volunteer_email_preview(request, volunteer_pk):
 
     action_sections = {
         'upcoming_actions': {
-            'title': 'Upcoming actions', 'actions': upcoming_actions
+            'section_title': 'Upcoming actions', 'actions': upcoming_actions
         }
     }
     action_sections.update(sections_common)
