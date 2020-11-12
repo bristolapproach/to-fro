@@ -38,12 +38,17 @@ def _get_digest_actions_common(volunteer):
     all_actions = Action.objects.all()[:5]
     available_actions, actions_awaiting_approval = all_actions, all_actions
 
-    sections = [
-        ('Actions available', available_actions),
-        ('High-priority actions', hp_available_actions),
-        ('Your actions - awaiting approval', actions_awaiting_approval),
-        ('Your current actions', ongoing_actions)
-    ]
+    sections = {
+        'available_actions': {
+            'title': 'Actions available', 'actions': available_actions
+        },
+        'hp_available_actions': {
+            'title': 'High-priority actions', 'actions': hp_available_actions
+        },
+        'ongoing_actions': {
+            'title': 'Your actions - awaiting approval', 'actions': ongoing_actions
+        }
+    }
     return sections
 
 
@@ -73,12 +78,18 @@ def daily_digest_volunteer_email_preview(request, volunteer_pk):
         '-action_status', 'requested_datetime', '-action_priority'
     ).filter(requested_datetime__date=tomorrow)
 
-    action_sections = sections_common + [
-        ('New actions available', new_available_actions),
-        ('Upcoming today', upcoming_actions_today),
-        ('Upcoming tomorrow', upcoming_actions_tomorrow),
-    ]
-    action_sections = [tup for tup in action_sections if tup[1].count() > 0]
+    action_sections = {
+        'new_available_actions': {
+            'title': 'New actions available', 'actions': new_available_actions
+        },
+        'upcoming_actions_today': {
+            'title': 'Upcoming today', 'actions': upcoming_actions_today
+        },
+        'upcoming_actions_tomorrow': {
+            'title': 'Upcoming tomorrow', 'actions': upcoming_actions_tomorrow
+        }
+    }
+    action_sections.update(sections_common)
 
     context = {
         'volunteer': volunteer,
@@ -101,10 +112,12 @@ def weekly_digest_volunteer_email_preview(request, volunteer_pk):
         '-action_status', 'requested_datetime', '-action_priority'
     ).filter(requested_datetime__gte=two_hours_ago)
 
-    action_sections = sections_common + [
-        ('Upcoming actions', upcoming_actions),
-    ]
-    action_sections = [tup for tup in action_sections if tup[1].count() > 0]
+    action_sections = {
+        'upcoming_actions': {
+            'title': 'Upcoming actions', 'actions': upcoming_actions
+        }
+    }
+    action_sections.update(sections_common)
 
     context = {
         'volunteer': volunteer,
