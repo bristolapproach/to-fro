@@ -5,15 +5,148 @@
 
 {% block 'content' %}
 
+<table role="presentation" border="0" cellpadding="0" cellspacing="0"  align="center" style="max-width:590px; font-family:'Arial', sans-serif; padding: 20px 0 0px 0;">
+  <tbody>
+    <tr>
+      <td>
+        <table id="mainHeader" align="center" border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width:600px; border-collapse: collapse; background-color:#fff; ">
+          <tr>
+            <td style="padding:10px 20px;">
+              <div>
+                <a href="{{ site_url }}" title="Site Home"><img src="./img/TO_FRO_logo-04.svg" alt="to/fro logo"  style="background-color: #fff; border-radius: 10px;"width="150px"></a>
+              </div>
+              <div align="center">
+                <h1>Volunteer Daily Digest</h1>
+              </div>
+              <div align="right" style="color: grey">{% now "jS F Y" %}</div>
+            </td>
+          </tr>
+          
+        </table>
+        <table id="mainBody" align="center" border="0" cellpadding="0" cellspacing="0" width="100%" style="border-collapse: collapse; background-color:#fff;">
+          <tr>
+            <td style="padding:10px 20px">
+              <p style="">Hi {{ volunteer.first_name }},</p>
+              <p>
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc quis dignissim turpis. Ut sed sapien egestas dolor gravida vulputate in quis nibh. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Nunc vel metus et lacus laoreet lacinia.
+              </p>
+            </td>
+          </tr>
+          <tr>
+            <td class="action-summary" align="center" style="">
+              <div width="100%">
+                <h2>Unassigned Actions</h2>
+              </div>
+              <div style="display:inline-block; width: 32%;">
+                <div class="sum-pill">
+                  <p class="sum-number" style=" margin: 0;">{{ volunteer.available_actions.count }}</p>
+                  <p style="margin: 0;">Available</p>
+                </div>
+              </div>
+              <div style="display:inline-block; width: 32%;">
+                <div class="sum-pill">
+                  <p class="sum-number" style=" margin: 0;">{{ action_sections.new_available_actions.count }}</p>
+                  <p style="margin: 0;">New Today</p>
+                </div>
+              </div>
+              <div style="display:inline-block; width: 32%;">
+                <div class="sum-pill">
+                  <p class="sum-number" style=" margin: 0;">{{ action_sections.hp_available_actions.count }}
+                  </p>
+                  <p style="margin: 0;">High Priority</p>
+                </div>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td style="font-size: 0;">
+              <div class="action-column" style="font-size: 1rem;">
+                <h3 class="list-heading" style="background-color: #037171;">Added Today</h3>
+                <table border="0" cellpadding="0" cellspacing="0" class="action-table" id="newActions">
+                  {% for action in action_sections.new_available_actions|slice:"3" %}
+                    {% include 'notifications/_action_list_item_email.html' with action=action volunteer=volunteer %}
+                  {% endfor %}
+                  <tr>
+                    <td>
+                      <div>
+                        {% if action_sections.new_available_actions.count|add:"-3" > 0 %}
+                          Plus {{action_sections.new_available_actions.count|add:"-3"}} more action{% if action_sections.new_available_actions.count|add:"-3" > 1 %}s{% endif %}
+                        {% endif %}
+                      </div>
+                    </td>
+                  </tr>
+                </table>
+              </div>
+              <div class="action-column" style="font-size: 1rem;">
+                <h3 class="list-heading">Unfilled High Priority</h3>
+                <table border="0" cellpadding="0" cellspacing="0" class="action-table" id="newActions">
+                  {% for action in action_sections.old_hp_available_actions|slice:"4" %}
+                    {% include 'notifications/_action_list_item_email.html' with action=action volunteer=volunteer %}
+                  {% endfor %}
+                  <tr>
+                    <td>
+                      <div>
+                        {% if action_sections.new_available_actions.count|add:"-4" > 0 %}
+                          Plus {{action_sections.new_available_actions.count|add:"-4"}} more action{% if action_sections.new_available_actions.count|add:"-4" > 1 %}s{% endif %}
+                        {% endif %}
+                      </div>
+                    </td>
+                  </tr>
+                </table>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td class="action-summary" align="center" style="">
+              <div width="100%">
+                <h2>Your Actions</h2>
+              </div>
+              <div style="display:inline-block; width: 32%;">
+                <div class="sum-pill">
+                  <p class="sum-number" style=" margin: 0;">{{volunteer.upcoming_actions.count}}</p>
+                  <p style="margin: 0;">Upcoming</p>
+                </div>
+              </div>
+              <div style="display:inline-block; width: 32%;">
+                <div class="sum-pill">
+                  <p class="sum-number" style=" margin: 0;">{{volunteer.ongoing_actions.count}}</p>
+                  <p style="margin: 0;">Ongoing</p>
+                </div>
+              </div>
+              <div style="display:inline-block; width: 32%;">
+                <div class="sum-pill">
+                  <p class="sum-number" style=" margin: 0;">{{volunteer.completed_actions.count}}</p>
+                  <p style="margin: 0;">Completed</p>
+                </div>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td id="yourActions" style="font-size: 0;">
+              <div class="action-column" style="font-size: 1rem;">
+                <h3 class="list-heading">Today <br><span class="day">{% now "l"%}</span></h3>
+                <table border="0" cellpadding="0" cellspacing="0" class="action-table" id="actionsToday">
+                  {% for action in action_sections.upcoming_actions_today %}
+                    {% include 'notifications/_your_action_list_item_email.html' with action=action volunteer=volunteer %}
+                  {% endfor %}
+                </table>
+              </div>
+              <div class="action-column" style="font-size: 1rem;">
+                <h3 class="list-heading" style="background-color: #037171;">Tomorrow <br><span class="day">{% now "l"%}</span></h3>
+                <table border="0" cellpadding="0" cellspacing="0" class="action-table" id="actionsTomorrow">
+                  {% for action in action_sections.upcoming_actions_tomorrow %}
+                    {% include 'notifications/_your_action_list_item_email.html' with action=action volunteer=volunteer %}
+                  {% endfor %}
+                </table>
+              </div>
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </tbody>
+</table>
 
-{% for title, actions in action_sections %}
-  <h4> {{ title }} ({{ actions.count }})</h4>
-  <ul class="d-flex space-x-3 list-unstyled">
-    {% for action in actions|slice:"4" %}
-      {% include 'actions/_action_list_item.html' with action=action volunteer=volunteer %}
-    {% endfor %}
-  </ul>
-  {% if not forloop.last %}<hr/>{% endif %}
-{% endfor %}
+
 
 {% endblock %}

@@ -1,5 +1,5 @@
 import datetime
-
+from django.db.models import Q
 from django.contrib.auth.decorators import user_passes_test
 from django.shortcuts import render, get_object_or_404
 
@@ -61,6 +61,11 @@ def daily_digest_volunteer_email_preview(request, volunteer_pk):
     new_available_actions = volunteer.available_actions.order_by(
         'requested_datetime', '-action_priority'
     ).filter(call_datetime__gte=twenty_four_hours_ago)
+    
+    #high priority that are older than 24 hrs
+    old_hp_available_actions = volunteer.available_actions.order_by(
+        'requested_datetime', '-action_priority'
+    ).filter(~Q(call_datetime__gte=twenty_four_hours_ago), action_priority=ActionPriority.HIGH)
 
     # upcoming today (ones they have been approved for and are happening today)
     upcoming_actions_today = volunteer.upcoming_actions.order_by(
@@ -76,6 +81,7 @@ def daily_digest_volunteer_email_preview(request, volunteer_pk):
         'new_available_actions': new_available_actions,
         'upcoming_actions_today': upcoming_actions_today,
         'upcoming_actions_tomorrow': upcoming_actions_tomorrow,
+        'old_hp_available_actions': old_hp_available_actions
     }
     action_sections.update(sections_common)
 
