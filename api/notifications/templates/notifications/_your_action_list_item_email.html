@@ -1,0 +1,17 @@
+{% load humanize %}
+{% load svg %}
+{% load actions %}
+
+<tr>
+  <td>
+    <a href="#" title="">
+      <div class="action">
+        <p class="action-time">{{action.requested_datetime|time:"H:i"}}</p>
+        <h4 class="action-title">{{action.help_type}} -<br><span class="action-location">{{action.ward}}</span></h4>
+      </div>
+      <div class="more-detail">
+          Tap for more details  
+        </div>
+    </a>
+  </td>
+</tr>
