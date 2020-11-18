@@ -2,6 +2,7 @@
 
 {#% load humanize %#}
 {#% load actions %#}
+{% load static %}
 
 {% block 'content' %}
 
@@ -13,7 +14,7 @@
           <tr>
             <td style="padding:10px 20px;">
               <div>
-                <a href="{{ site_url }}" title="Site Home"><img src="./img/TO_FRO_logo-04.svg" alt="to/fro logo"  style="background-color: #fff; border-radius: 10px;"width="150px"></a>
+                <a href="{{ site_url }}" title="Site Home"><img src="{% static '/TO_FRO_logo-04-knockout.svg' %}" alt="to/fro logo"  style="background-color: #fff; border-radius: 10px;"width="150px"></a>
               </div>
               <div align="center">
                 <h1>{{title}}</h1>
@@ -32,6 +33,7 @@
               </p>
             </td>
           </tr>
+          {% if not action_sections.new_available_actions and  action_sections.old_hp_available_actions %}
           <tr>
             <td class="action-summary" align="center" style="">
               <div width="100%">
@@ -60,7 +62,8 @@
           </tr>
           <tr>
             <td style="font-size: 0;">
-              <div class="action-column" style="font-size: 1rem;">
+              {% if action_sections.new_available_actions %}
+              <div class="action-column {% if not action_sections.old_hp_available_actions %} is-wide {% endif %}" style="font-size: 1rem;">
                 <h3 class="list-heading" style="background-color: #037171;">New Today</h3>
                 <table border="0" cellpadding="0" cellspacing="0" class="action-table" id="newActions">
                   {% for action in action_sections.new_available_actions|slice:"3" %}
@@ -77,7 +80,9 @@
                   </tr>
                 </table>
               </div>
-              <div class="action-column" style="font-size: 1rem;">
+              {% endif %}
+              {% if action_sections.old_hp_available_actions %}
+              <div class="action-column {% if not action_sections.new_available_actions %} is-wide {% endif %}" style="font-size: 1rem;">
                 <h3 class="list-heading">High Priority</h3>
                 <table border="0" cellpadding="0" cellspacing="0" class="action-table" id="newActions">
                   {% for action in action_sections.old_hp_available_actions|slice:"4" %}
@@ -94,8 +99,10 @@
                   </tr>
                 </table>
               </div>
+              {% endif %}
             </td>
           </tr>
+          {% endif %}
           <tr>
             <td class="action-summary" align="center" style="">
               <div width="100%">
@@ -129,6 +136,19 @@
                   {% for action in action_sections.upcoming_actions_today %}
                     {% include 'notifications/_your_action_list_item_email.html' with action=action volunteer=volunteer %}
                   {% endfor %}
+                  {% if not action_sections.upcoming_actions_tomorrow %}
+                  <tr>
+                    <td>
+                      <a href="#">
+                        <div class="action">
+                          <p class="action-desc">
+                            Looks like you don't have any actions coming up today. Click to see whats available?
+                          </p>
+                        </div>
+                      </a>
+                    </td>
+                  </tr>
+                  {% endif %}
                 </table>
               </div>
               <div class="action-column" style="font-size: 1rem;">
@@ -137,6 +157,19 @@
                   {% for action in action_sections.upcoming_actions_tomorrow %}
                     {% include 'notifications/_your_action_list_item_email.html' with action=action volunteer=volunteer %}
                   {% endfor %}
+                  {% if not action_sections.upcoming_actions_tomorrow %}
+                  <tr>
+                    <td>
+                      <a href="#" title="">
+                        <div class="action">
+                          <p class="action-desc">
+                            Looks like you don't have any actions coming up tomorrow. Click to see whats available?
+                          </p>
+                        </div>
+                      </a>
+                    </td>
+                  </tr>
+                  {% endif %}
                 </table>
               </div>
             </td>

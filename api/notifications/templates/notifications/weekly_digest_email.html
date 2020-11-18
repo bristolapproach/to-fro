@@ -2,6 +2,7 @@
 
 {#% load humanize %#}
 {#% load actions %#}
+{% load static %}
 
 {% block 'content' %}
 
@@ -13,7 +14,7 @@
           <tr>
             <td style="padding:10px 20px;">
               <div>
-                <a href="{{ site_url }}" title="Site Home"><img src="./img/TO_FRO_logo-04.svg" alt="to/fro logo"  style="background-color: #fff; border-radius: 10px;"width="150px"></a>
+                <a href="{{ site_url }}" title="Site Home"><img src="{% static '/TO_FRO_logo-04-knockout.svg' %}" alt="to/fro logo"  style="background-color: #fff; border-radius: 10px;"width="150px"></a>
               </div>
               <div align="center">
                 <h1>{{title}}</h1>
