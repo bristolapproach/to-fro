@@ -1,7 +1,8 @@
 // Abstract things like function, variables and mixins
 // 1. Functions, first because variables might use them for their definition
 
-@import '../../../../node_modules/bootstrap/scss/functions';
+//@import '../../../../node_modules/bootstrap/scss/functions';
+@import '/code/node_modules/bootstrap/scss/functions';
 
 // 2. Variables
 
@@ -9,10 +10,12 @@
 $list-group-border-radius: (6rem / 16);
 $list-group-action-color: inherit;
 $small-font-size: (14rem / 16);
-@import '../../../../node_modules/bootstrap/scss/variables';
+//@import '../../../../node_modules/bootstrap/scss/variables';
+@import '/code/node_modules/bootstrap/scss/variables';
 
 // And if some variables need to be overriden, add some more variables here
 
 
 // 3. Mixins
-@import '../../../../node_modules/bootstrap/scss/mixins';
+//@import '../../../../node_modules/bootstrap/scss/mixins';
+@import '/code/node_modules/bootstrap/scss/mixins';

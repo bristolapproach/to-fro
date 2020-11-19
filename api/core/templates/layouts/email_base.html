@@ -2,7 +2,7 @@
 {% load static %}
 {% load svg %}
 {% load sitetree %}
-
+{% load links %}
 <!doctype html>
 <html lang="en">
 
@@ -162,7 +162,7 @@
 </head>
 
 <body style="margin: 0; padding: 0;">
-  <div id="wrapper" width="100%" style="background-color:#d4edf9; background-image: url('{% static '/svg/TO_FRO_kites_01-04.svg' %}'); background-repeat: none; background-size: cover; padding: 0px 5px;">
+  <div id="wrapper" width="100%" style="background-color:#d4edf9; background-image: url('{{ request | base_url }}{% static '/svg/TO_FRO_kites_01-04.svg' %}'); background-repeat: none; background-size: cover; padding: 0px 5px;">
     {% block 'content'%}{% endblock %}
     <table id="footer" role="presentation" cellpadding="0" cellspacing="0" style="max-width: 590px; background-color:#d4edf9;" border="0" align="center">
       <tr>

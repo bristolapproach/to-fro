@@ -25,18 +25,22 @@ def _get_digest_actions_common(volunteer):
 
     # actions waiting for approval (this is total and one's they've
     # volunteered for, but no volunteer has been assigned yet)
-    actions_awaiting_approval = volunteer.actions_interested_in.filter(
-        assigned_volunteer__isnull=True).order_by('requested_datetime')
+    # no longer used?
+    # actions_awaiting_approval = volunteer.actions_interested_in.filter(
+    #    assigned_volunteer__isnull=True).order_by('requested_datetime')
 
     # ongoing (total ones they are assigned to and are still ongoing)
     ongoing_actions = volunteer.ongoing_actions.order_by(
         'requested_datetime', '-action_priority'
     )
 
-    # todo: temp
+    '''
+    # uncomment when testing templates
     from actions.models import Action
     all_actions = Action.objects.all()[:5]
     available_actions, actions_awaiting_approval = all_actions, all_actions
+    ongoing_actions = all_actions
+    '''
 
     sections = {
         'available_actions': available_actions,
@@ -46,13 +50,8 @@ def _get_digest_actions_common(volunteer):
     return sections
 
 
-@user_passes_test(_is_logged_in_admin)
-def daily_digest_volunteer_email_preview(request, volunteer_pk):
+def get_daily_action_sections(volunteer, today, tomorrow):
 
-    volunteer = get_object_or_404(Volunteer, pk=volunteer_pk)
-
-    today = datetime.date.today()
-    tomorrow = today + datetime.timedelta(days=1)
     twenty_four_hours_ago = datetime.datetime.now() - datetime.timedelta(hours=24)
 
     sections_common = _get_digest_actions_common(volunteer)
@@ -62,7 +61,7 @@ def daily_digest_volunteer_email_preview(request, volunteer_pk):
         'requested_datetime', '-action_priority'
     ).filter(call_datetime__gte=twenty_four_hours_ago)
 
-    #high priority that are older than 24 hrs
+    # high priority that are older than 24 hrs
     old_hp_available_actions = volunteer.available_actions.order_by(
         'requested_datetime', '-action_priority'
     ).filter(~Q(call_datetime__gte=twenty_four_hours_ago), action_priority=ActionPriority.HIGH)
@@ -84,6 +83,19 @@ def daily_digest_volunteer_email_preview(request, volunteer_pk):
         'old_hp_available_actions': old_hp_available_actions
     }
     action_sections.update(sections_common)
+
+    return action_sections
+
+
+@user_passes_test(_is_logged_in_admin)
+def daily_digest_volunteer_email_preview(request, volunteer_pk):
+
+    volunteer = get_object_or_404(Volunteer, pk=volunteer_pk)
+
+    today = datetime.date.today()
+    tomorrow = today + datetime.timedelta(days=1)
+
+    action_sections = get_daily_action_sections(volunteer, today, tomorrow)
 
     context = {
         'volunteer': volunteer,

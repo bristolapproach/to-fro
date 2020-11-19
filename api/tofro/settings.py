@@ -12,7 +12,7 @@ https://docs.djangoproject.com/en/3.0/ref/settings/
 import copy
 from django.utils.log import DEFAULT_LOGGING
 import os
-
+from os.path import join as join_path
 
 # Required environment variables. These are loaded automatically
 # by docker-compose, and defined in the .env file.
@@ -26,7 +26,13 @@ DATABASE_HOST = os.getenv('DATABASE_HOST', 'postgres-server')
 DATABASE_PORT = os.getenv('DATABASE_PORT', '5432')
 REDIS_PORT = os.getenv('REDIS_PORT', '6379')
 DEBUG = os.getenv("DEBUG", "True") == "True"
+RUN_ENV = os.getenv('RUN_ENV', None)
 
+# ensure
+if not RUN_ENV:
+    print('warning: RUN_ENV is not set')
+    assert DEBUG is True
+    RUN_ENV = 'local-dev'
 
 # Email settings.
 EMAIL_PORT = os.getenv("EMAIL_PORT", 587)
@@ -65,7 +71,7 @@ INSTALLED_APPS = [
     'admin_auto_filters',
     'django_admin_listfilter_dropdown',
     'actions',
-    'assets',
+    # 'assets',
     'categories',
     'pages_and_menus',
     'core',
@@ -86,6 +92,12 @@ INSTALLED_APPS = [
     'django.contrib.flatpages',
     'admin_overrides'
 ]
+if DEBUG:
+    # ensures whitenoise is used in development, as recommended:
+    # http://whitenoise.evans.io/en/stable/django.html#using-whitenoise-in-development
+    INSTALLED_APPS.insert(0, 'whitenoise.runserver_nostatic')
+
+
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
@@ -215,11 +227,19 @@ LOCALE_PATHS = (
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.9/howto/static-files/
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+STATIC_ROOT = os.path.join(BASE_DIR, 'static-built')
 STATIC_URL = '/static/'
+STATICFILES_DIRS = [
+    join_path(BASE_DIR, 'static-src')
+]
 
-# WhiteNoise serves the static files via the Python server.
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+if not DEBUG:
+    # WhiteNoise serves the static files via the Python server.
+    STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+
+# for now, we're disabling django's static 'finder', so all assets need to be in STATIC_ROOT
+WHITENOISE_USE_FINDERS = False
+WHITENOISE_AUTOREFRESH = DEBUG
 
 # Default template pack for crispy-forms
 CRISPY_TEMPLATE_PACK = 'bootstrap4'

@@ -1,0 +1,18 @@
+.field-help_type a[id$=help_type] {
+  display: none;
+}
+
+.submit-row {
+  position: sticky;
+  bottom: 1rem;
+}
+
+.results td,
+.results tbody th {
+  vertical-align: middle;
+}
+.results .delete-related {
+  display: none;
+}
+
+/*# sourceMappingURL=admin.css.map */

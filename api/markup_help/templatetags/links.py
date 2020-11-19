@@ -1,6 +1,9 @@
-from django import template
-from django.utils.safestring import mark_safe
+import os
 from urllib.parse import parse_qs, urlsplit, urlunsplit, urlencode
+
+from django import template
+
+
 register = template.Library()
 
 MAP_BASE_URL = 'https://duckduckgo.com/'
@@ -29,3 +32,10 @@ def set_query_parameter(url, param_name, param_value):
     new_query_string = urlencode(query_params, doseq=True)
 
     return urlunsplit((scheme, netloc, path, new_query_string, fragment))
+
+
+@register.filter()
+def base_url(request):
+    if request is None:
+        return os.environ['DJANGO_BASE_URL']
+    return f"{request.scheme}://{request.META['HTTP_HOST']}"
