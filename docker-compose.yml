@@ -112,7 +112,6 @@ services:
       - ADMIN_SITE_TITLE=${ADMIN_SITE_TITLE}
       - SITE_URL=${SITE_URL}
 
-      - TOFRO_API_BASE_DIR=/code
       - INSIDE_CONTAINER="true"
       - RUN_ENV=${RUN_ENV}
       - DEBUG=${DEBUG}
