@@ -176,9 +176,12 @@ def send(notification):
         notification.save()
 
 
-def send_email(subject, message, recipients):
+def send_email(subject, message, recipients, html_message=None):
     logger.log(logging.INFO, f"Sending email: {subject}")
-    EmailMessage(
-        subject, message,
+    email_msg = EmailMessage(
+        subject, message or html_message,
         bcc=recipients
-    ).send()
+    )
+    if html_message:
+        email_msg.content_subtype = "html"
+    email_msg.send()

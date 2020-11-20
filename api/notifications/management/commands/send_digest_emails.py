@@ -82,7 +82,7 @@ class Command(BaseCommand):
 
         for volunteer in volunteers:
             if not volunteer.email:
-                logger.error(f"Volunteer {volunteer.pk} has no email address")
+                print(f"Volunteer {volunteer.pk} has no email address")
                 continue
 
             action_sections = get_daily_action_sections(volunteer, today, tomorrow)
@@ -90,6 +90,7 @@ class Command(BaseCommand):
             # don't send email when these sections are empty
             skip_keys = ['new_available_actions', 'hp_available_actions']
             if all(action_sections[k].count() == 0 for k in skip_keys):
+                print(f'Skipping Volunteer {volunteer.pk}, no actions to display.')
                 continue
 
             self.send_digest_email(
@@ -116,4 +117,6 @@ class Command(BaseCommand):
 
         print(f"sending email to Volunteer {volunteer.pk}: {volunteer.email}")
 
-        send_email(subject_title, html_body, [volunteer.email])
+        send_email(
+            subject_title, None, [volunteer.email], html_message=html_body
+        )
