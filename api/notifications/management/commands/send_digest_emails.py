@@ -71,7 +71,7 @@ class Command(BaseCommand):
                 print(f'skipping {volunteer.pk}')
                 continue
 
-            self.send_volunteer_daily_digest_email(
+            self.send_digest_email(
                 volunteer, action_sections, today, tomorrow,
                 'Your daily digest', 'notifications/action_digest_email.html'
             )
@@ -92,15 +92,14 @@ class Command(BaseCommand):
             if all(action_sections[k].count() == 0 for k in skip_keys):
                 continue
 
-            self.send_volunteer_daily_digest_email(
+            self.send_digest_email(
                 volunteer, action_sections, today, tomorrow,
                 'Your weekly digest', 'notifications/weekly_digest_email.html'
             )
 
     @staticmethod
     def send_digest_email(
-        volunteer, action_sections, today, tomorrow,
-        subject_title, template_file
+        volunteer, action_sections, today, tomorrow, subject_title, template_file
     ):
         context = {
             'volunteer': volunteer,
