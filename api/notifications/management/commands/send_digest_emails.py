@@ -1,6 +1,7 @@
 import datetime
 import os
 
+from attrdict import AttrDict
 from django.core.management.base import BaseCommand
 from django.template.loader import render_to_string
 
@@ -102,16 +103,19 @@ class Command(BaseCommand):
     def send_digest_email(
         volunteer, action_sections, today, tomorrow, subject_title, template_file
     ):
+
         context = {
             'volunteer': volunteer,
             'action_sections': action_sections,
             'today': today,
             'tomorrow': tomorrow,
             'title': 'Volunteer Daily Digest',
-            'request': None
+            # fake request
+            'request': AttrDict({
+                'scheme': 'https',
+                'META': {'HTTP_HOST': 'dev.tofro.hostedby.bristolisopen.com'}
+            })
         }
-        # todo: hard code as prod url
-        os.environ['DJANGO_BASE_URL'] = 'dev.tofro.hostedby.bristolisopen.com'
 
         html_body = render_to_string(template_file, context)
 
