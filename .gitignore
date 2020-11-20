@@ -153,3 +153,4 @@ deployment/ansible-env/
 deployment/vault_password_dev
 docker_compose_run.sh
 .env
+.idea/
