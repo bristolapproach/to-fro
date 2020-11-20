@@ -24,6 +24,8 @@
     DJANGO_SECRET_KEY: "{{ django_secret_key }}"
     DJANGO_PORT: "{{ django_port }}"
     DEBUG: "{{ django_debug }}"
+    RUN_ENV: "{{ run_env }}"
+
     SITE_URL: "{{ site_url }}"
 
     POSTGRES_USER: "{{ postgres_user }}"

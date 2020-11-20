@@ -1,0 +1,186 @@
+{% extends 'layouts/email_base.html' %}
+
+{#% load humanize %#}
+{#% load actions %#}
+{% load static %}
+{% load links %}
+
+{% block 'content' %}
+
+<table role="presentation" border="0" cellpadding="0" cellspacing="0"  align="center" style="max-width:590px; font-family:'Arial', sans-serif; padding: 20px 0 0px 0;">
+  <tbody>
+    <tr>
+      <td>
+        <table id="mainHeader" align="center" border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width:600px; border-collapse: collapse; background-color:#fff; ">
+          <tr>
+            <td style="padding:10px 20px;">
+              <div>
+                <a href="{{ site_url }}" title="Site Home"><img src="{{ request | base_url }}{% static 'img/svg/TO_FRO_logo-04-knockout.svg' %}" alt="to/fro logo"  style="background-color: #fff; border-radius: 10px;"width="150px"></a>
+              </div>
+              <div align="center">
+                <h1>{{title}}</h1>
+              </div>
+              <div align="right" style="color: grey">{% now "jS F Y" %}</div>
+            </td>
+          </tr>
+          
+        </table>
+        <table id="mainBody" align="center" border="0" cellpadding="0" cellspacing="0" width="100%" style="border-collapse: collapse; background-color:#fff;">
+          <tr>
+            <td style="padding:10px 20px">
+              <p style="">Hi {{ volunteer.first_name }},</p>
+              <p>
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc quis dignissim turpis. Ut sed sapien egestas dolor gravida vulputate in quis nibh. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Nunc vel metus et lacus laoreet lacinia.
+              </p>
+            </td>
+          </tr>
+          {% if not action_sections.new_available_actions and  action_sections.old_hp_available_actions %}
+          <tr>
+            <td class="action-summary" align="center" style="">
+              <div width="100%">
+                <h2>Unassigned Actions</h2>
+              </div>
+              <div style="display:inline-block; width: 32%;">
+                <div class="sum-pill">
+                  <p class="sum-number" style=" margin: 0;">{{ volunteer.available_actions.count }}</p>
+                  <p style="margin: 0;">Available</p>
+                </div>
+              </div>
+              <div style="display:inline-block; width: 32%;">
+                <div class="sum-pill">
+                  <p class="sum-number" style=" margin: 0;">{{ action_sections.new_available_actions.count }}</p>
+                  <p style="margin: 0;">New Today</p>
+                </div>
+              </div>
+              <div style="display:inline-block; width: 32%;">
+                <div class="sum-pill">
+                  <p class="sum-number" style=" margin: 0;">{{ action_sections.hp_available_actions.count }}
+                  </p>
+                  <p style="margin: 0;">High Priority</p>
+                </div>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td style="font-size: 0;">
+              {% if action_sections.new_available_actions %}
+              <div class="action-column {% if not action_sections.old_hp_available_actions %} is-wide {% endif %}" style="font-size: 1rem;">
+                <h3 class="list-heading" style="background-color: #037171;">New Today</h3>
+                <table border="0" cellpadding="0" cellspacing="0" class="action-table" id="newActions">
+                  {% for action in action_sections.new_available_actions|slice:"3" %}
+                    {% include 'notifications/_action_list_item_email.html' with action=action volunteer=volunteer %}
+                  {% endfor %}
+                  <tr>
+                    <td>
+                      <div>
+                        {% if action_sections.new_available_actions.count|add:"-3" > 0 %}
+                          Plus {{action_sections.new_available_actions.count|add:"-3"}} more action{% if action_sections.new_available_actions.count|add:"-3" > 1 %}s{% endif %}
+                        {% endif %}
+                      </div>
+                    </td>
+                  </tr>
+                </table>
+              </div>
+              {% endif %}
+              {% if action_sections.old_hp_available_actions %}
+              <div class="action-column {% if not action_sections.new_available_actions %} is-wide {% endif %}" style="font-size: 1rem;">
+                <h3 class="list-heading">High Priority</h3>
+                <table border="0" cellpadding="0" cellspacing="0" class="action-table" id="newActions">
+                  {% for action in action_sections.old_hp_available_actions|slice:"4" %}
+                    {% include 'notifications/_action_list_item_email.html' with action=action volunteer=volunteer %}
+                  {% endfor %}
+                  <tr>
+                    <td>
+                      <div>
+                        {% if action_sections.new_available_actions.count|add:"-4" > 0 %}
+                          Plus {{action_sections.new_available_actions.count|add:"-4"}} more action{% if action_sections.new_available_actions.count|add:"-4" > 1 %}s{% endif %}
+                        {% endif %}
+                      </div>
+                    </td>
+                  </tr>
+                </table>
+              </div>
+              {% endif %}
+            </td>
+          </tr>
+          {% endif %}
+          <tr>
+            <td class="action-summary" align="center" style="">
+              <div width="100%">
+                <h2>Your Actions</h2>
+              </div>
+              <div style="display:inline-block; width: 32%;">
+                <div class="sum-pill">
+                  <p class="sum-number" style=" margin: 0;">{{volunteer.upcoming_actions.count}}</p>
+                  <p style="margin: 0;">Upcoming</p>
+                </div>
+              </div>
+              <div style="display:inline-block; width: 32%;">
+                <div class="sum-pill">
+                  <p class="sum-number" style=" margin: 0;">{{volunteer.ongoing_actions.count}}</p>
+                  <p style="margin: 0;">Ongoing</p>
+                </div>
+              </div>
+              <div style="display:inline-block; width: 32%;">
+                <div class="sum-pill">
+                  <p class="sum-number" style=" margin: 0;">{{volunteer.completed_actions.count}}</p>
+                  <p style="margin: 0;">Completed</p>
+                </div>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td id="yourActions" style="font-size: 0;">
+              <div class="action-column" style="font-size: 1rem;">
+                <h3 class="list-heading">Today <br><span class="day">{{today|date:"l"}}</span></h3>
+                <table border="0" cellpadding="0" cellspacing="0" class="action-table" id="actionsToday">
+                  {% for action in action_sections.upcoming_actions_today %}
+                    {% include 'notifications/_your_action_list_item_email.html' with action=action volunteer=volunteer %}
+                  {% endfor %}
+                  {% if not action_sections.upcoming_actions_tomorrow %}
+                  <tr>
+                    <td>
+                      <a href="#">
+                        <div class="action">
+                          <p class="action-desc">
+                            Looks like you don't have any actions coming up today. Click to see whats available?
+                          </p>
+                        </div>
+                      </a>
+                    </td>
+                  </tr>
+                  {% endif %}
+                </table>
+              </div>
+              <div class="action-column" style="font-size: 1rem;">
+                <h3 class="list-heading" style="background-color: #037171;">Tomorrow <br><span class="day">{{tomorrow|date:"l"}}</span></h3>
+                <table border="0" cellpadding="0" cellspacing="0" class="action-table" id="actionsTomorrow">
+                  {% for action in action_sections.upcoming_actions_tomorrow %}
+                    {% include 'notifications/_your_action_list_item_email.html' with action=action volunteer=volunteer %}
+                  {% endfor %}
+                  {% if not action_sections.upcoming_actions_tomorrow %}
+                  <tr>
+                    <td>
+                      <a href="#" title="">
+                        <div class="action">
+                          <p class="action-desc">
+                            Looks like you don't have any actions coming up tomorrow. Click to see whats available?
+                          </p>
+                        </div>
+                      </a>
+                    </td>
+                  </tr>
+                  {% endif %}
+                </table>
+              </div>
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+
+
+{% endblock %}

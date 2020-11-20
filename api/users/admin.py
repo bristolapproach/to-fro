@@ -20,6 +20,9 @@ class UserProfileForm(forms.ModelForm):
         Makes sure the email is lowercased so that emails with different
         cases don't end up creating duplicate accounts
         """
+        if not self.cleaned_data['email']:
+            return self.cleaned_data['email']
+
         return self.cleaned_data['email'].lower()
 
     def clean(self):

@@ -15,11 +15,14 @@
     {% endblock %}
     To/Fro</title>
   <link rel="stylesheet" href="{% static 'styles.css' %}">
+
+  {% block extra_head %}
+  {% endblock %}
 </head>
 
 <body {%if show_kites %}class="with-kites"{%endif%}>
   <header class="navbar navbar-expand-lg navbar-dark bg-dark">
-    <a class="navbar-brand" href="/">{% embed_svg 'assets/src/svg/TO_FRO_logo-04-knockout.svg' width=70 height=32 role='img' %}</a>
+    <a class="navbar-brand" href="/">{% embed_svg 'static-src/img/svg/TO_FRO_logo-04-knockout.svg' width=70 height=32 role='img' %}</a>
     <nav class="collapse navbar-collapse" aria-labelledBy="leftNavHeading">
       <h2 id="leftNavHeading" hidden>Main navigation</h2>
       {% sitetree_menu from "main_navigation" include "trunk" template "sitetree/menu_bootstrap4.html" %}
@@ -34,10 +37,16 @@
         </li>
         {% endif %}
         <li class="nav-item">
-          <a class="nav-link" href="{% url 'password_change' %}">Change password</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="{% url 'logout' %}">Log out</a>
+          <div class="dropdown dropleft">
+            <a class="btn btn-secondary dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                {% embed_fontawesome 'user' class_attribute="fa-lg" %}
+            </a>
+            <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+              <a class="dropdown-item" href="{% url 'user-settings' %}">Account settings</a>
+              <div class="dropdown-divider"></div>
+              <a class="dropdown-item" href="{% url 'logout' %}">Log out</a>
+            </div>
+          </div>
         </li>
       </ul>
     </nav>

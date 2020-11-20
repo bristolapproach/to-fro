@@ -9,7 +9,8 @@ done
 
 # Build the front-end assets
 npm install
-npm run build
+npm install -g parcel-bundler
+# npm run build  # todo: removed
 
 # Set up the data migrations.
 python3 manage.py makemigrations
@@ -25,7 +26,7 @@ python manage.py create_navigation_menus
 python manage.py set_site_domain
 
 # Collect static files.
-python manage.py collectstatic --noinput --clear
+./build_scripts/build-frontend-assets.sh
 
 # Compile messages
 python manage.py compilemessages

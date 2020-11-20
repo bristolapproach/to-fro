@@ -136,9 +136,21 @@ node_modules/
 # Django static files
 static/
 staticfiles/
+static-built/
+parcel-built/
 
 # Private email settings.
 .email.env
 
 # Ansible
 vault_password
+
+
+# Ross' development machine
+api/server.crt
+api/server.key
+deployment/ansible-env/
+deployment/vault_password_dev
+docker_compose_run.sh
+.env
+.idea/

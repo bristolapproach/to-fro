@@ -1,9 +1,12 @@
 
 from django.conf import settings
-from django.contrib.auth import views
-from django.urls import reverse, reverse_lazy
-from django.shortcuts import resolve_url
 from django.contrib import messages
+from django.contrib.auth import views
+from django.contrib.auth.decorators import user_passes_test
+from django.urls import reverse, reverse_lazy
+from django.http import HttpResponse
+from django.shortcuts import resolve_url
+from whitenoise.middleware import WhiteNoiseMiddleware
 
 from actions.views import ActionsListView
 from .lib import has_permission
@@ -103,3 +106,22 @@ def homepage(request):
         return ActionsListView.as_view(list_type='mine')(request)
     else:
         return LoginView.as_view()(request)
+
+
+def _is_logged_in_admin(user):
+    return user.is_superuser and user.is_authenticated
+
+
+@user_passes_test(_is_logged_in_admin)
+def resolve_static_path_view(request, path):
+    """
+    Resolves a static url path to a concrete filepath.
+    For debugging purposes only.
+    """
+    path = path.rstrip('/')
+    middleware = WhiteNoiseMiddleware()
+    result = middleware.find_file('/static/' + path)
+    if result is None:
+        return HttpResponse('File not found')
+    filepath = result.alternatives[0][1]
+    return HttpResponse(filepath)

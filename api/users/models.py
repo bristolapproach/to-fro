@@ -192,6 +192,9 @@ class Volunteer(UserProfileMixin, Person):
     available_sun_evening = models.BooleanField(
         default=False, verbose_name="Sunday evening")
 
+    daily_digest_optin = models.BooleanField(default=False)
+    weekly_digest_optin = models.BooleanField(default=False)
+
     @property
     def available_actions(self):
         """The QuerySet for actions available to this volunteer."""

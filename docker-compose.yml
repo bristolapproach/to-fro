@@ -47,6 +47,7 @@ services:
     container_name: tofro-redis-worker
     restart: unless-stopped
     environment:
+      - RUN_ENV=${RUN_ENV}
       - DEBUG=${DEBUG}
       - POSTGRES_DB=${POSTGRES_DB}
       - POSTGRES_USER=${POSTGRES_USER}
@@ -74,6 +75,7 @@ services:
     container_name: tofro-redis-scheduler
     restart: unless-stopped
     environment:
+      - RUN_ENV=${RUN_ENV}
       - DEBUG=${DEBUG}
       - POSTGRES_DB=${POSTGRES_DB}
       - POSTGRES_USER=${POSTGRES_USER}
@@ -110,6 +112,8 @@ services:
       - ADMIN_SITE_TITLE=${ADMIN_SITE_TITLE}
       - SITE_URL=${SITE_URL}
 
+      - INSIDE_CONTAINER="true"
+      - RUN_ENV=${RUN_ENV}
       - DEBUG=${DEBUG}
 
       - EMAIL_HOST=${EMAIL_HOST}
