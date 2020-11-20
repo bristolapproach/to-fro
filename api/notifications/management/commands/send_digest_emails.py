@@ -28,22 +28,34 @@ class Command(BaseCommand):
         parser.add_argument(
             'daily_or_weekly', type=str, help='Choose daily or weekly digest'
         )
+        parser.add_argument("--volunteer-pk", type=int)
 
     def handle(self, *args, **options):
 
         daily_or_weekly = options['daily_or_weekly'].strip().lower()
+        volunteer_pk = options['volunteer_pk']
+
         assert daily_or_weekly in ('daily', 'weekly')
 
-        if daily_or_weekly == 'daily':
-            self.send_daily_emails()
+        if volunteer_pk is None:
+            volunteers = Volunteer.objects.all()
         else:
-            self.send_weekly_emails()
+            obj = Volunteer.objects.filter(pk=volunteer_pk).first()
+            if obj is None:
+                print(f"Volunteer {volunteer_pk} not found.")
+                exit()
+            volunteers = [obj]
 
-    def send_daily_emails(self):
+        if daily_or_weekly == 'daily':
+            self.send_daily_emails(volunteers)
+        else:
+            self.send_weekly_emails(volunteers)
+
+    def send_daily_emails(self, volunteers):
         today = datetime.date.today()
         tomorrow = today + datetime.timedelta(days=1)
 
-        for volunteer in Volunteer.objects.all():
+        for volunteer in volunteers:
             if not volunteer.email:
                 logger.error(f"Volunteer {volunteer.pk} has no email address")
                 continue
@@ -64,11 +76,11 @@ class Command(BaseCommand):
                 'Your daily digest', 'notifications/action_digest_email.html'
             )
 
-    def send_weekly_emails(self):
+    def send_weekly_emails(self, volunteers):
         today = datetime.date.today()
         tomorrow = today + datetime.timedelta(days=1)
 
-        for volunteer in Volunteer.objects.all():
+        for volunteer in volunteers:
             if not volunteer.email:
                 logger.error(f"Volunteer {volunteer.pk} has no email address")
                 continue
@@ -103,6 +115,6 @@ class Command(BaseCommand):
 
         html_body = render_to_string(template_file, context)
 
-        send_email(
-            subject_title, html_body, [volunteer.email]
-        )
+        print(f"sending email to Volunteer {volunteer.pk}: {volunteer.email}")
+
+        send_email(subject_title, html_body, [volunteer.email])
