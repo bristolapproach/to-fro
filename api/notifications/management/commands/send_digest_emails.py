@@ -1,7 +1,6 @@
+from collections import namedtuple
 import datetime
-import os
 
-from attrdict import AttrDict
 from django.core.management.base import BaseCommand
 from django.template.loader import render_to_string
 
@@ -13,6 +12,7 @@ from users.models import Volunteer
 import logging
 logger = logging.getLogger(__name__)
 
+FakeRequest = namedtuple('FakeRequest', ['scheme', 'META'])
 
 # skip when "no new available today & no available high priority & no upcoming today"
 # new_available_actions.count() == 0  (both)
@@ -110,11 +110,9 @@ class Command(BaseCommand):
             'today': today,
             'tomorrow': tomorrow,
             'title': 'Volunteer Daily Digest',
-            # fake request
-            'request': AttrDict({
-                'scheme': 'https',
-                'META': {'HTTP_HOST': 'dev.tofro.hostedby.bristolisopen.com'}
-            })
+            'request': FakeRequest(
+                'https', {'HTTP_HOST': 'dev.tofro.hostedby.bristolisopen.com'}
+            )
         }
 
         html_body = render_to_string(template_file, context)
