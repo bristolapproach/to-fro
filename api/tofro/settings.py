@@ -230,7 +230,8 @@ LOCALE_PATHS = (
 STATIC_ROOT = os.path.join(BASE_DIR, 'static-built')
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [
-    join_path(BASE_DIR, 'static-src')
+    join_path(BASE_DIR, 'static-src'),
+    join_path(BASE_DIR, 'parcel-built')
 ]
 
 if not DEBUG:
