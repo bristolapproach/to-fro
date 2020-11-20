@@ -99,7 +99,7 @@ class Command(BaseCommand):
             'request': None
         }
         # todo: hard code as prod url
-        os.environ['DJANGO_BASE_URL'] = 'http://localhost:8000'
+        os.environ['DJANGO_BASE_URL'] = 'dev.tofro.hostedby.bristolisopen.com'
 
         html_body = render_to_string(template_file, context)
 
