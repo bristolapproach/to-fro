@@ -137,6 +137,7 @@ node_modules/
 static/
 staticfiles/
 static-built/
+parcel-built/
 
 # Private email settings.
 .email.env
