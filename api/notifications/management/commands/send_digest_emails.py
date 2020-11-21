@@ -124,8 +124,8 @@ class Command(BaseCommand):
         # end_mail(subject, message, from_email, recipient_list, fail_silently=False, auth_user=None, auth_password=None, connection=None, html_message=None)
 
         images = [
-            ('/code/api/static-built/svg/TO_FRO_kites_01-04.svg', 'svg+xml', 'tofro-kites'),
-            ('/code/api/static-built/img/svg/TO_FRO_logo-04-knockout.svg', 'svg+xml', 'tofro-logo-knockout')
+            ('/code/static-built/svg/TO_FRO_kites_01-04.svg', 'svg+xml', 'tofro-kites'),
+            ('/code/static-built/img/svg/TO_FRO_logo-04-knockout.svg', 'svg+xml', 'tofro-logo-knockout')
         ]
         attachments = []
         for filepath, subtype, content_id in images:
