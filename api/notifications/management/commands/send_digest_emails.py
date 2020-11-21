@@ -138,7 +138,7 @@ class Command(BaseCommand):
 
         print(f"sending email to Volunteer {volunteer.pk}: {volunteer.email}")
 
-        images = [ # svg+xml
+        images = [  # svg+xml
             ('/code/static-built/img/tofro-kites.png', 'png', 'tofro-kites'),
             ('/code/static-built/img/tofro-logo-knockout.png', 'png', 'tofro-logo-knockout')
         ]
@@ -147,6 +147,8 @@ class Command(BaseCommand):
             with open(filepath, 'rb') as f:
                 msgImage = MIMEImage(f.read(), _subtype=subtype)
                 msgImage.add_header('Content-ID', content_id)
+                msgImage.add_header('X-Attachment-Id', content_id)
+                msgImage.add_header("Content-Disposition", "inline")  # filename="myimage")
                 attachments.append(msgImage)
 
         email_msg = EmailMessage(
