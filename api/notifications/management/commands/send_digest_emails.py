@@ -152,15 +152,19 @@ class Command(BaseCommand):
         print(f"cid: {cid}")
         # html_body = '... <img alt="Picture" src="cid:%s"> ...' % cid
         html_body = """
-        <html><body><img alt="logo" src="cid:%s"></body></html>
+        <html>
+          <body>
+            <h3>before</h3>
+            <p>
+                <img alt="logo" src="cid:%s">
+            </p>
+            <h3>after</h3>
+          </body>
+        </html>
         """ % cid
         message.attach_alternative(html_body, 'text/html')
 
         message.send()
-
-
-
-
 
 
         return
