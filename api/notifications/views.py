@@ -107,8 +107,8 @@ def daily_digest_volunteer_email_preview(request, volunteer_pk):
 
     import base64
     images = [
-        ('tofro_kites', '/code/static-built/svg/TO_FRO_kites_01-04.svg'),
-        ('tofro_logo_knockout', '/code/static-built/img/svg/TO_FRO_logo-04-knockout.svg')
+        ('tofro_kites', '/code/static-built/img/tofro-kites.png'),
+        ('tofro_logo_knockout', '/code/static-built/img/svg/TO_FRO_logo-04-knockout.png')
     ]
     images_encoded = {}
     for slug, filepath in images:
