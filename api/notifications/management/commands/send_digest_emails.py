@@ -138,6 +138,33 @@ class Command(BaseCommand):
 
         print(f"sending email to Volunteer {volunteer.pk}: {volunteer.email}")
 
+
+
+        from django.core.mail import EmailMultiAlternatives
+        from anymail.message import attach_inline_image_file
+
+        message = EmailMultiAlternatives(
+            subject_title, 'text alternative',
+            'dev_notifications@kwmc.org.uk', [volunteer.email]
+        )
+        logo_path = '/code/static-built/img/svg/TO_FRO_logo-04-knockout.png'
+        cid = attach_inline_image_file(message, logo_path)
+        print(f"cid: {cid}")
+        # html_body = '... <img alt="Picture" src="cid:%s"> ...' % cid
+        html_body = """
+        <html><body><img alt="logo" src="cid:%s"></body></html>
+        """ % cid
+        message.attach_alternative(html_body, 'text/html')
+
+        message.send()
+
+
+
+
+
+
+        return
+
         images = [  # svg+xml
             ('/code/static-built/img/tofro-kites.png', 'png', 'tofro-kites'),
             ('/code/static-built/img/tofro-logo-knockout.png', 'png', 'tofro-logo-knockout')
@@ -148,7 +175,7 @@ class Command(BaseCommand):
                 msgImage = MIMEImage(f.read(), _subtype=subtype)
                 msgImage.add_header('Content-ID', content_id)
                 msgImage.add_header('X-Attachment-Id', content_id)
-                msgImage.add_header("Content-Disposition", "inline")  # filename="myimage")
+                msgImage.add_header("Content-Disposition", "inline", filename=content_id)
                 attachments.append(msgImage)
 
         email_msg = EmailMessage(
