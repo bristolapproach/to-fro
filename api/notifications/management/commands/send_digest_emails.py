@@ -114,11 +114,13 @@ class Command(BaseCommand):
             'title': 'Volunteer Daily Digest',
             'request': FakeRequest(
                 'https', {'HTTP_HOST': 'dev.tofro.hostedby.bristolisopen.com'}
-            )
+            ),
+            'is_email': True
         }
 
         # end_mail(subject, message, from_email, recipient_list, fail_silently=False, auth_user=None, auth_password=None, connection=None, html_message=None)
 
+        '''
         import base64
         images = [
             ('tofro_kites', '/code/static-built/img/tofro-kites.png'),
@@ -130,14 +132,15 @@ class Command(BaseCommand):
                 images_encoded[slug] = base64.b64encode(f.read()).decode()
         context.update(images_encoded)
 
+
+        '''
         html_body = render_to_string(template_file, context)
 
         print(f"sending email to Volunteer {volunteer.pk}: {volunteer.email}")
 
-        '''
-        images = [
-            ('/code/static-built/svg/TO_FRO_kites_01-04.svg', 'svg+xml', 'tofro-kites'),
-            ('/code/static-built/img/svg/TO_FRO_logo-04-knockout.svg', 'svg+xml', 'tofro-logo-knockout')
+        images = [ # svg+xml
+            ('/code/static-built/img/tofro-kites.png', 'png', 'tofro-kites'),
+            ('/code/static-built/img/tofro-logo-knockout.png', 'png', 'tofro-logo-knockout')
         ]
         attachments = []
         for filepath, subtype, content_id in images:
@@ -145,11 +148,10 @@ class Command(BaseCommand):
                 msgImage = MIMEImage(f.read(), _subtype=subtype)
                 msgImage.add_header('Content-ID', content_id)
                 attachments.append(msgImage)
-        '''
 
         email_msg = EmailMessage(
             subject_title, html_body,
-            bcc=[volunteer.email],
+            bcc=[volunteer.email], attachments=attachments
         )
         email_msg.content_subtype = "html"
         email_msg.send()
