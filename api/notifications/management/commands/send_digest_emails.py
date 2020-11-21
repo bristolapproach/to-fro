@@ -132,25 +132,6 @@ class Command(BaseCommand):
                 images_encoded[slug] = base64.b64encode(f.read()).decode()
         context.update(images_encoded)
 
-
-        '''
-        html_body = render_to_string(template_file, context)
-
-        print(f"sending email to Volunteer {volunteer.pk}: {volunteer.email}")
-
-
-
-        from django.core.mail import EmailMultiAlternatives
-        from anymail.message import attach_inline_image_file
-
-        message = EmailMultiAlternatives(
-            subject_title, 'text alternative',
-            'dev_notifications@kwmc.org.uk', [volunteer.email]
-        )
-        logo_path = '/code/static-built/img/svg/TO_FRO_logo-04-knockout.png'
-        cid = attach_inline_image_file(message, logo_path)
-        print(f"cid: {cid}")
-        # html_body = '... <img alt="Picture" src="cid:%s"> ...' % cid
         html_body = """
         <html>
           <body>
@@ -162,6 +143,28 @@ class Command(BaseCommand):
           </body>
         </html>
         """ % cid
+
+        '''
+
+        print(f"sending email to Volunteer {volunteer.pk}: {volunteer.email}")
+
+
+        from django.core.mail import EmailMultiAlternatives
+        from anymail.message import attach_inline_image_file
+
+        message = EmailMultiAlternatives(
+            subject_title, 'text alternative',
+            'dev_notifications@kwmc.org.uk', [volunteer.email]
+        )
+        logo_path = '/code/static-built/img/tofro-logo-knockout.png'
+        logo_cid = attach_inline_image_file(message, logo_path)
+        context['logo_cid'] = logo_cid
+
+        kites_path = '/code/static-built/img/tofro-kites.png'
+        kites_cid = attach_inline_image_file(message, kites_path)
+        context['kites_cid'] = kites_cid
+
+        html_body = render_to_string(template_file, context)
         message.attach_alternative(html_body, 'text/html')
 
         message.send()

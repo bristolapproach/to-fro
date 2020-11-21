@@ -16,7 +16,7 @@
             <td style="padding:10px 20px;">
               <div>
                 {% if is_email %}
-                <a href="{{ site_url }}" title="Site Home"><img src="cid:tofro-logo-knockout" alt="to/fro logo"  style="background-color: #fff; border-radius: 10px;" width="150px"></a>
+                <a href="{{ site_url }}" title="Site Home"><img src="cid:{{ logo_cid }}" alt="to/fro logo"  style="background-color: #fff; border-radius: 10px;" width="150px"></a>
                 {% else %}
                 <!-- {#% static 'img/tofro-logo-knockout.png' %#} -->
                 <a href="{{ site_url }}" title="Site Home"><img src="data:image/png;base64,{{ tofro_logo_knockout | escape }}" alt="to/fro logo"  style="background-color: #fff; border-radius: 10px;" width="150px"></a>
