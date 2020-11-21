@@ -123,6 +123,18 @@ class Command(BaseCommand):
 
         # end_mail(subject, message, from_email, recipient_list, fail_silently=False, auth_user=None, auth_password=None, connection=None, html_message=None)
 
+        import base64
+        images = [
+            ('tofro_kites', '/code/static-built/svg/TO_FRO_kites_01-04.svg'),
+            ('tofro_logo_knockout', '/code/static-built/img/svg/TO_FRO_logo-04-knockout.svg')
+        ]
+        images_encoded = {}
+        for slug, filepath in images:
+            with open(filepath, 'rb') as f:
+                images_encoded[slug] = base64.b64encode(f.read())
+        context.update(images_encoded)
+        
+        '''
         images = [
             ('/code/static-built/svg/TO_FRO_kites_01-04.svg', 'svg+xml', 'tofro-kites'),
             ('/code/static-built/img/svg/TO_FRO_logo-04-knockout.svg', 'svg+xml', 'tofro-logo-knockout')
@@ -133,10 +145,11 @@ class Command(BaseCommand):
                 msgImage = MIMEImage(f.read(), _subtype=subtype)
                 msgImage.add_header('Content-ID', content_id)
                 attachments.append(msgImage)
+        '''
 
         email_msg = EmailMessage(
             subject_title, html_body,
-            bcc=[volunteer.email], attachments=attachments
+            bcc=[volunteer.email],
         )
         email_msg.content_subtype = "html"
         email_msg.send()
