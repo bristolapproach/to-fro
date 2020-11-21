@@ -117,10 +117,6 @@ class Command(BaseCommand):
             )
         }
 
-        html_body = render_to_string(template_file, context)
-
-        print(f"sending email to Volunteer {volunteer.pk}: {volunteer.email}")
-
         # end_mail(subject, message, from_email, recipient_list, fail_silently=False, auth_user=None, auth_password=None, connection=None, html_message=None)
 
         import base64
@@ -131,9 +127,13 @@ class Command(BaseCommand):
         images_encoded = {}
         for slug, filepath in images:
             with open(filepath, 'rb') as f:
-                images_encoded[slug] = base64.b64encode(f.read())
+                images_encoded[slug] = base64.b64encode(f.read()).decode()
         context.update(images_encoded)
-        
+
+        html_body = render_to_string(template_file, context)
+
+        print(f"sending email to Volunteer {volunteer.pk}: {volunteer.email}")
+
         '''
         images = [
             ('/code/static-built/svg/TO_FRO_kites_01-04.svg', 'svg+xml', 'tofro-kites'),
