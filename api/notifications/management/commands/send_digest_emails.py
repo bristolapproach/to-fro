@@ -1,6 +1,8 @@
 from collections import namedtuple
 import datetime
+from email.mime.image import MIMEImage
 
+from django.core.mail import EmailMessage
 from django.core.management.base import BaseCommand
 from django.template.loader import render_to_string
 
@@ -119,6 +121,26 @@ class Command(BaseCommand):
 
         print(f"sending email to Volunteer {volunteer.pk}: {volunteer.email}")
 
-        send_email(
-            subject_title, None, [volunteer.email], html_message=html_body
+        # end_mail(subject, message, from_email, recipient_list, fail_silently=False, auth_user=None, auth_password=None, connection=None, html_message=None)
+
+        images = [
+            ('/code/api/static-built/svg/TO_FRO_kites_01-04.svg', 'svg+xml', 'tofro-kites'),
+            ('/code/api/static-built/img/svg/TO_FRO_logo-04-knockout.svg', 'svg+xml', 'tofro-logo-knockout')
+        ]
+        attachments = []
+        for filepath, subtype, content_id in images:
+            with open(filepath, 'rb') as f:
+                msgImage = MIMEImage(f.read(), _subtype=subtype)
+                msgImage.add_header('Content-ID', content_id)
+                attachments.append(msgImage)
+
+        email_msg = EmailMessage(
+            subject_title, html_body,
+            bcc=[volunteer.email], attachments=attachments
         )
+        email_msg.content_subtype = "html"
+        email_msg.send()
+
+        #send_email(
+        #    subject_title, None, [volunteer.email], html_message=html_body
+        #)
