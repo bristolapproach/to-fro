@@ -8,13 +8,13 @@ croniter==0.3.31
 Django==3.0.7
 django-admin-autocomplete-filter==0.5
 django-admin-list-filter-dropdown==1.0.3
-django-anymail==8.1
 django-apptemplates==1.5
 django-celery-results==1.2.1
 django-crispy-forms==1.9.1
 django-debug-toolbar==2.2
 django-decorator-include==2.1
 django-invitations==1.9.3
+django-inlinecss==0.3.0
 django-model-utils==4.0.0
 django-rq==2.3.2
 django-sitetree==1.14.0

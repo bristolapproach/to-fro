@@ -147,6 +147,14 @@ class Command(BaseCommand):
         '''
 
         print(f"sending email to Volunteer {volunteer.pk}: {volunteer.email}")
+        html_body = render_to_string(template_file, context)
+        email_msg = EmailMessage(
+            subject_title, html_body,
+            bcc=[volunteer.email],
+        )
+        email_msg.content_subtype = "html"
+        email_msg.send()
+        return
 
 
         from django.core.mail import EmailMultiAlternatives

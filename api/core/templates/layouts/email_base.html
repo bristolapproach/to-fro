@@ -3,6 +3,9 @@
 {% load svg %}
 {% load sitetree %}
 {% load links %}
+
+{% load inlinecss %}
+
 <!doctype html>
 <html lang="en">
 
@@ -10,166 +13,10 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>{{site_name}} - {{title}}</title>
-  <style type="text/css" media="screen">
-      #wrapper {
-        color: #1c1c1c;
-      }
-      .action-column{
-        width: 50%;
-        display: inline-block;
-        font-size: 1rem;
-      }
-      .action-column.is-wide {
-        display: block;
-        width: 100%;
-      }
-      .list-heading {
-        text-align: center;
-        background-color: #009F93;
-        padding:10px 0px;
-        margin: 0;
-        color: white;
-      }
-      .list-heading .day{
-        font-weight: normal;
-      }
-      .action-table {
-        width: 100%;
-      }
-      .action-table tr{
-      }
-      .action-table td {
-        padding: 5px 5px;
-      }
-      .action-table a {
-        text-decoration: none;
-        color: inherit;
-      }
-      .action-table a:visited {
-        color: inherit;
-      }
-      a {
-        color: #7765E3;
-      }
-      a:visited {
-        color: #555;
-      }
-      button {
-        padding: 5px 10px;
-        border-radius: 5px;
-        font-size: 0.8em;
-      }
-      .action {
-        border: 3px solid;
-        padding: 10px;
-        position:relative;
-        border-color: #7765E3;
-      }
-      .action-title {
-        color: #7765E3;
-        margin-top: 3px;
-        margin-bottom: 3px;
-      }
-      a:visited .action-title {
-        color: #555;
-      }
-      a:visited .action {
-        border-color: #555;
-      }
-      .action-location {
-        font-weight: normal;
-      }
-      .action-date {
-        font-size: 0.8em;
-        font-weight: bold;
-      }
-      .action-time {
-        float: right;
-      }
-      .more-detail{
-        float: right;
-        font-size: 0.6em;
-        margin-top: 3px;
-      }
-      .action-summary{
-        background-color: #7765E3;
-        padding: 0 0 10px 0;
-      }
-      .action-summary h2 {
-        font-size: 1.6em;
-        margin: 10px 0;
-        color: white;
-      }
-      .sum-pill {
-        background-color: white;
-        color: ;
-        border-radius: 30px;
-        width: 70%;
-        min-width: 110px;
-        padding: 3px 0;
-        font-size: 0.8rem;
-      }
-      .sum-number {
-        font-size: 1.6rem;
-        color: #7765E3;
-        font-weight: bold;
-      }
-      /*Dark mode colors*/
-      @media (prefers-color-scheme: dark) {
-        #wrapper { 
-          background-color: #666 !important;
-          color: white; 
-        }
-        #mainHeader{
-          background-color: #222 !important;
-          color: white;
-        }
-        #mainBody{
-          background-color: #222 !important;
-          color: white;
-        }
-        #footer {
-          background-color: #666 !important;
-          color: white;
-        }
-        .list-heading{
-          color: #1c1c1c;
-        }
-        .action-summary{
-          background-color: #08415C;
-        }
-        .action{
-          color: white;
-          border-color: #d4edf9; 
-        }
-        .action-title {
-          color: #d4edf9;
-        }
-        a {
-          color: #d4edf9;
-        }
-        a:visited .action-title {
-          color: #ccc;
-        }
-        .sum-pill {
-          background-color: #037171;
-        }
-        .sum-number {
-          color: inherit;
-        }
-        .kites-div {
-          background-color: #d4edf9;
-          background-image: url('https://dev.tofro.hostedby.bristolisopen.com/static/img/tofro-kites.png');
-          background-repeat: none;
-          background-size: cover;
-          padding: 0px 5px;
-        }
-      }
-    </style>
 </head>
-
+{% inlinecss "email-base.css" %}
 <body style="margin: 0; padding: 0;">
-  <div id="wrapper" class="kites-div" width="100%">
+  <div id="wrapper" width="100%" style="background-color: #d4edf9; background-image: url('https://dev.tofro.hostedby.bristolisopen.com/static/img/tofro-kites.png'); background-repeat: none; background-size: cover; padding: 0px 5px;">
     {% block 'content'%}{% endblock %}
     <table id="footer" role="presentation" cellpadding="0" cellspacing="0" style="max-width: 590px; background-color:#d4edf9;" border="0" align="center">
       <tr>
@@ -181,5 +28,5 @@
     </table>
   </div>
 </body>
-
+{% endinlinecss %}
 </html>
