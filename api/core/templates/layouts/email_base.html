@@ -159,7 +159,7 @@
         }
         .kites-div {
           background-color: #d4edf9;
-          background-image: url('cid:{{ kites_cid }}');
+          background-image: url('https://dev.tofro.hostedby.bristolisopen.com/static/img/tofro-kites.png');
           background-repeat: none;
           background-size: cover;
           padding: 0px 5px;
@@ -169,11 +169,7 @@
 </head>
 
 <body style="margin: 0; padding: 0;">
-  {% if is_email %}
   <div id="wrapper" class="kites-div" width="100%">
-  {% else %}
-  <div id="wrapper" width="100%" style="background-color:#d4edf9; background-image: url('data:image/png;base64,{{ tofro_kites }}'); background-repeat: none; background-size: cover; padding: 0px 5px;">
-  {% endif %}
     {% block 'content'%}{% endblock %}
     <table id="footer" role="presentation" cellpadding="0" cellspacing="0" style="max-width: 590px; background-color:#d4edf9;" border="0" align="center">
       <tr>
