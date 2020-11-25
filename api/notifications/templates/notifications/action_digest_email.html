@@ -7,7 +7,7 @@
 
 {% block 'content' %}
 
-<table role="presentation" border="0" cellpadding="0" cellspacing="0"  align="center" style="max-width:590px; font-family:'Arial', sans-serif; padding: 20px 0 0px 0;">
+<table id="content" role="presentation" border="0" cellpadding="0" cellspacing="0"  align="center" style="">
   <tbody>
     <tr>
       <td>
@@ -33,29 +33,31 @@
               </p>
             </td>
           </tr>
-          {% if not action_sections.new_available_actions and  action_sections.old_hp_available_actions %}
+          {% if action_sections.new_available_actions or  action_sections.old_hp_available_actions %}
           <tr>
             <td class="action-summary" align="center" style="">
               <div width="100%">
                 <h2>Unassigned Actions</h2>
               </div>
-              <div style="display:inline-block; width: 32%;">
-                <div class="sum-pill">
-                  <p class="sum-number" style=" margin: 0;">{{ volunteer.available_actions.count }}</p>
-                  <p style="margin: 0;">Available</p>
+              <div class="pills">
+                <div style="">
+                  <div class="sum-pill">
+                    <p class="sum-number" style=" margin: 0;">{{ volunteer.available_actions.count }}</p>
+                    <p style="margin: 0;">Available</p>
+                  </div>
                 </div>
-              </div>
-              <div style="display:inline-block; width: 32%;">
-                <div class="sum-pill">
-                  <p class="sum-number" style=" margin: 0;">{{ action_sections.new_available_actions.count }}</p>
-                  <p style="margin: 0;">New Today</p>
+                <div style="">
+                  <div class="sum-pill">
+                    <p class="sum-number" style=" margin: 0;">{{ action_sections.new_available_actions.count }}</p>
+                    <p style="margin: 0;">New Today</p>
+                  </div>
                 </div>
-              </div>
-              <div style="display:inline-block; width: 32%;">
-                <div class="sum-pill">
-                  <p class="sum-number" style=" margin: 0;">{{ action_sections.hp_available_actions.count }}
-                  </p>
-                  <p style="margin: 0;">High Priority</p>
+                <div style="">
+                  <div class="sum-pill">
+                    <p class="sum-number" style=" margin: 0;">{{ action_sections.hp_available_actions.count }}
+                    </p>
+                    <p style="margin: 0;">High Priority</p>
+                  </div>
                 </div>
               </div>
             </td>
@@ -108,22 +110,24 @@
               <div width="100%">
                 <h2>Your Actions</h2>
               </div>
-              <div style="display:inline-block; width: 32%;">
-                <div class="sum-pill">
-                  <p class="sum-number" style=" margin: 0;">{{volunteer.upcoming_actions.count}}</p>
-                  <p style="margin: 0;">Upcoming</p>
+              <div class="pills">
+                <div style="">
+                  <div class="sum-pill">
+                    <p class="sum-number" style=" margin: 0;">{{volunteer.upcoming_actions.count}}</p>
+                    <p style="margin: 0;">Upcoming</p>
+                  </div>
                 </div>
-              </div>
-              <div style="display:inline-block; width: 32%;">
-                <div class="sum-pill">
-                  <p class="sum-number" style=" margin: 0;">{{volunteer.ongoing_actions.count}}</p>
-                  <p style="margin: 0;">Ongoing</p>
+                <div style="">
+                  <div class="sum-pill">
+                    <p class="sum-number" style=" margin: 0;">{{volunteer.ongoing_actions.count}}</p>
+                    <p style="margin: 0;">Ongoing</p>
+                  </div>
                 </div>
-              </div>
-              <div style="display:inline-block; width: 32%;">
-                <div class="sum-pill">
-                  <p class="sum-number" style=" margin: 0;">{{volunteer.completed_actions.count}}</p>
-                  <p style="margin: 0;">Completed</p>
+                <div style="">
+                  <div class="sum-pill">
+                    <p class="sum-number" style=" margin: 0;">{{volunteer.completed_actions.count}}</p>
+                    <p style="margin: 0;">Completed</p>
+                  </div>
                 </div>
               </div>
             </td>

@@ -1,7 +1,14 @@
 #wrapper {
     color: #1c1c1c;
+    background-color: #d4edf9;
+    background-image: url('https://dev.tofro.hostedby.bristolisopen.com/static/img/tofro-kites.png');
+    background-repeat: none;
+    background-size: cover;
 }
-
+#content {
+    max-width:590px;
+    font-family:'Arial', sans-serif;
+}
 .action-column{
     width: 50%;
     display: inline-block;
@@ -110,14 +117,22 @@ a:visited .action {
     margin: 10px 0;
     color: white;
 }
-
+.pills {
+    font-size: 0;
+}
+.pills > div {
+    width: 33%;
+    display: inline-block;
+}
 .sum-pill {
     background-color: white;
     border-radius: 30px;
     width: 70%;
-    min-width: 110px;
+    min-width: 100px;
     padding: 3px 0;
     font-size: 0.8rem;
+    margin-left: 2px;
+    margin-right: 2px;
 }
 
 .sum-number {
@@ -125,59 +140,66 @@ a:visited .action {
     color: #7765E3;
     font-weight: bold;
 }
-
+@media only screen and (min-width: 375px) {
+    #wrapper {
+        padding: 0px 5px !important;
+    }
+    #content {
+        padding: 20px 0 0px 0 !important;
+    }
+}
 /*Dark mode colors*/
 @media (prefers-color-scheme: dark) {
     #wrapper {
       background-color: #666 !important;
-      color: white;
+      color: white !important;
     }
 
     #mainHeader{
       background-color: #222 !important;
-      color: white;
+      color: white !important;
     }
 
     #mainBody{
       background-color: #222 !important;
-      color: white;
+      color: white !important;
     }
 
     #footer {
       background-color: #666 !important;
-      color: white;
+      color: white !important;
     }
 
     .list-heading{
-      color: #1c1c1c;
+      color: #1c1c1c !important;
     }
 
     .action-summary{
-      background-color: #08415C;
+      background-color: #08415C !important;
     }
 
     .action{
       color: white;
-      border-color: #d4edf9;
+      border-color: #d4edf9 !important;
     }
 
     .action-title {
-      color: #d4edf9;
+      color: #d4edf9 !important;
     }
 
     a {
-      color: #d4edf9;
+      color: #d4edf9 !important;
     }
 
     a:visited .action-title {
-      color: #ccc;
+      color: #ccc !important;
     }
 
     .sum-pill {
-      background-color: #037171;
+      background-color: #037171 !important;
     }
 
     .sum-number {
-      color: inherit;
+      color: inherit !important;
     }
 }
