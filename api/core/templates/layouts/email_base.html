@@ -12,7 +12,29 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>{{site_name}} - {{title}}</title>
+  <title>To-Fro - {{title}}</title>
+  <style type="text/css">
+    a:visited .action-title {
+      color: #555  !important;
+    }
+
+    a:visited .action {
+      border-color: #555 !important;
+    }
+
+    a:visited {
+      color: #555 !important;
+    }
+
+    .action-table a:visited {
+      color: inherit !important;
+    }
+    @media (prefers-color-scheme: dark){
+      a:visited .action-title {
+        color: #ccc !important;
+      }
+    }
+  </style>
 </head>
 {% inlinecss "email-base.css" %}
 <body style="margin: 0; padding: 0;">

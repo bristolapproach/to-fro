@@ -1,3 +1,5 @@
+/*https://coolors.co/fee079-d1dd75-1c1c1c-08415C-6b818c-08415C-08415C-364958-d4edf9-cc2936
+https://coolors.co/1c1c1c-fee079-d1dd75-d4edf9-6b818c-08415C-037171-08415c-364958-cc2936*/
 #wrapper {
     color: #1c1c1c;
     background-color: #d4edf9;
@@ -22,10 +24,13 @@
 
 .list-heading {
     text-align: center;
-    background-color: #009F93;
+    background-color: #D1DD75;
     padding:10px 0px;
     margin: 0;
-    color: white;
+    color: #1C1C1C;
+}
+.list-heading.alt{
+  background-color: #FEE079;
 }
 
 .list-heading .day{
@@ -49,17 +54,10 @@
     color: inherit;
 }
 
-.action-table a:visited {
-    color: inherit;
-}
-
 a {
-    color: #7765E3;
+    color: #08415C;
 }
 
-a:visited {
-    color: #555;
-}
 
 button {
     padding: 5px 10px;
@@ -71,21 +69,13 @@ button {
     border: 3px solid;
     padding: 10px;
     position:relative;
-    border-color: #7765E3;
+    border-color: #08415C;
 }
 
 .action-title {
-    color: #7765E3;
+    color: #08415C;
     margin-top: 3px;
     margin-bottom: 3px;
-}
-
-a:visited .action-title {
-    color: #555;
-}
-
-a:visited .action {
-    border-color: #555;
 }
 
 .action-location {
@@ -108,36 +98,33 @@ a:visited .action {
 }
 
 .action-summary{
-    background-color: #7765E3;
-    padding: 0 0 10px 0;
 }
 
 .action-summary h2 {
     font-size: 1.6em;
     margin: 10px 0;
-    color: white;
 }
 .pills {
     font-size: 0;
+    width: 102%;
+    min-width: 350px;
+    margin-left: -1%;
 }
 .pills > div {
     width: 33%;
     display: inline-block;
 }
 .sum-pill {
-    background-color: white;
-    border-radius: 30px;
-    width: 70%;
+    background-color: #adaaff;
+    border-radius: 50% 50% 0 0;
+    width: 97%;
     min-width: 100px;
     padding: 3px 0;
     font-size: 0.8rem;
-    margin-left: 2px;
-    margin-right: 2px;
 }
 
 .sum-number {
     font-size: 1.6rem;
-    color: #7765E3;
     font-weight: bold;
 }
 @media only screen and (min-width: 375px) {
@@ -151,7 +138,7 @@ a:visited .action {
 /*Dark mode colors*/
 @media (prefers-color-scheme: dark) {
     #wrapper {
-      background-color: #666 !important;
+      background-color: #6B818C !important;
       color: white !important;
     }
 
@@ -171,11 +158,13 @@ a:visited .action {
     }
 
     .list-heading{
-      color: #1c1c1c !important;
+      background-color: #037171 !important;
+      color: white !important;
     }
-
+    .list-heading.alt{
+      background-color: #55828B !important;
+    }
     .action-summary{
-      background-color: #08415C !important;
     }
 
     .action{
@@ -191,12 +180,9 @@ a:visited .action {
       color: #d4edf9 !important;
     }
 
-    a:visited .action-title {
-      color: #ccc !important;
-    }
-
     .sum-pill {
-      background-color: #037171 !important;
+      background-color: #08415C !important;
+      color: white !important;
     }
 
     .sum-number {
