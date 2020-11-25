@@ -103,7 +103,19 @@ def daily_digest_volunteer_email_preview(request, volunteer_pk):
         'today': today,
         'tomorrow': tomorrow,
         'title': 'Volunteer Daily Digest',
+        'is_email': False
     }
+
+    import base64
+    images = [
+        ('tofro_kites', '/code/static-built/img/tofro-kites.png'),
+        ('tofro_logo_knockout', '/code/static-built/img/tofro-logo-knockout.png')
+    ]
+    images_encoded = {}
+    for slug, filepath in images:
+        with open(filepath, 'rb') as f:
+            images_encoded[slug] = base64.b64encode(f.read()).decode()
+    context.update(images_encoded)
 
     return render(request, 'notifications/action_digest_email.html', context)
 

@@ -4,7 +4,7 @@
 
 <tr>
   <td>
-    <a href="#" title="">
+    <a href="{{ request | base_url }}{% url 'actions:detail' action.id %}" title="">
       <div class="action">
         
         <h4 class="action-title">

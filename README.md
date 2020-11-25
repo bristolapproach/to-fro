@@ -31,9 +31,11 @@ To execute a python command on the docker container, use a command like this:
 
 You can see the names of the running containers with `docker ps`.
 
-## Frontend assets
+## Frontend
 
-The styles and scripts of the app are build with [ParcelJS](https://parceljs.org/) from the sources in `api/assets/src`. The files are compiled to the `api/assets/static` folder to match [Django's conventions for static folders](https://docs.djangoproject.com/en/3.0/howto/static-files/#configuring-static-files).
+HTML is generated using [Django views](https://docs.djangoproject.com/en/3.1/topics/http/views/). Most modules of the application will have a `views.py` with the Python code grabbing the data and a `templates` folder containing the template files to be rendered by the views when answering the requests. Some also have a `templatetags` folder defining some [new filters and tags for Django's template language](https://docs.djangoproject.com/en/3.1/howto/custom-template-tags/).
+
+The styles and scripts of the app are build with [ParcelJS](https://parceljs.org/) from the sources in `api/assets/src`. The files are compiled to the `api/assets/static` folder to match [Django's conventions for static folders](https://docs.djangoproject.com/en/3.0/howto/static-files/#configuring-static-files). This allows the files to be gathered by Django during the app startup when `python manage.py collectstatic` is run.
 
 The build happens at container startup so you shouldn't have anything to do if you're just editing backend code. For development, you can run `npm run dev` inside the Django container to monitor your files and rebuild on change:
 

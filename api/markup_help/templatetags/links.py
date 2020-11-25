@@ -37,5 +37,5 @@ def set_query_parameter(url, param_name, param_value):
 @register.filter()
 def base_url(request):
     if request is None:
-        return os.environ['DJANGO_BASE_URL']
+        return os.environ.get('DJANGO_BASE_URL', '')
     return f"{request.scheme}://{request.META['HTTP_HOST']}"
