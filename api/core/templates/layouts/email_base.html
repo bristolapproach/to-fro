@@ -12,11 +12,33 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>{{site_name}} - {{title}}</title>
+  <title>To-Fro - {{title}}</title>
+  <style type="text/css">
+    a:visited .action-title {
+      color: #555  !important;
+    }
+
+    a:visited .action {
+      border-color: #555 !important;
+    }
+
+    a:visited {
+      color: #555 !important;
+    }
+
+    .action-table a:visited {
+      color: inherit !important;
+    }
+    @media (prefers-color-scheme: dark){
+      a:visited .action-title {
+        color: #ccc !important;
+      }
+    }
+  </style>
 </head>
 {% inlinecss "email-base.css" %}
 <body style="margin: 0; padding: 0;">
-  <div id="wrapper" width="100%" style="background-color: #d4edf9; background-image: url('https://dev.tofro.hostedby.bristolisopen.com/static/img/tofro-kites.png'); background-repeat: none; background-size: cover; padding: 0px 5px;">
+  <div id="wrapper" width="100%" style="">
     {% block 'content'%}{% endblock %}
     <table id="footer" role="presentation" cellpadding="0" cellspacing="0" style="max-width: 590px; background-color:#d4edf9;" border="0" align="center">
       <tr>
