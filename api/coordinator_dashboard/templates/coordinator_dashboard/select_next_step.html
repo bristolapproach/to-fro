@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+    <p>You chose resident {{ resident.pk }} {{ resident.full_name }}</p>
+    <div>
+        <h3>Recent actions</h3>
+        <ul>
+            {% for action in recent_actions %}
+            <li><a href="{{ action.get_admin_detail_url }}">{{ action.description }}</a> {{ action.display_date }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+    <div>
+        <a href="{% url 'add-action' %}">
+            <button>Add new action</button>
+        </a>
+    </div>
+    <div>
+        <h3>Recent referrals</h3>
+        <ul>
+            {% for referral in recent_referrals %}
+            <li><a href="{{ referral.get_admin_detail_url }}">{{ referral.title }}</a></li>
+            {% endfor %}
+        </ul>
+        <a href="/admin/coordinator_dashboard/referral/add/">
+            <button>Add new referral</button>
+        </a>
+    </div>
+</body>
+</html>

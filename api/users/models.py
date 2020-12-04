@@ -88,6 +88,17 @@ class UserProfileMixin(models.Model):
         user.save()
 
 
+class ResidentVolunteerRelationship(models.Model):
+
+    resident = models.ForeignKey('Resident')
+    volunteer = models.ForeignKey('Volunteer')
+
+    first_contact_datetime = models.DateTimeField(null=True, blank=True)
+
+    class Meta:
+        unique_together = ('resident', 'volunteer')
+
+
 class Resident(Person):
     """Concrete class for those who need help."""
     address_line_1 = models.CharField(
@@ -111,6 +122,8 @@ class Resident(Person):
         default=False, help_text="Is this person shielded?")
 
     time_received = models.DurationField(null=True, blank=True)
+
+    volunteers = models.ManyToManyField('Volunteer', through=ResidentVolunteerRelationship)
 
     @property
     def address(self, join_char=', '):

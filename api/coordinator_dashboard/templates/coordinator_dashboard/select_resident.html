@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+    <ul>
+        {% for resident in residents %}
+        <div>
+            <a href="{{ resident.get_admin_detail_url }}">
+            <h3>{{ resident.full_name }}</h3>
+            </a>
+            <p>Address: {{ resident.address |slice:"70" }}</p>
+            {% if resident.phone %}
+            <p>Phone: {{ resident.phone }}</p>
+            {% endif %}
+            <form method="POST" action="">
+                {% csrf_token %}
+                <input type="hidden" name="resident_pk" value="{{ resident.pk }}">
+                <input type="submit" value="Select">
+            </form>
+            {% if not forloop.last %} <hr/> {% endif %}
+        </div>
+        {% endfor %}
+    </ul>
+
+</body>
+</html>
