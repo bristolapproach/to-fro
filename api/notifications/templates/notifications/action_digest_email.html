@@ -15,7 +15,7 @@
           <tr>
             <td style="padding:10px 20px;">
               <div>
-                <a href="{{ site_url }}" title="Site Home"><img src="https://dev.tofro.hostedby.bristolisopen.com/static/img/tofro-logo-knockout.png" alt="to/fro logo"  style="background-color: #fff; border-radius: 10px;" width="150px"></a>
+                <a href="{{ site_url }}" title="Site Home"><img src="{{ request | base_url }}{% static 'img/tofro-logo-knockout.png' %}" alt="to/fro logo"  style="background-color: #fff; border-radius: 10px;" width="150px"></a>
               </div>
               <div align="center">
                 <h1>{{title}}</h1>
