@@ -4,7 +4,60 @@
 // Generic styles
 @import 'styles/generic/bootstrap';
 @import 'styles/generic/space';
+@media (prefers-color-scheme: dark) {
+  body {
+    background-color: $gray-900;
+    color: $gray-200;
+  }
+  .btn {
+    color: $gray-200;
+    @each $color-name, $color-value in $theme-colors {
+        &.btn-outline-#{$color-name} {
+          color: $color-value;
+        }
+      }
+    &:hover {
+      color: $gray-400;
+      @each $color-name, $color-value in $theme-colors {
+        &.btn-outline-#{$color-name} {
+          background-color: $color-value;
+          color: color-yiq($color-value);
+        }
+      }
+    }
+  }
+  .btn-pink {
+    $background: #e615bb;
+    $border: #9115e6;
+    @include button-variant($background, $border, $hover-background: darken($background, 7.5%), $hover-border: darken($border, 10%), $active-background: darken($background, 10%), $active-border: darken($border, 12.5%));
+  }
+  .card {
+    background-color: $gray-800;
 
+  }
+  a {
+    color: lighten($link-color, 60%);
+    &:hover {
+      color: lighten($link-hover-color, 60%);
+    }
+  }
+  .text-muted {
+    color: $gray-500 !important;
+  }
+  .list-group-item{
+    background-color: $gray-800;
+    border-color: $gray-600;
+    &:hover {
+      background-color: $gray-700;
+    }
+  }
+  .action-list,
+  .card {
+    &::before {
+      box-shadow: 0px 10px 0px 5px rgba(255, 255, 255, 0.5) !important;
+    }
+  }
+}
 html{
   height: 100%;
 }
@@ -13,7 +66,6 @@ body {
   min-height: 100%;
   display: flex;
   flex-direction: column;
-
   > .send-to-bottom {
     margin-top: auto;
   }
@@ -48,14 +100,18 @@ input[type=number] {
 }
 
 // Set a minimum size to the navigation links
-.navbar .nav-link {
-  line-height: (40rem / 16);
-  display: inline-block;
-
-  &.nav-link {
-    color: $light;
+.navbar{
+  &.navbar-dark .nav-link{
+    color: $gray-200;
   }
-}
+  &.navbar-light .nav-link{
+    color: $gray-900;
+  }
+  .nav-link {
+    line-height: (40rem / 16);
+    display: inline-block;
+  }
+} 
 
 .rounded-inside-card {
   border-radius: calc(#{$card-border-radius} - #{$card-border-width});
@@ -219,7 +275,7 @@ input[type=number] {
   // so the values are set to enable offsetting it
   // but vary when state changes
   background-color: inherit;
-  border: solid 1px $list-group-border-color;
+  border: inherit;
   color: inherit;
   // Remove transition to make the background
   // change at the same time as the rest of it
@@ -276,3 +332,4 @@ input[type=number] {
     }
   }
 }
+

@@ -1,9 +1,7 @@
-/*https://coolors.co/fee079-d1dd75-1c1c1c-08415C-6b818c-08415C-08415C-364958-d4edf9-cc2936
-https://coolors.co/1c1c1c-fee079-d1dd75-d4edf9-6b818c-08415C-037171-08415c-364958-cc2936*/
+/*https://coolors.co/08415c-6b818c-d1dd75-cc2936-fee079-037171-d4edf9-364958-1c1c1c*/
 #wrapper {
     color: #1c1c1c;
     background-color: #d4edf9;
-    background-image: url('https://dev.tofro.hostedby.bristolisopen.com/static/img/tofro-kites.png');
     background-repeat: none;
     background-size: cover;
 }

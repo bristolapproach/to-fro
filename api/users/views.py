@@ -60,10 +60,10 @@ class UserSettingsView(FormView):
 
     def get_success_url(self):
         return reverse('user-settings')
-
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context.update({
-            'user': self.request.user, 'title': 'Account Settings'
+            'user': self.request.user, 'title': 'Account Settings', 'back_url': reverse('actions:available')
         })
         return context
+
