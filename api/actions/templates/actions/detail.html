@@ -15,6 +15,11 @@
     <p class="text-center text-muted ">{{action.requested_datetime|date:"D d M H:i"}}</p>
   </div>
 {% endblock%}
+{% block extra_head %}
+<!-- include bootstrap -->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx" crossorigin="anonymous"></script>
+{% endblock %}
 
 {% block 'content' %}
 
@@ -52,7 +57,7 @@
             {% include './_action_footer_assigned_to_user.html'%}
           </div>
         {% else %}
-          <p class="alert alert-success text-center border-0 rounded-inside-card">Thanks for helping!</p>
+          <p class="alert alert-success text-center border-0 rounded-inside-card">Thanks for helping!<br><a href="{% url 'actions:available' %}" class="btn btn-secondary mt-2">Back to Tasks</a></p>
         {% endif %}
       {% endif%}
     {% endif %}

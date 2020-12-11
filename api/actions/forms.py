@@ -19,9 +19,10 @@ class SplitDuration(MultiWidget):
     template_name = "forms/split_duration.html"
 
     def __init__(self, legend=None, default_hours=0, default_minutes=15, attrs=None):
+        hours = [(v, v) for v in (0, 1, 2, 3, 4, 5)]
         minutes = [(v, v) for v in (0, 15, 30, 45)]
         widgets = [
-            NumberInput(attrs=attrs),
+            Select(attrs=attrs, choices=hours),
             Select(attrs=attrs, choices=minutes)
         ]
         self.legend = legend
@@ -33,8 +34,7 @@ class SplitDuration(MultiWidget):
         context = super().get_context(name, value, attrs)
 
         # Prepare some classes for rendering
-        context['widget']['subwidgets'][0]['attrs']['class'] += " form-control text-right"
-        context['widget']['subwidgets'][0]['attrs']['size'] = "2"
+        context['widget']['subwidgets'][0]['attrs']['class'] += " custom-select text-right"
         context['widget']['subwidgets'][1]['attrs']['class'] += " custom-select text-right"
 
         context.update({
