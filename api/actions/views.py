@@ -83,9 +83,14 @@ def back_url(action, volunteer):
     return reverse('actions:available')
 
 
-def detail(request, action_id):
+def pkdetail(request, action_pk):
+    action = get_object_or_404(Action, pk=action_pk)
+    return redirect(action, permanent=True)
+
+
+def detail(request, action_uuid):
     volunteer = request.user.volunteer
-    action = get_object_or_404(Action, pk=action_id)
+    action = get_object_or_404(Action, action_uuid=action_uuid)
 
     if request.method == "POST":
         if request.POST.get('_action') == 'contact':
@@ -116,7 +121,7 @@ def detail(request, action_id):
                 else:
                     messages.error(
                         request, 'Thanks, but someone has already volunteered to help')
-        return redirect('actions:detail', action_id=action.id)
+        return redirect(action)
 
     context = {
         'action': action,
@@ -141,7 +146,7 @@ def action_feedback(request, action_id, template_name='actions/complete.html', F
     action = get_object_or_404(Action, pk=action_id)
 
     if action.assigned_volunteer != volunteer or not action.can_give_feedback:
-        return redirect('actions:detail', action_id=action.id)
+        return redirect(action)
 
     # Get feedback from the volunteer.
     feedback = ActionFeedback(action=action,
@@ -152,11 +157,11 @@ def action_feedback(request, action_id, template_name='actions/complete.html', F
     if request.method == "POST" and form.is_valid():
         form.save()
         messages.success(request, 'Nice work! Thanks for helping out!')
-        return redirect('actions:detail', action_id=action.id)
+        return redirect(action)
 
     context = {
         'action': action,
-        'back_url': reverse('actions:detail', kwargs={'action_id': action.id}),
+        'back_url': reverse(action),
         'title': 'How did it go?',
         'heading': 'How did it go?',
         'form': form,

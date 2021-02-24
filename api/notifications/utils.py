@@ -8,7 +8,7 @@ def gen_subject_and_message(site_url, notification_type, action=None, context={}
     also be provided as context to the message template.
     """
     # Generate URLs for the templates.
-    context['action_url'] = f'{site_url}{reverse("actions:detail", kwargs={"action_id":action.id})}'
+    context['action_url'] = f'{site_url}{action.get_absolute_url()}'
     context['admin_action_url'] = f'{site_url}/admin/actions/action/{action.id}/change'
 
     # Return the subject and message, removing line breaks from the subject.
