@@ -134,16 +134,16 @@ def detail(request, action_uuid):
     return render(request, 'actions/detail.html', context)
 
 
-def stop_ongoing(request, action_id):
-    return action_feedback(request, action_id, template_name="actions/stop_ongoing.html", Form=ActionCancellationForm, extra_context={
+def stop_ongoing(request, action_uuid):
+    return action_feedback(request, action_uuid, template_name="actions/stop_ongoing.html", Form=ActionCancellationForm, extra_context={
         'title': 'Your collaboration is stopping',
         'heading': 'Your collaboration is stopping'
     })
 
 
-def action_feedback(request, action_id, template_name='actions/complete.html', Form=ActionFeedbackForm, extra_context={}):
+def action_feedback(request, action_uuid, template_name='actions/complete.html', Form=ActionFeedbackForm, extra_context={}):
     volunteer = request.user.volunteer
-    action = get_object_or_404(Action, pk=action_id)
+    action = get_object_or_404(Action, action_uuid=action_uuid)
 
     if action.assigned_volunteer != volunteer or not action.can_give_feedback:
         return redirect(action)
@@ -161,7 +161,7 @@ def action_feedback(request, action_id, template_name='actions/complete.html', F
 
     context = {
         'action': action,
-        'back_url': reverse(action),
+        'back_url': action.get_absolute_url(),
         'title': 'How did it go?',
         'heading': 'How did it go?',
         'form': form,
