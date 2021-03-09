@@ -42,14 +42,12 @@ class Command(BaseCommand):
 
         assert daily_or_weekly in ('daily', 'weekly')
 
-        if volunteer_pk is None:
-            volunteers = Volunteer.objects.all()
-        else:
-            obj = Volunteer.objects.filter(pk=volunteer_pk).first()
-            if obj is None:
+        volunteers = Volunteer.objects.all()
+        if volunteer_pk:
+            volunteers = volunteers.filter(pk=volunteer_pk)
+            if volunteers.count() == 0:
                 print(f"Volunteer {volunteer_pk} not found.")
                 exit()
-            volunteers = [obj]
 
         if daily_or_weekly == 'daily':
             self.send_daily_emails(volunteers)
@@ -60,7 +58,7 @@ class Command(BaseCommand):
         today = datetime.date.today()
         tomorrow = today + datetime.timedelta(days=1)
 
-        for volunteer in volunteers:
+        for volunteer in volunteers.filter(daily_digest_optin=True):
             if not volunteer.email:
                 logger.error(f"Volunteer {volunteer.pk} has no email address")
                 continue
@@ -73,7 +71,7 @@ class Command(BaseCommand):
                 'upcoming_actions_today'
             ]
             if all(action_sections[k].count() == 0 for k in skip_keys):
-                print(f'skipping {volunteer.pk}')
+                logger.debug(f'skipping {volunteer.pk}')
                 continue
 
             self.send_digest_email(
@@ -86,9 +84,9 @@ class Command(BaseCommand):
         today = datetime.date.today()
         tomorrow = today + datetime.timedelta(days=1)
 
-        for volunteer in volunteers:
+        for volunteer in volunteers.filter(weekly_digest_optin=True):
             if not volunteer.email:
-                print(f"Volunteer {volunteer.pk} has no email address")
+                logger.debug(f"Volunteer {volunteer.pk} has no email address")
                 continue
 
             action_sections = get_daily_action_sections(volunteer, today, tomorrow)
@@ -96,7 +94,7 @@ class Command(BaseCommand):
             # don't send email when these sections are empty
             skip_keys = ['new_available_actions', 'hp_available_actions']
             if all(action_sections[k].count() == 0 for k in skip_keys):
-                print(f'Skipping Volunteer {volunteer.pk}, no actions to display.')
+                logger.debug(f'Skipping Volunteer {volunteer.pk}, no actions to display.')
                 continue
 
             self.send_digest_email(
@@ -127,7 +125,7 @@ class Command(BaseCommand):
         )
         email_msg.content_subtype = "html"
 
-        print(f"sending email to Volunteer {volunteer.pk}: {volunteer.email}")
+        logger.debug(f"sending Email to Volunteer {volunteer.pk}: {volunteer.email}")
         try:
             email_msg.send(fail_silently=False)
         except SMTPException as e:
