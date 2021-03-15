@@ -105,7 +105,7 @@ class CoordinatorAdmin(ModelAdminWithDefaultPagination, ModelAdminWithExtraConte
 class ResidentAdmin(ModelAdminWithDefaultPagination):
     model = Resident
     list_display = ('first_name', 'last_name',
-                    'phone', 'email', 'time_received')
+                    'phone', 'email', 'time_received', 'data_consent_date')
     list_filter = ('first_name', 'last_name', 'phone', 'email')
     search_fields = ['first_name', 'last_name']
     readonly_fields = ['time_received']
@@ -119,6 +119,9 @@ class ResidentAdmin(ModelAdminWithDefaultPagination):
         }),
         ('Status', {
             'fields': ('shielded', 'internet_access', 'smart_device', 'confident_online_shopping', 'confident_online_comms')
+        }),
+        ('Consent', {
+            'fields': ('data_consent_date',)
         }),
         (None, {
             'fields': ('notes',)
@@ -237,7 +240,7 @@ class VolunteerAdmin(VolunteerAdminAutocomplete, ModelAdminWithExtraContext):
                 'requirements',
             )
         }),
-        ('Communication', {
+        ('Consent', {
             'fields': ('daily_digest_optin', 'weekly_digest_optin')
         })
         # ('Availability', {
