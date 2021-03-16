@@ -115,7 +115,9 @@ class Resident(Person):
     time_received = models.DurationField(null=True, blank=True)
 
     data_consent_date = models.DateField(null=False, verbose_name="Data agreement date",
-                help_text="When did this person give their consent to keeping their data in ToFro?")
+                help_text='''When did this person give their consent to keeping their data in ToFro?
+                
+                <br><br>Before confirming, you must read the agreement to them and receive their explicit verbal consent. Otherwise, their data cannot be stored on this system.''')
 
     @property
     def address(self, join_char=', '):
