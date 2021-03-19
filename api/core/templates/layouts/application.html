@@ -21,39 +21,43 @@
 </head>
 
 <body {%if show_kites %}class="with-kites"{%endif%}>
-  <header class="navbar navbar-expand-lg navbar-dark bg-dark">
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
     <a class="navbar-brand" href="/">{% embed_svg 'static-src/img/svg/TO_FRO_logo-04-knockout.svg' width=70 height=32 role='img' %}</a>
-    <nav class="collapse navbar-collapse" aria-labelledBy="leftNavHeading">
-      <h2 id="leftNavHeading" hidden>Main navigation</h2>
-      {% sitetree_menu from "main_navigation" include "trunk" template "sitetree/menu_bootstrap4.html" %}
-    </nav>
+    <button class="navbar-toggler ml-2 order-2 order-lg-1" type="button" data-toggle="collapse" data-target="#allNavigation" aria-controls="allNavigation" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse text-right text-lg-left order-3 order-lg-1" id="allNavigation">
+      <div id="leftNav" aria-labelledBy="leftNavHeading" >
+          <h2 id="leftNavHeading" hidden>Main navigation</h2>
+          {% sitetree_menu from "main_navigation" include "trunk" template "sitetree/menu_bootstrap4.html" %}
+      </div>
+    </div>
     {% if request.user.is_authenticated %}
-    <nav class="collapse navbar-collapse mt-2 mt-lg-0" aria-labelledBy="navbarNavHeading">
+    <nav class="order-1 order-lg-2 ml-auto" aria-labelledBy="navbarNavHeading">
       <h2 id="navbarNavHeading" hidden>Account navigation</h2>
-      <ul class="navbar-nav ml-auto">
+      <ul id="rightNav" class="navbar-nav">
         {% if user.is_staff %}
         <li class="nav-item">
-          
         </li>
         {% endif %}
-        <li class="nav-item">
-          <div class="dropdown dropdown">
-            <a class="btn btn-secondary dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                {% embed_fontawesome 'user' class_attribute="fa-lg" %}
-            </a>
-            <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuLink">
-              <a class="dropdown-item" href="{% url 'admin:index' %}">Co-ordinator view</a>
-              <div class="dropdown-divider"></div>
-              <a class="dropdown-item" href="{% url 'user-settings' %}">Account settings</a>
-              <div class="dropdown-divider"></div>
-              <a class="dropdown-item" href="{% url 'logout' %}">Log out</a>
-            </div>
+        <li class="nav-item dropdown">
+          <a class="btn btn-secondary dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              {% embed_fontawesome 'user' class_attribute="fa-lg" %}
+          </a>
+          <div class="dropdown-menu dropdown-menu-right text-right position-absolute" aria-labelledby="dropdownMenuLink">
+            <a class="dropdown-item" href="{% url 'admin:index' %}">Co-ordinator view</a>
+            <div class="dropdown-divider"></div>
+            <a class="dropdown-item" href="{% url 'user-settings' %}">Account settings</a>
+            <div class="dropdown-divider"></div>
+            <a class="dropdown-item" href="{% url 'logout' %}">Log out</a>
           </div>
         </li>
       </ul>
     </nav>
+    
     {% endif %}
-  </header>
+  </nav>
   {% include './_messages.html' %}
   <main class="container container--small py-5 space-4">
     <div class="heading-container d-flex justify-content-between">
