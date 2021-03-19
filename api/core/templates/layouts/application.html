@@ -28,35 +28,37 @@
     </button>
 
     <div class="collapse navbar-collapse text-right text-lg-left order-3 order-lg-1" id="allNavigation">
-      <div id="leftNav" aria-labelledBy="leftNavHeading" >
+      <nav id="leftNav" aria-labelledBy="leftNavHeading" >
           <h2 id="leftNavHeading" hidden>Main navigation</h2>
           {% sitetree_menu from "main_navigation" include "trunk" template "sitetree/menu_bootstrap4.html" %}
-      </div>
+      </nav>
+      {% if request.user.is_authenticated %}
+      <nav class="mb-2 mb-lg-0 ml-auto" aria-labelledBy="accNavHeading">
+        <h2 id="accNavHeading" hidden>Account navigation</h2>
+        <ul id="rightNav" class="navbar-nav">
+          {% if user.is_staff %}
+          <li class="nav-item">
+          </li>
+          {% endif %}
+          <li class="nav-item dropdown">
+            <a class="btn btn-secondary dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              <span class="d-lg-none">Account</span>
+                {% embed_fontawesome 'user' class_attribute="fa-lg" %}
+            </a>
+            <div class="dropdown-menu dropdown-menu-right text-right" aria-labelledby="dropdownMenuLink">
+              <a class="dropdown-item" href="{% url 'admin:index' %}">Co-ordinator view</a>
+              <div class="dropdown-divider"></div>
+              <a class="dropdown-item" href="{% url 'user-settings' %}">Account settings</a>
+              <div class="dropdown-divider"></div>
+              <a class="dropdown-item" href="{% url 'logout' %}">Log out</a>
+            </div>
+          </li>
+        </ul>
+      </nav>
+      
+      {% endif %}
     </div>
-    {% if request.user.is_authenticated %}
-    <nav class="order-1 order-lg-2 ml-auto" aria-labelledBy="navbarNavHeading">
-      <h2 id="navbarNavHeading" hidden>Account navigation</h2>
-      <ul id="rightNav" class="navbar-nav">
-        {% if user.is_staff %}
-        <li class="nav-item">
-        </li>
-        {% endif %}
-        <li class="nav-item dropdown">
-          <a class="btn btn-secondary dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-              {% embed_fontawesome 'user' class_attribute="fa-lg" %}
-          </a>
-          <div class="dropdown-menu dropdown-menu-right text-right position-absolute" aria-labelledby="dropdownMenuLink">
-            <a class="dropdown-item" href="{% url 'admin:index' %}">Co-ordinator view</a>
-            <div class="dropdown-divider"></div>
-            <a class="dropdown-item" href="{% url 'user-settings' %}">Account settings</a>
-            <div class="dropdown-divider"></div>
-            <a class="dropdown-item" href="{% url 'logout' %}">Log out</a>
-          </div>
-        </li>
-      </ul>
-    </nav>
     
-    {% endif %}
   </nav>
   {% include './_messages.html' %}
   <main class="container container--small py-5 space-4">
@@ -83,7 +85,7 @@
     {% block 'content'%}{% endblock %}
   </main>
   <footer class="send-to-bottom site-footer">
-    © 2020 To/Fro. {% sitetree_menu from "footer_navigation" include "trunk" %}
+    © 2021 To/Fro. {% sitetree_menu from "footer_navigation" include "trunk" %}
   </footer>
 </body>
 
