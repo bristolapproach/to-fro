@@ -5,6 +5,8 @@ from django.db.models import Q, Count
 from django.db import models
 from model_utils import FieldTracker
 
+from datetime import date
+
 import logging
 
 
@@ -112,6 +114,11 @@ class Resident(Person):
 
     time_received = models.DurationField(null=True, blank=True)
 
+    data_consent_date = models.DateField(null=False, verbose_name="Data agreement date",
+                help_text='''When did this person give their consent to keeping their data in ToFro?
+                
+                <br><br>Before confirming, you must read the agreement to them and receive their explicit verbal consent. Otherwise, their data cannot be stored on this system.''')
+
     @property
     def address(self, join_char=', '):
         filled_lines = [line for line in (
@@ -192,8 +199,8 @@ class Volunteer(UserProfileMixin, Person):
     available_sun_evening = models.BooleanField(
         default=False, verbose_name="Sunday evening")
 
-    daily_digest_optin = models.BooleanField(default=False)
-    weekly_digest_optin = models.BooleanField(default=False)
+    daily_digest_optin = models.BooleanField(default=False, verbose_name="Daily digest opt-in")
+    weekly_digest_optin = models.BooleanField(default=False, verbose_name="Weekly digest opt-in")
 
     @property
     def available_actions(self):

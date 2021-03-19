@@ -35,15 +35,11 @@ You can see the names of the running containers with `docker ps`.
 
 HTML is generated using [Django views](https://docs.djangoproject.com/en/3.1/topics/http/views/). Most modules of the application will have a `views.py` with the Python code grabbing the data and a `templates` folder containing the template files to be rendered by the views when answering the requests. Some also have a `templatetags` folder defining some [new filters and tags for Django's template language](https://docs.djangoproject.com/en/3.1/howto/custom-template-tags/).
 
-The styles and scripts of the app are build with [ParcelJS](https://parceljs.org/) from the sources in `api/assets/src`. The files are compiled to the `api/assets/static` folder to match [Django's conventions for static folders](https://docs.djangoproject.com/en/3.0/howto/static-files/#configuring-static-files). This allows the files to be gathered by Django during the app startup when `python manage.py collectstatic` is run.
+The styles and scripts of the app are build with [ParcelJS](https://parceljs.org/) from the sources in `api/static-src`. The files are compiled to the `api/parcel-built`, which is in Django's `STATICFILES_DIRS` search path. These are then collected, along with images, by Django's `collectstatic` command.
 
-The build happens at container startup so you shouldn't have anything to do if you're just editing backend code. For development, you can run `npm run dev` inside the Django container to monitor your files and rebuild on change:
+These two steps (Parcel's build and Django's collectstatic) can be run together from the main frontend build script `api/build-scripts/build-frontend-assets.sh`. You will typically be running this inside the tofro-django container like so:
 
-    docker exec -it tofro-django npm run dev
-
-Equally, you can run `npm install` to install new modules from inside the Django container too:
-
-    docker exec -it tofro-django npm install
+    docker exec tofro-django /code/build_scripts/build-frontend-assets.sh
 
 ## Application messages
 
@@ -66,3 +62,23 @@ To override a piece of text coming from a 3rd party package:
 ## Testing
 
 To check that everything works OK, there is a [manual testing plan in the TESTING.md](./TESTING.md) file.
+
+## How notification emails for high priority actions get sent
+
+1. Coordinator completes an `Action`  form choosing its priority as "HIGH"
+1. The saved `Action` triggers a signal `post_save_action` in notifications.signals
+1. `post_save_action` creates a job running `notifications.create_action_notifications`
+
+
+   FROM THIS POINT WE ARE RUNNING ON `redis-worker` SERVER
+1. `create_action_notifications` in `notifications.notifications` runs
+   using the created `Action`. Because we have created a high priority `Action`
+   `create_action_notifications` calls `create` in `notifications.notifications.py`
+1. `create` in notifications.notifications.py calls
+1. `gen_subject_and_message` in `notifications.utils.py` which works out
+   the template name and then renders and returns the message content and
+   subject using these templates.
+1. `create` uses these values to create a new Notification and `save` it
+1. new `Notification` triggers signal `post_save_notification` in `notifications.signals.py`
+1. `post_save_notification` creates a redis `job` running `send` in `notifications.notifications.py`
+1. `send` checks there are recipients, sends the notification by email and updates the `Notification`'s status accordingly

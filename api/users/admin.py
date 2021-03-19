@@ -105,7 +105,7 @@ class CoordinatorAdmin(ModelAdminWithDefaultPagination, ModelAdminWithExtraConte
 class ResidentAdmin(ModelAdminWithDefaultPagination):
     model = Resident
     list_display = ('first_name', 'last_name',
-                    'phone', 'email', 'time_received')
+                    'phone', 'email', 'time_received', 'data_consent_date')
     list_filter = ('first_name', 'last_name', 'phone', 'email')
     search_fields = ['first_name', 'last_name']
     readonly_fields = ['time_received']
@@ -119,6 +119,9 @@ class ResidentAdmin(ModelAdminWithDefaultPagination):
         }),
         ('Status', {
             'fields': ('shielded', 'internet_access', 'smart_device', 'confident_online_shopping', 'confident_online_comms')
+        }),
+        ('Consent', {
+            'fields': ('data_consent_date',)
         }),
         (None, {
             'fields': ('notes',)
@@ -237,6 +240,9 @@ class VolunteerAdmin(VolunteerAdminAutocomplete, ModelAdminWithExtraContext):
                 'requirements',
             )
         }),
+        ('Consent', {
+            'fields': ('daily_digest_optin', 'weekly_digest_optin')
+        })
         # ('Availability', {
         #     'fields': ('available_mon_morning', 'available_mon_afternoon', 'available_mon_evening', 'available_tues_morning', 'available_tues_afternoon', 'available_tues_evening', 'available_wed_morning', 'available_wed_afternoon', 'available_wed_evening', 'available_thur_morning', 'available_thur_afternoon', 'available_thur_evening', 'available_fri_morning', 'available_fri_afternoon', 'available_fri_evening', 'available_sat_morning', 'available_sat_afternoon', 'available_sat_evening', 'available_sun_morning', 'available_sun_afternoon', 'available_sun_evening')
         # })

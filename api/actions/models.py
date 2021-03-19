@@ -3,6 +3,7 @@ from users import models as user_models
 from django.db import models, transaction
 from django.utils import timezone
 from model_utils import FieldTracker
+import uuid
 
 import logging
 logger = logging.getLogger(__name__)
@@ -73,6 +74,8 @@ class Action(models.Model):
         null=True, blank=True, verbose_name="Assigned on")
     completed_date = models.DateTimeField(
         null=True, blank=True, verbose_name="Completed on")
+
+    action_uuid = models.UUIDField(default=uuid.uuid4, unique=True, db_index=True)
 
     time_taken = models.DurationField(null=True, blank=True)
 
@@ -199,6 +202,10 @@ class Action(models.Model):
             .filter(wards__id=self.ward.id) \
             .filter(help_types__id=self.help_type.id) \
             .all()
+
+    def get_absolute_url(self):
+        from django.urls import reverse
+        return reverse('actions:detail', kwargs={'action_uuid': self.action_uuid})
 
     def __str__(self):
         return f"Action {self.id} - {self.resident.full_name}"

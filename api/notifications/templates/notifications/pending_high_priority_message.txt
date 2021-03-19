@@ -1,3 +1,4 @@
+{% autoescape off %}
 Hi there,
 
 Thank you so much for your ongoing support. We have a request for help that is time sensitive.
@@ -9,3 +10,4 @@ Please let us know if you’re able to fulfil this request by responding here:
 {{ action_url }}
 
 Many thanks and best wishes from the KW Support Hub Team
+{% endautoescape %}

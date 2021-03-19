@@ -184,13 +184,14 @@ class ActionAdmin(ModelAdminWithDefaultPagination, ModelAdminWithExtraContext):
                    )
     list_editable = ['action_status', 'assigned_volunteer']
     autocomplete_fields = ['resident', 'assigned_volunteer']
-    readonly_fields = ['time_taken']
+    readonly_fields = ['time_taken', 'action_uuid']
     filter_horizontal = ('requirements', 'interested_volunteers')
     inlines = (FeedbackInline,)
 
     fieldsets = (
         ('Action Details', {
-            'fields': ('resident', 'requested_datetime', 'help_type', 'action_priority', 'coordinator', 'requirements')
+            'fields': ('resident', 'requested_datetime', 'help_type', 'action_priority', 'coordinator',
+                       'action_uuid', 'requirements')
         }),
         ('External Links', {
             'fields': ('external_action_id',)
