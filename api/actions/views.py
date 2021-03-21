@@ -1,4 +1,5 @@
 from django.shortcuts import render, redirect, get_object_or_404
+from django.http import Http404
 from django.contrib.auth.decorators import permission_required
 from django.contrib.auth.decorators import login_required
 from actions.models import Action, ActionStatus, ActionFeedback
@@ -8,6 +9,8 @@ from django.utils import timezone
 from django.views import generic
 from django.urls import reverse
 from .forms import ActionFeedbackForm, ActionCancellationForm
+
+from django.core.exceptions import ValidationError
 from datetime import datetime
 
 
@@ -90,7 +93,10 @@ def pkdetail(request, action_pk):
 
 def detail(request, action_uuid):
     volunteer = request.user.volunteer
-    action = get_object_or_404(Action, action_uuid=action_uuid)
+    try:
+        action = Action.objects.get(action_uuid=action_uuid)
+    except (ValidationError, Action.DoesNotExist):
+        raise Http404()
 
     if request.method == "POST":
         if request.POST.get('_action') == 'contact':
@@ -143,7 +149,10 @@ def stop_ongoing(request, action_uuid):
 
 def action_feedback(request, action_uuid, template_name='actions/complete.html', Form=ActionFeedbackForm, extra_context={}):
     volunteer = request.user.volunteer
-    action = get_object_or_404(Action, action_uuid=action_uuid)
+    try:
+        action = Action.objects.get(action_uuid=action_uuid)
+    except (ValidationError, Action.DoesNotExist):
+        raise Http404()
 
     if action.assigned_volunteer != volunteer or not action.can_give_feedback:
         return redirect(action)
