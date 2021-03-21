@@ -24,6 +24,7 @@ importlib-metadata==1.6.0
 kombu==4.6.11
 Markdown==3.2.1
 mccabe==0.6.1
+model-bakery==1.2.1
 psycopg2-binary==2.8.5
 pycodestyle==2.6.0
 pyflakes==2.2.0
