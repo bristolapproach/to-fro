@@ -8,6 +8,7 @@ import uuid
 import logging
 logger = logging.getLogger(__name__)
 
+
 class ActionPriority:
     LOW, MEDIUM, HIGH = '1', '2', '3'
     PRIORITIES = [
@@ -55,9 +56,7 @@ class Action(models.Model):
                                                    help_text="Volunteers who have expressed interest in completing the action..")
     assigned_volunteer = models.ForeignKey(user_models.Volunteer, on_delete=models.PROTECT,
                                            null=True, blank=True, help_text="The volunteer who will complete the action.")
-    volunteers = models.ManyToManyField(user_models.Volunteer,
-                                        through='ActionVolunteers',
-                                        related_name='action_volunteers')
+
     action_status = models.CharField(max_length=1, choices=ActionStatus.STATUSES,
                                      default=ActionStatus.PENDING, help_text="What's the status of this action?")
     action_priority = models.CharField(max_length=1, choices=ActionPriority.PRIORITIES,
@@ -80,12 +79,6 @@ class Action(models.Model):
 
     time_taken = models.DurationField(null=True, blank=True)
 
-    minimum_volunteers = models.SmallIntegerField(
-        default=1, help_text="minimum number of volunteers required for action")
-    maximum_volunteers = models.SmallIntegerField(
-        default=1, help_text="maximum number of volunteers required for action")
-
-
     # Track changes to the model so we can access the previous status
     # when it changes, and update the volunteer accordingly if it swapped
     # to a status that doesn't have a volunteer assigned
@@ -99,8 +92,6 @@ class Action(models.Model):
                 and self.tracker.previous('action_status') not in self.STATUSES_WITHOUT_ASSIGNED_VOLUNTEER
                 and self.tracker.previous('action_status') is not None):
             self.assigned_volunteer = None
-            #should this be in m2m signal -- pk not set??
-            ActionVolunteers.objects.filter(action=self, assigned=True).update(assigned=False)
 
         # Ensures that the status gets to assigned if we set a volunteer
         # and the status was one that doesn't need a volunteer
@@ -220,28 +211,11 @@ class Action(models.Model):
         return f"Action {self.id} - {self.resident.full_name}"
 
 
-class ActionVolunteers(models.Model):
-    action = models.ForeignKey(Action, null=False, on_delete=models.CASCADE)
-    volunteer = models.ForeignKey(user_models.Volunteer, null=False, on_delete=models.CASCADE)
-    interested = models.BooleanField(null=False, default=False)
-    assigned = models.BooleanField(null=False, default=False)
-
-    def clean(self):
-        pass
-
-    class Meta:
-        unique_together = ['action', 'volunteer']
-
-
 class ActionFeedback(models.Model):
     action = models.ForeignKey(Action, on_delete=models.PROTECT,
                                null=False, help_text="The feedback subject")
     volunteer = models.ForeignKey(user_models.Volunteer, on_delete=models.PROTECT,
                                   null=True, help_text="Who wrote the feedback")
-    action_volunteer = models.ForeignKey(ActionVolunteers,
-                                         on_delete=models.PROTECT,
-                                         null=True,
-                                         related_name='feedback')
     time_taken = models.DurationField(null=True, blank=True,
                                       help_text="How long did it take to complete the action?")
     notes = models.TextField(max_length=500, null=True, blank=True,

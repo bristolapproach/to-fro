@@ -27,10 +27,6 @@ class HelpType(models.Model):
     requirements = models.ManyToManyField(Requirement, blank=True, related_name="help_types",
                                           verbose_name="Default requirements",
                                           help_text="New actions with this help type will get these requirements by default. The requirements can then be adjusted per-action.")
-    minimum_volunteers = models.SmallIntegerField(
-        default=1, help_text="minimum number of volunteers required for action")
-    maximum_volunteers = models.SmallIntegerField(
-        default=1, help_text="maximum number of volunteers required for action")
 
     def __str__(self):
         return f"{self.name}"

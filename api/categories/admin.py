@@ -34,9 +34,7 @@ class HelpTypeAdmin(ModelAdminWithDefaultPagination):
     form = HelpTypeForm
     fieldsets = (
         (None, {'fields': ('name', 'icon_name')}),
-        ('Requirements', {'fields': ('requirements',
-                                     'minimum_volunteers',
-                                     'maximum_volunteers')}),
+        ('Requirements', {'fields': ('requirements',)}),
         ('Templates', {
          'fields': ('private_description_template', 'public_description_template')})
     )
