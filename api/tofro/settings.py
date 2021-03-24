@@ -255,6 +255,15 @@ LOGGING['loggers'][''] = {
     'handlers': ['console'],
     'level': 'INFO'
 }
+
+# uncomment to switch on error logging for server
+# LOGGING['handlers']['console_debug_false'] = {
+#			'level': 'ERROR',
+#			'filters': ['require_debug_false'],
+#			'class': 'logging.StreamHandler',
+#		}
+# LOGGING['loggers']['django']['handlers'].append('console_debug_false')
+
 # Prevent Django's logs to be emitted a second time
 # by being propaggated to the root logger
 LOGGING['loggers']['django']['propagate'] = False
@@ -273,3 +282,5 @@ if DEBUG:
 
 # Help configure contact email
 COORDINATOR_EMAIL = os.getenv('COORDINATOR_EMAIL', 'contact@example.com')
+
+ADMINS = [("Dan", "dantagg@wildmanherring.com")]

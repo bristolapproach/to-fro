@@ -56,7 +56,8 @@ class Action(models.Model):
                                                    help_text="Volunteers who have expressed interest in completing the action..")
     assigned_volunteer = models.ForeignKey(user_models.Volunteer, on_delete=models.PROTECT,
                                            null=True, blank=True, help_text="The volunteer who will complete the action.")
-
+    assigned_volunteers = models.ManyToManyField(user_models.Volunteer, blank=True, related_name="actions_assigned_to",
+                                           through='ActionAssignedVolunteers', help_text="Volunteers who have been assigned to completing the action..")
     action_status = models.CharField(max_length=1, choices=ActionStatus.STATUSES,
                                      default=ActionStatus.PENDING, help_text="What's the status of this action?")
     action_priority = models.CharField(max_length=1, choices=ActionPriority.PRIORITIES,
@@ -78,6 +79,11 @@ class Action(models.Model):
     action_uuid = models.UUIDField(default=uuid.uuid4, unique=True, db_index=True)
 
     time_taken = models.DurationField(null=True, blank=True)
+
+    minimum_volunteers = models.SmallIntegerField(
+        default=1, help_text="minimum number of volunteers required for action")
+    maximum_volunteers = models.SmallIntegerField(
+        default=1, help_text="maximum number of volunteers required for action")
 
     # Track changes to the model so we can access the previous status
     # when it changes, and update the volunteer accordingly if it swapped
@@ -210,12 +216,26 @@ class Action(models.Model):
     def __str__(self):
         return f"Action {self.id} - {self.resident.full_name}"
 
+class ActionAssignedVolunteers(models.Model):
+    action = models.ForeignKey(Action, on_delete=models.PROTECT,
+                               null=False, help_text="Assigned Action")
+    assigned_volunteer = models.ForeignKey(user_models.Volunteer, on_delete=models.PROTECT,
+                                  null=False, help_text="Assigned Volunteer")
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(fields=['action', 'assigned_volunteer'],
+                                    name='unique assigned action volunteer')
+        ]
 
 class ActionFeedback(models.Model):
     action = models.ForeignKey(Action, on_delete=models.PROTECT,
                                null=False, help_text="The feedback subject")
     volunteer = models.ForeignKey(user_models.Volunteer, on_delete=models.PROTECT,
                                   null=True, help_text="Who wrote the feedback")
+    assigned_volunteer_action = models.ForeignKey(ActionAssignedVolunteers,
+                                  on_delete=models.PROTECT, null=True,
+                                  help_text="Which assigned volunteer action?")
     time_taken = models.DurationField(null=True, blank=True,
                                       help_text="How long did it take to complete the action?")
     notes = models.TextField(max_length=500, null=True, blank=True,
@@ -235,3 +255,5 @@ class ActionFeedback(models.Model):
 
     def __str__(self):
         return f"Feedback {self.id} - Action {self.action.id}"
+
+
