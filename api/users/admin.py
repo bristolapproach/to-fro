@@ -1,5 +1,6 @@
 from users.models import Coordinator, Resident, Volunteer
 from categories.models import HelpType, Ward
+from actions.models import Action
 from django.contrib import admin
 from django.contrib.auth.models import User
 from django.contrib.auth.admin import UserAdmin
@@ -174,8 +175,12 @@ class VolunteerAdminAutocomplete(ModelAdminWithDefaultPagination):
         and is interested in the action
         """
         if (action_id):
+            # if DBS required, don't offer Volunteers without DBS check
+            # might be better to put this elsewhere
+            if Action.objects.get(pk=action_id).requirements.filter(name='Enhanced DBS Check').exists():
+                queryset = queryset.filter(requirements__name='Enhanced DBS Check')
             # Grab a list of the IDs of interested volunteers
-            # and voluteers that helped the resitent already
+            # and volunteers that helped the resident already
             # to simplify the upcoming query.
             interested_volunteer_ids = Volunteer.objects.filter(
                 actions_interested_in__id=action_id).values_list('id', flat=True)

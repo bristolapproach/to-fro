@@ -56,8 +56,9 @@ class Action(models.Model):
                                                    help_text="Volunteers who have expressed interest in completing the action..")
     assigned_volunteer = models.ForeignKey(user_models.Volunteer, on_delete=models.PROTECT,
                                            null=True, blank=True, help_text="The volunteer who will complete the action.")
+    # LAST FIX assigned_volunteer
     assigned_volunteers = models.ManyToManyField(user_models.Volunteer, blank=True, related_name="actions_assigned_to",
-                                           through='ActionAssignedVolunteers', help_text="Volunteers who have been assigned to completing the action..")
+                                           help_text="Volunteers who have been assigned to completing the action..")
     action_status = models.CharField(max_length=1, choices=ActionStatus.STATUSES,
                                      default=ActionStatus.PENDING, help_text="What's the status of this action?")
     action_priority = models.CharField(max_length=1, choices=ActionPriority.PRIORITIES,
@@ -91,25 +92,25 @@ class Action(models.Model):
     tracker = FieldTracker()
 
     def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
-        # Ensure that the volunteer gets cleared when we move from a status
-        # that has an assigned volunteer to one that doesn't.
+        # Ensure that the volunteer(s) gets cleared when we move from a status
+        # that has assigned volunteer(s) to one that doesn't.
         if (self.tracker.has_changed('action_status')
             and self.action_status in self.STATUSES_WITHOUT_ASSIGNED_VOLUNTEER
                 and self.tracker.previous('action_status') not in self.STATUSES_WITHOUT_ASSIGNED_VOLUNTEER
                 and self.tracker.previous('action_status') is not None):
-            self.assigned_volunteer = None
+            self.assigned_volunteers.clear()
 
-        # Ensures that the status gets to assigned if we set a volunteer
+        # Ensures that the status gets set to assigned if we set volunteer(s)
         # and the status was one that doesn't need a volunteer
         # This needs to happen after the clearing of the volunteer
         # when switching to a status without volunteer so there is no
         # volunteer and we don't update the status
-        if (self.assigned_volunteer and self.action_status in self.STATUSES_WITHOUT_ASSIGNED_VOLUNTEER):
+        if (self.pk and self.assigned_volunteers.count() and self.action_status in self.STATUSES_WITHOUT_ASSIGNED_VOLUNTEER):
             self.action_status = ActionStatus.ASSIGNED
 
         # Track the contact date when setting the status
         # to one implying that contact would have happened
-        if (self.action_status in (ActionStatus.ONGOING, ActionStatus.COMPLETED, ActionStatus.COULDNT_COMPLETE) and not self.volunteer_made_contact_on):
+        if self.maximum_volunteers > 1 and self.action_status in (ActionStatus.ONGOING, ActionStatus.COMPLETED, ActionStatus.COULDNT_COMPLETE) and not self.volunteer_made_contact_on:
             self.volunteer_made_contact_on = timezone.now()
 
         # Track other interesting dates
@@ -144,8 +145,8 @@ class Action(models.Model):
         """
         Ensures the assigned_volunteer is within the list of interested volunteers
         """
-        if (self.assigned_volunteer and not self.assigned_volunteer in self.interested_volunteers.all()):
-            self.interested_volunteers.add(self.assigned_volunteer)
+        assigned_volunteers = [assigned for assigned in self.assigned_volunteers.all()]
+        self.interested_volunteers.add(*assigned_volunteers)
 
     def register_interest_from(self, volunteer):
         if volunteer not in self.interested_volunteers.all():
@@ -182,12 +183,25 @@ class Action(models.Model):
         return self.action_status == ActionStatus.INTEREST
 
     @property
-    def is_assigned(self):
-        return self.assigned_volunteer is not None
+    def is_partially_assigned(self):
+        return self.assigned_count >= self.minimum_volunteers
+    # FIXED assigned_volunteer
+
+    @property
+    def is_fully_assigned(self):
+        return self.assigned_count >= self.maximum_volunteers
 
     @property
     def is_completed(self):
         return self.action_status == ActionStatus.COMPLETED
+
+    @property
+    def interested_count(self):
+        return self.interested_volunteers.count()
+
+    @property
+    def assigned_count(self):
+        return self.assigned_volunteers.count()
 
     @property
     def is_failed(self):
@@ -209,33 +223,31 @@ class Action(models.Model):
             .filter(help_types__id=self.help_type.id) \
             .all()
 
+    @property
+    def checkin_required(self):
+        if self.volunteer_made_contact_on or self.maximum_volunteers > 1:
+            return False
+        else:
+            return True
+
     def get_absolute_url(self):
         from django.urls import reverse
         return reverse('actions:detail', kwargs={'action_uuid': self.action_uuid})
 
+
+
     def __str__(self):
-        return f"Action {self.id} - {self.resident.full_name}"
+        if self.resident:
+            return f"Action {self.id} - {self.resident.full_name}"
+        else:
+            return f"Action {self.id} - No resident"
 
-class ActionAssignedVolunteers(models.Model):
-    action = models.ForeignKey(Action, on_delete=models.PROTECT,
-                               null=False, help_text="Assigned Action")
-    assigned_volunteer = models.ForeignKey(user_models.Volunteer, on_delete=models.PROTECT,
-                                  null=False, help_text="Assigned Volunteer")
-
-    class Meta:
-        constraints = [
-            models.UniqueConstraint(fields=['action', 'assigned_volunteer'],
-                                    name='unique assigned action volunteer')
-        ]
 
 class ActionFeedback(models.Model):
     action = models.ForeignKey(Action, on_delete=models.PROTECT,
                                null=False, help_text="The feedback subject")
     volunteer = models.ForeignKey(user_models.Volunteer, on_delete=models.PROTECT,
                                   null=True, help_text="Who wrote the feedback")
-    assigned_volunteer_action = models.ForeignKey(ActionAssignedVolunteers,
-                                  on_delete=models.PROTECT, null=True,
-                                  help_text="Which assigned volunteer action?")
     time_taken = models.DurationField(null=True, blank=True,
                                       help_text="How long did it take to complete the action?")
     notes = models.TextField(max_length=500, null=True, blank=True,

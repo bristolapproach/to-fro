@@ -1,9 +1,15 @@
-from django.db.models.signals import post_save, post_delete
+from django.db.models.signals import post_save, post_delete, m2m_changed
 from django.dispatch import receiver
-from .models import ActionFeedback
+from .models import ActionFeedback, Action
 from django.db import transaction
 import django_rq
 import datetime
+
+@receiver(m2m_changed, sender=Action.assigned_volunteers.through, dispatch_uid="AssignedtoInterestedVolunteers")
+def post_m2m_action(sender, instance, using=None, action=None, pk_set=[], **kwargs):
+    if action == 'post_add':
+        assigned = [vol for vol in instance.assigned_volunteers.all()]
+        instance.interested_volunteers.add(*assigned)
 
 
 @receiver(post_save, sender=ActionFeedback, dispatch_uid="UpdateTimeAfterSave")

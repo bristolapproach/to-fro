@@ -24,6 +24,7 @@ urlpatterns = [
     # Take over the password reset confirmation with our own view
     path('accounts/reset/<uidb64>/<token>/',
          PasswordResetConfirmView.as_view(), name='password_reset_confirm'),
+    path('api-auth/', include('rest_framework.urls')),
     path('accounts/', include('django.contrib.auth.urls')),
     path('actions/', decorator_include(login_required, ('actions.urls', 'actions'))),
     path('accounts/login', LoginView.as_view(), name="login"),
@@ -36,7 +37,8 @@ urlpatterns = [
 
 
 # Add the debug toolbar.
-if settings.DEBUG:
+#if settings.DEBUG:
+if 'debug_toolbar' in settings.INSTALLED_APPS:
     import debug_toolbar
     urlpatterns = urlpatterns + [
         path('__debug__/', include(debug_toolbar.urls))

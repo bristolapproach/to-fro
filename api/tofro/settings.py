@@ -90,12 +90,15 @@ INSTALLED_APPS = [
     'django.contrib.humanize',
     'django.contrib.sites',
     'django.contrib.flatpages',
-    'admin_overrides'
+    'admin_overrides',
+    'rest_framework',
+
 ]
 if DEBUG:
     # ensures whitenoise is used in development, as recommended:
     # http://whitenoise.evans.io/en/stable/django.html#using-whitenoise-in-development
     INSTALLED_APPS.insert(0, 'whitenoise.runserver_nostatic')
+    INSTALLED_APPS.insert(0, 'django_werkzeug')
 
 
 MIDDLEWARE = [
@@ -284,3 +287,13 @@ if DEBUG:
 COORDINATOR_EMAIL = os.getenv('COORDINATOR_EMAIL', 'contact@example.com')
 
 ADMINS = [("Dan", "dantagg@wildmanherring.com")]
+
+# REST FRAMEWORK SETTINGS
+REST_FRAMEWORK = {
+    # Use Django's standard `django.contrib.auth` permissions,
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.DjangoModelPermissions'
+    ]
+}
+# Require authentication
+

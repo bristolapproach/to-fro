@@ -71,7 +71,7 @@ class ActionsListView(generic.ListView):
 
 
 def back_url(action, volunteer):
-    if (action.assigned_volunteer != volunteer):
+    if (action.assigned_volunteers.filter(pk=volunteer.pk).exists()):
         return reverse('actions:available')
 
     if (action.action_status == ActionStatus.INTEREST or action.action_status == ActionStatus.ASSIGNED):
@@ -114,9 +114,10 @@ def detail(request, action_uuid):
                         request, 'Noted! Sorry to hear you can no longer help.')
 
                 else:
-                    if (action.assigned_volunteer == volunteer):
+                    if (volunteer in action.assigned_volunteers.all()):
                         messages.error(request,
                                        'Sorry, looks like your help was already accepted. Please contact a coordinator make arrangements.')
+                    # FIXED assigned_volunteer
             else:
                 if action.action_status == ActionStatus.PENDING \
                         or action.action_status == ActionStatus.INTEREST:
@@ -154,13 +155,14 @@ def action_feedback(request, action_uuid, template_name='actions/complete.html',
     except (ValidationError, Action.DoesNotExist):
         raise Http404()
 
-    if action.assigned_volunteer != volunteer or not action.can_give_feedback:
+    if not action.assigned_volunteers.filter(pk=volunteer.pk).exists() or not action.can_give_feedback:
         return redirect(action)
 
     # Get feedback from the volunteer.
     feedback = ActionFeedback(action=action,
-                              volunteer=action.assigned_volunteer,
+                              volunteer=action.assigned_volunteers.get(pk=volunteer.pk),
                               created_date_time=timezone.now())
+    # FIX TEST assigned_volunteer
     form = Form(request.POST or None,
                 instance=feedback, action=action)
     if request.method == "POST" and form.is_valid():
