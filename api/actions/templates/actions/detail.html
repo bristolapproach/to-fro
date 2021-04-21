@@ -23,14 +23,16 @@
 
 {% block 'content' %}
 
-{% if action.assigned_volunteer == volunteer and action.can_reveal_private_information %}
+{% if volunteer in action.assigned_volunteers.all and action.can_reveal_private_information %}
+  {# FIXED assigned_volunteer #}
   <h2 class="maf-2">Resident details</h2>
   {% include './_resident_detail.html' with resident=action.resident %}
 {% endif %}
 
 <h2 class="maf-2">Action details</h2>
 <div class="card">
-  {% if action.assigned_volunteer == volunteer and action.can_reveal_private_information %}
+  {% if volunteer in action.assigned_volunteers.all and action.can_reveal_private_information %}
+    {# FIXED assigned_volunteer #}
     {% if action.private_description %}
     <div class="border-bottom p-3 space-3">
       {{action.private_description|markdown|heading_level:3}}
@@ -42,12 +44,13 @@
       {{action.public_description|markdown|heading_level:3}}
     </div>
   {% endif %}
-    {% if not action.is_assigned %}
+    {% if not action.is_fully_assigned %}
       <div class="p-3">
       {% include './_action_footer_unassigned.html' with action=action volunteer=volunteer%}
       </div>
     {%else %}
-      {% if action.assigned_volunteer != volunteer %}
+      {# FIXED assigned_volunteer #}
+      {% if volunteer not in action.assigned_volunteers.all %}
         <p class="text-center p-3">Someone's on it, but thanks for thinking of it!</p>
       {% else %}
         {% if action.has_interest %}

@@ -1,4 +1,4 @@
-{{ action.assigned_volunteer.first_name }} has made contact with {{ action.resident.first_name }}.
+{{ action.assigned_volunteers.all.0.first_name }} has made contact with {{ action.resident.first_name }}.
 
 See more information here:
 {{ admin_action_url }}

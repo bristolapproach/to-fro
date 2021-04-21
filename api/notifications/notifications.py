@@ -57,12 +57,13 @@ def create_action_notifications(action, changed={}):
     # Volunteers are notified about whether or not they're assigned to an action.
     elif action.action_status == ActionStatus.ASSIGNED:
 
-        # 1. Let the assigned volunteer know.
+        # 1. Let the assigned volunteers know.
 
         # Use `in` as the value might be `None`, in case of first assignment
         if 'assigned_volunteer_id' in changed:
             create([action.assigned_volunteer.email], action=action,
                    notification_type=NotificationTypes.VOLUNTEER_ASSIGNED)
+        # FIX assigned_volunteer
 
         # 2. Let the previously assigned volunteer know
             if (changed.get('assigned_volunteer_id')):
@@ -77,10 +78,10 @@ def create_action_notifications(action, changed={}):
             action, (NotificationTypes.VOLUNTEER_NOT_ASSIGNED, NotificationTypes.VOLUNTEER_ASSIGNED, NotificationTypes.VOLUNTEER_UNASSIGNED))
         already_received = set(
             [r for n in notifications for r in n.recipients])
-        recipients = [v.email for v in action.interested_volunteers.all()
-                      if v.email not in already_received and
-                      v.id != action.assigned_volunteer.id]
-
+        assigned = set([v.email for v in action.assigned_volunteers.all()])
+        recipients = set([v.email for v in action.interested_volunteers.all()]) - \
+                     assigned - already_received
+    # FIX assigned_volunteer
         if len(recipients) > 0:
             create(recipients, action=action,
                    notification_type=NotificationTypes.VOLUNTEER_NOT_ASSIGNED)

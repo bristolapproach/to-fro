@@ -1,4 +1,4 @@
-{{ action.assigned_volunteer.first_name }} just completed action #{{ action.id }}.
+{{ action.assigned_volunteers.all.0.first_name }} just completed action #{{ action.id }}.
 
 See more information here:
 {{ admin_action_url }}

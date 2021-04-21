@@ -1,4 +1,4 @@
-{{ action.assigned_volunteer.first_name }} could not complete action #{{ action.id }}.
+{{ action.assigned_volunteers.all.0.first_name }} could not complete action #{{ action.id }}.
 
 See more information here:
 {{ admin_action_url }}

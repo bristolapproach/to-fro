@@ -3,9 +3,10 @@ from categories.models import HelpType
 
 # Register our models with the admin site.
 from django.contrib import admin
-from django.contrib.admin.widgets import AutocompleteSelect
+from django.contrib.admin.widgets import AutocompleteSelect, AutocompleteSelectMultiple
 from django.utils import timezone
 from django.db import models
+from django.db.models.query import EmptyQuerySet
 from django import forms
 import datetime
 from django.utils.translation import gettext_lazy as _
@@ -97,8 +98,9 @@ class MadeContactFilter(admin.SimpleListFilter):
 
 
 class VolunteerFilter(AutocompleteFilter):
-    title = 'Assigned volunteer'
-    field_name = 'assigned_volunteer'
+    title = 'Assigned volunteers'
+    field_name = 'assigned_volunteers'
+    # FIX assigned_volunteer
 
 
 class ResidentFilter(AutocompleteFilter):
@@ -111,7 +113,7 @@ class CoordinatorFilter(AutocompleteFilter):
     field_name = 'coordinator'
 
 
-class AssignedVolunteerAutocompleteSelect(AutocompleteSelect):
+class AssignedVolunteerAutocompleteSelect(AutocompleteSelectMultiple):
     """
     Custom AutocompletSelect widget for the assigned volunteer
     that appends the ID of the action to the AJAX URL
@@ -147,18 +149,33 @@ class ActionAdminForm(forms.ModelForm):
         # (the one that provides the add, edit and delete shortcuts)
         # so it's actually its `widget` that holds
         # the original AutocompleteSelect widget
-        self.fields['assigned_volunteer'].widget.widget = AssignedVolunteerAutocompleteSelect(
-            self.fields['assigned_volunteer'].widget.widget,
-            self.instance)
+        '''import pdb; pdb.set_trace()'''
+        if 'assigned_volunteers' in self.fields:
+        #if True:
+            self.fields['assigned_volunteers'].widget.widget = AssignedVolunteerAutocompleteSelect(
+                # FIXED assigned_volunteer
+                self.fields['assigned_volunteers'].widget.widget,
+                # FIXED assigned_volunteer
+                self.instance)
+
 
     def clean(self):
         super().clean()
-        if (not self.cleaned_data['assigned_volunteer']
+        #import pdb; pdb.set_trace()
+        if self.cleaned_data.get('assigned_volunteers', EmptyQuerySet).count()  \
+                > self.cleaned_data['maximum_volunteers']:
+            raise forms.ValidationError(
+                _("You have assigned more than the maximum number of volunteers")
+            )
+
+        if (not self.cleaned_data['assigned_volunteers']
+                # FIXED assigned_volunteer
                 and self.cleaned_data['action_status'] not in Action.STATUSES_WITHOUT_ASSIGNED_VOLUNTEER + (ActionStatus.NO_LONGER_NEEDED,)):
             raise forms.ValidationError(
                 _("Please make sure to update the action status when no volunteer is assigned"),
                 code='invalid-status-for-unassigning-volunteer'
             )
+
 
     class Meta:
         model = Action
@@ -174,7 +191,9 @@ class FeedbackInline(admin.TabularInline):
 class ActionAdmin(ModelAdminWithDefaultPagination, ModelAdminWithExtraContext):
     form = ActionAdminForm
     list_display = ('id', 'resident', 'help_type',
-                    'requested_datetime', 'has_volunteer_made_contact',  'action_status', 'assigned_volunteer', 'time_taken')
+                    'requested_datetime', 'has_volunteer_made_contact',  'action_status',  'time_taken',
+                    )
+                    # FIXED assigned_volunteer
     list_filter = (ResidentFilter,
                    VolunteerFilter,
                    CoordinatorFilter,
@@ -182,8 +201,12 @@ class ActionAdmin(ModelAdminWithDefaultPagination, ModelAdminWithExtraContext):
                    ('action_status', ChoiceDropdownFilter),
                    MadeContactFilter,
                    )
-    list_editable = ['action_status', 'assigned_volunteer']
-    autocomplete_fields = ['resident', 'assigned_volunteer']
+    list_editable = ['action_status',                     ]
+    # FIXED assigned_volunteer
+    autocomplete_fields = ['resident',
+                           'assigned_volunteers',
+                           ]
+    # FIXED assigned_volunteer
     readonly_fields = ['time_taken', 'action_uuid']
     filter_horizontal = ('requirements', 'interested_volunteers')
     inlines = (FeedbackInline,)
@@ -191,7 +214,7 @@ class ActionAdmin(ModelAdminWithDefaultPagination, ModelAdminWithExtraContext):
     fieldsets = (
         ('Action Details', {
             'fields': ('resident', 'requested_datetime', 'help_type', 'action_priority', 'coordinator',
-                       'action_uuid', 'requirements')
+                       'minimum_volunteers', 'maximum_volunteers', 'action_uuid', 'requirements')
         }),
         ('External Links', {
             'fields': ('external_action_id',)
@@ -203,7 +226,8 @@ class ActionAdmin(ModelAdminWithDefaultPagination, ModelAdminWithExtraContext):
             'fields': ('added_by', 'call_datetime', 'call_duration')
         }),
         ('Help received', {
-            'fields': ('action_status', 'assigned_volunteer', 'time_taken', 'volunteer_made_contact_on', 'assigned_date', 'completed_date',)
+            'fields': ('action_status', 'assigned_volunteers', 'time_taken', 'volunteer_made_contact_on', 'assigned_date', 'completed_date',)
+            # FIXED assigned_volunteer
         }),
     )
 
@@ -239,6 +263,7 @@ class ActionAdmin(ModelAdminWithDefaultPagination, ModelAdminWithExtraContext):
                 elif (field_name == 'coordinator' or field_name == 'added_by'):
                     if (request.user.is_coordinator):
                         return request.user.coordinator
+
 
         return form
 
