@@ -2,13 +2,16 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.http import Http404
 from django.contrib.auth.decorators import permission_required
 from django.contrib.auth.decorators import login_required
-from actions.models import Action, ActionStatus, ActionFeedback
 from django.core.paginator import Paginator
 from django.contrib import messages
 from django.utils import timezone
 from django.views import generic
 from django.urls import reverse
+from rest_framework import viewsets
+
+from .models import Action, ActionStatus, ActionFeedback
 from .forms import ActionFeedbackForm, ActionCancellationForm
+from .serializer import ActionListSerializer, ActionSerializer
 
 from django.core.exceptions import ValidationError
 from datetime import datetime
@@ -47,6 +50,16 @@ LIST_DEFINITIONS = {
             '-action_status', 'requested_datetime', '-action_priority')
     }
 }
+
+
+class ActionViewSet(viewsets.ModelViewSet):
+    queryset = Action.objects.all()
+
+    def get_serializer_class(self):
+        if self.detail:
+            return ActionSerializer
+        else:
+            return ActionListSerializer
 
 
 class ActionsListView(generic.ListView):

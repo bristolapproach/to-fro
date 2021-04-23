@@ -3,6 +3,7 @@
 {% load svg %}
 {% load sitetree %}
 
+
 <!doctype html>
 <html lang="en">
 
@@ -17,6 +18,8 @@
 
   {% block extra_head %}
   {% endblock %}
+  <script src="{% static 'rest_framework/js/coreapi-0.1.1.js' %}"></script>
+  <script src="{% url 'actions:api-docs:schema-js' %}"></script>
   <link rel="stylesheet" href="{% static 'styles.css' %}">
 </head>
 
@@ -81,6 +84,19 @@
   <footer class="send-to-bottom site-footer">
     © 2020 To/Fro. {% sitetree_menu from "footer_navigation" include "trunk" %}
   </footer>
+  <script>
+      const coreapi = window.coreapi;
+      const schema = window.schema;
+      let auth = new coreapi.auth.SessionAuthentication({
+            csrfCookieName: 'csrftoken',
+            csrfHeaderName: 'X-CSRFToken',
+        });
+      let client = new coreapi.Client({auth: auth});
+      let action = ["api", "list"];
+            client.action(schema, action).then(function(result) {
+            // Return value is in 'result'
+      })
+  </script>
 </body>
 
 </html>
