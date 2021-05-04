@@ -1,11 +1,13 @@
 from django.test import TestCase, Client
-from django.urls import reverse
+from django.urls import include, path, reverse
 
 
 from model_bakery import baker
 from model_bakery.recipe import Recipe, foreign_key
 
 from django.contrib.auth.models import User as AuthUser
+from rest_framework.test import APIRequestFactory, APIClient, APITestCase
+
 from users.models import Volunteer, Coordinator, Resident
 from .models import Action, ActionFeedback, ActionStatus
 from categories.models import Requirement, Ward, HelpType
@@ -37,6 +39,25 @@ actionfeedback_recipe = Recipe(ActionFeedback,
                                volunteer=foreign_key(volunteer_dan),
 #                               assigned_volunteer_action=foreign_key(action_assigned_volunteers_recipe)
                                )
+class ActionAPITestCase(APITestCase):
+    #urlpatterns = [path('api/', include('api.urls')),]
+
+    def setUp(self):
+        self.action = action_recipe.make()
+
+    def test_create_account(self):
+        """
+        Ensure we read an Action
+
+        url = reverse('account-list')
+        data = {'name': 'DabApps'}
+        response = self.client.post(url, data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(Account.objects.count(), 1)
+        self.assertEqual(Account.objects.get().name, 'DabApps')
+        """
+        url = reverse('action:action-api',)
+        self.assertTrue(True)
 
 class ActionFeedbackTestCase(TestCase):
     def setUp(self):

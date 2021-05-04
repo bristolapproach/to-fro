@@ -1,12 +1,12 @@
 from django.urls import path, include
-from django.views.generic.base import RedirectView
-from rest_framework import routers
-from rest_framework.documentation import include_docs_urls
+from django.views.generic.base import RedirectView, TemplateView
+#from rest_framework import routers
+#from rest_framework.documentation import include_docs_urls
 from . import views
 
 # Routers
-router = routers.DefaultRouter()
-router.register(r'api', views.ActionViewSet)
+#router = routers.DefaultRouter()
+#router.register(r'api', views.OldActionViewSet)
 
 app_name = 'actions'
 urlpatterns = [
@@ -20,8 +20,12 @@ urlpatterns = [
     path('<action_uuid>/complete/', views.action_feedback, name="complete"),
     path('<action_uuid>/cancel/',
          views.stop_ongoing, name="cancel"),
+#    path('api/', include((router.urls, 'app_name'))),
+#    path('swagger-ui/', TemplateView.as_view(
+#        template_name='api/swagger_ui.html',
+#        extra_context={'schema_url':'openapi-schema'}),
+#        name='swagger-ui'),
+#    path('docs/', include_docs_urls(title='My API service'), name='api-docs'),
     path('<action_uuid>/', views.detail, name="detail"),
-    path('api/', include((router.urls, 'app_name'))),
-    path('docs/', include_docs_urls(title='My API service'), name='api-docs'),
     path('', RedirectView.as_view(url='/'), name='index'),
 ]

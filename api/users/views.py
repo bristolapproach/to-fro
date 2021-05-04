@@ -1,8 +1,26 @@
 from django.contrib import messages
 from django.urls import reverse, reverse_lazy
 from django.views.generic.edit import FormView
+from rest_framework import mixins
+from .models import Resident, Volunteer, Coordinator
+from .serializers import  ResidentSerializer, VolunteerSerializer, CoordinatorSerializer
+from core.views import BaseToFroViewSet
 
 from users.forms import UserSettingsForm
+
+class ResidentViewSet(mixins.UpdateModelMixin, BaseToFroViewSet):
+    queryset = Resident.objects.all()
+    serializer_class = ResidentSerializer
+
+
+class VolunteerViewSet(BaseToFroViewSet):
+    queryset = Volunteer.objects.all()
+    serializer_class = VolunteerSerializer
+
+
+class CoordinatorViewSet(BaseToFroViewSet):
+    queryset = Coordinator.objects.all()
+    serializer_class = CoordinatorSerializer
 
 
 class UserSettingsView(FormView):

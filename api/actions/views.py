@@ -7,11 +7,13 @@ from django.contrib import messages
 from django.utils import timezone
 from django.views import generic
 from django.urls import reverse
-from rest_framework import viewsets
+from rest_framework import viewsets, mixins
+
+from core.views import BaseToFroViewSet
 
 from .models import Action, ActionStatus, ActionFeedback
 from .forms import ActionFeedbackForm, ActionCancellationForm
-from .serializer import ActionListSerializer, ActionSerializer
+from .serializer import ActionSerializer
 
 from django.core.exceptions import ValidationError
 from datetime import datetime
@@ -51,16 +53,21 @@ LIST_DEFINITIONS = {
     }
 }
 
+#class ActionViewSet(viewsets.ModelViewSet):
+class ActionViewSet(mixins.UpdateModelMixin, BaseToFroViewSet):
+    queryset = Action.objects.all()
+    serializer_class = ActionSerializer
 
-class ActionViewSet(viewsets.ModelViewSet):
+'''
+class OldActionViewSet(BaseToFroViewSet):
     queryset = Action.objects.all()
 
     def get_serializer_class(self):
         if self.detail:
-            return ActionSerializer
+            return OldActionSerializer
         else:
-            return ActionListSerializer
-
+            return OldActionListSerializer
+'''
 
 class ActionsListView(generic.ListView):
     template_name = 'actions/index.html'

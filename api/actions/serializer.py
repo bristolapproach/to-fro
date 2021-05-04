@@ -1,22 +1,18 @@
 from django.urls import path, include
 from .models import Action
-#from users.models import Volunteer
+#from users.serializers import VolunteerSerializer
 from rest_framework import serializers
 
 # Serializers define the API representation.
 
-'''
-class VolunteerSerializer(serializers.ModelSerializer):
 
+class ActionSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Volunteer
-        fields = [
-            "id", "first_name", "last_name", "phone", "phone_secondary", "email", "notes",
-            "external_volunteer_id", "wards", "help_types", "requirements",
-        ]
-'''
+        model = Action
+        fields = '__all__'
 
-class ActionListSerializer(serializers.ModelSerializer):
+
+class OldActionListSerializer(serializers.ModelSerializer):
     resident = serializers.StringRelatedField(many=False)
     help_type = serializers.StringRelatedField(many=False)
     action_status = serializers.CharField(source='get_action_status_display')
@@ -29,10 +25,10 @@ class ActionListSerializer(serializers.ModelSerializer):
         ]
         #depth = 1
 
-
-class ActionSerializer(serializers.ModelSerializer):
+'''
+class OldActionSerializer(serializers.ModelSerializer):
     interested_volunteers = serializers.StringRelatedField(many=True)
-    #assigned_volunteers = VolunteerSerializer(many=True, read_only=True)
+    assigned_volunteers = VolunteerSerializer(many=True, read_only=True)
 
     class Meta:
         model = Action
@@ -44,5 +40,5 @@ class ActionSerializer(serializers.ModelSerializer):
             'assigned_volunteers', 'interested_volunteers', 'assigned_date', 'completed_date',
         ]
         depth = 1
-
+'''
 
