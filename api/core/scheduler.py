@@ -2,41 +2,25 @@ from notifications.digest import daily_digest_volunteer, weekly_digest_volunteer
 from datetime import datetime, timedelta
 import django_rq
 import os
-
-
 VOLUNTEER_DIGEST_HOUR = int(os.getenv("VOLUNTEER_DIGEST_HOUR", "9"))
-VOLUNTEER_DIGEST_MINUTE = int(os.getenv("VOLUNTEER_DIGEST_MINUTE", "0"))
-
-VOLUNTEER_DIGEST_WEEKLY_DAY = int(os.getenv("VOLUNTEER_DIGEST_WEEKLY_DAY", "6"))
+VOLUNTEER_DIGEST_MINUTE = int(os.getenv("VOLUNTEER_DIGEST_MINUTE", "0"))VOLUNTEER_DIGEST_WEEKLY_DAY = int(os.getenv("VOLUNTEER_DIGEST_WEEKLY_DAY", "6"))
 VOLUNTEER_DIGEST_WEEKLY_HOUR = int(os.getenv("VOLUNTEER_DIGEST_WEEKLY_HOUR", "19"))
 VOLUNTEER_DIGEST_WEEKLY_MINUTE = int(os.getenv("VOLUNTEER_DIGEST_WEEKLY_MINUTE", "0"))
-
-
 def setup():
     """Initialises our scheduled jobs.
     If the scheduled time changes, these values will be updated accordingly.
     """
     # Get the scheduler and existing scheduled jobs.
-    scheduler = django_rq.get_scheduler('default')
-
-    # 1. Daily digest emails for volunteers.
+    scheduler = django_rq.get_scheduler('default')    # 1. Daily digest emails for volunteers.
     schedule(scheduler,
         VOLUNTEER_DIGEST_HOUR, 
         VOLUNTEER_DIGEST_MINUTE,
-        daily_digest_volunteer)
-
-    #2. Weekly digest email for volunteers.
+        daily_digest_volunteer)    #2. Weekly digest email for volunteers.
     schedule_weekly(scheduler, VOLUNTEER_DIGEST_WEEKLY_DAY,
                     VOLUNTEER_DIGEST_WEEKLY_HOUR,
                     VOLUNTEER_DIGEST_WEEKLY_MINUTE,
-                    weekly_digest_volunteer)
-
-def schedule_weekly(scheduler, day, hour, minute, function):
-    # Define time to schedule the next weekly job
-
-    now = datetime.now()
-
-    #days until the next weekly send date
+                    weekly_digest_volunteer)def schedule_weekly(scheduler, day, hour, minute, function):
+    # Define time to schedule the next weekly job    now = datetime.now()    #days until the next weekly send date
     days = (day - now.weekday()) % 7
 
     scheduled_time = datetime(hour=hour, minute=minute,
