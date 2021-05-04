@@ -13,6 +13,7 @@ from django.contrib import admin
 from django.contrib.flatpages.views import flatpage
 from rest_framework.schemas import get_schema_view
 from rest_framework import routers
+from rest_framework.documentation import include_docs_urls
 
 
 from tofro.views import LoginView, LogoutView, PasswordResetConfirmView, homepage, resolve_static_path_view
@@ -45,6 +46,7 @@ urlpatterns = [
     path('accounts/logout', LogoutView.as_view(), name="logout"),
     path('accounts/settings', UserSettingsView.as_view(), name='user-settings'),
     path('notifications/', include('notifications.urls')),
+    path('docs/', include_docs_urls(title='My API service'), name='api-docs'),
     path('openapi', get_schema_view(
         title="Your Project",
         description="API for all things …",
