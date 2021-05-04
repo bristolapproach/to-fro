@@ -21,6 +21,7 @@
     DJANGO_ADMIN_LASTNAME: "{{ django_admin_lastname }}"
     DJANGO_ADMIN_PASSWORD: "{{ django_admin_password }}"
     DJANGO_ALLOWED_HOSTS: "{{ django_allowed_hosts }}"
+    DJANGO_CSRF_TRUSTED_ORIGINS: "{{ django_csrf_trusted_origins }}"
     DJANGO_SECRET_KEY: "{{ django_secret_key }}"
     DJANGO_PORT: "{{ django_port }}"
     DEBUG: "{{ django_debug }}"
