@@ -21,7 +21,7 @@ def setup():
 
     # 1. Daily digest emails for volunteers.
     schedule(scheduler,
-        VOLUNTEER_DIGEST_HOUR, 
+        VOLUNTEER_DIGEST_HOUR,
         VOLUNTEER_DIGEST_MINUTE,
         daily_digest_volunteer)
 

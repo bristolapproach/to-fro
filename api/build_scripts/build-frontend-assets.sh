@@ -1,6 +1,5 @@
 #!/bin/bash
 
-
 if [[ ! ($RUN_ENV == "local-dev" || $RUN_ENV == "dev" || $RUN_ENV == "prod") ]]; then
   echo "error: RUN_ENV must be one of: 'local-dev', 'dev', 'prod'"; exit 1
 fi
