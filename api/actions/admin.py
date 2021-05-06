@@ -100,7 +100,7 @@ class MadeContactFilter(admin.SimpleListFilter):
 class VolunteerFilter(AutocompleteFilter):
     title = 'Assigned volunteers'
     field_name = 'assigned_volunteers'
-    # FIX assigned_volunteer
+    # FIXED assigned_volunteer
 
 
 class ResidentFilter(AutocompleteFilter):
@@ -149,7 +149,6 @@ class ActionAdminForm(forms.ModelForm):
         # (the one that provides the add, edit and delete shortcuts)
         # so it's actually its `widget` that holds
         # the original AutocompleteSelect widget
-        '''import pdb; pdb.set_trace()'''
         if 'assigned_volunteers' in self.fields:
         #if True:
             self.fields['assigned_volunteers'].widget.widget = AssignedVolunteerAutocompleteSelect(
@@ -161,7 +160,6 @@ class ActionAdminForm(forms.ModelForm):
 
     def clean(self):
         super().clean()
-        #import pdb; pdb.set_trace()
         if self.cleaned_data.get('assigned_volunteers', EmptyQuerySet).count()  \
                 > self.cleaned_data['maximum_volunteers']:
             raise forms.ValidationError(
