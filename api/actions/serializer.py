@@ -7,9 +7,22 @@ from rest_framework import serializers
 
 
 class ActionSerializer(serializers.ModelSerializer):
+
+    def __init__( self, *args, **kwargs ):
+        #raise Exception
+        super(ActionSerializer, self).__init__(*args, **kwargs)
+        if not kwargs['context']['view'].detail:
+            self.fields.pop('potential_volunteer_ids')
+            self.fields.pop('actionfeedback_set')
+
     class Meta:
         model = Action
-        fields = '__all__'
+        fields = ['pk', 'external_action_id', 'added_by', 'coordinator', 'call_datetime',
+                  'call_duration', 'resident_id', 'requested_datetime', 'assigned_volunteers',
+                  'action_status', 'action_priority', 'public_description', 'private_description',
+                  'help_type_id', 'volunteer_made_contact_on', 'assigned_date', 'completed_date',
+                  'action_uuid', 'time_taken', 'minimum_volunteers', 'maximum_volunteers',
+                  'potential_volunteer_ids', 'actionfeedback_set']
 
 
 class OldActionListSerializer(serializers.ModelSerializer):

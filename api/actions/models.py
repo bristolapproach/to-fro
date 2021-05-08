@@ -224,6 +224,10 @@ class Action(models.Model):
             .all()
 
     @property
+    def potential_volunteer_ids(self):
+        return [v.pk for v in self.potential_volunteers]
+
+    @property
     def checkin_required(self):
         if self.volunteer_made_contact_on or self.maximum_volunteers > 1:
             return False
