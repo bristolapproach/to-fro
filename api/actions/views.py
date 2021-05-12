@@ -10,7 +10,7 @@ from django.urls import reverse
 from rest_framework import viewsets, mixins
 from rest_framework.decorators import action
 
-from core.views import BaseToFroViewSet
+from core.views import BaseToFroViewSet, IsInMixin
 
 from .models import Action, ActionStatus, ActionFeedback
 from .forms import ActionFeedbackForm, ActionCancellationForm
@@ -54,21 +54,11 @@ LIST_DEFINITIONS = {
     }
 }
 
-#class ActionViewSet(viewsets.ModelViewSet):
-class ActionViewSet(mixins.UpdateModelMixin, BaseToFroViewSet):
+
+class ActionViewSet(IsInMixin, mixins.UpdateModelMixin, BaseToFroViewSet):
     queryset = Action.objects.all()
     serializer_class = ActionSerializer
 
-'''
-class OldActionViewSet(BaseToFroViewSet):
-    queryset = Action.objects.all()
-
-    def get_serializer_class(self):
-        if self.detail:
-            return OldActionSerializer
-        else:
-            return OldActionListSerializer
-'''
 
 class ActionsListView(generic.ListView):
     template_name = 'actions/index.html'
