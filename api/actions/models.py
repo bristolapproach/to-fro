@@ -48,7 +48,8 @@ class Action(models.Model):
     call_duration = models.DurationField(
         null=True, blank=True, help_text="How long was the call?")
     resident = models.ForeignKey(
-        user_models.Resident, on_delete=models.PROTECT, null=True, help_text="Who made the request?")
+        user_models.Resident, on_delete=models.PROTECT, null=True,
+        help_text="Who made the request?", related_name='requested_actions')
     requested_datetime = models.DateTimeField(
         null=True, verbose_name="Due", help_text="When should the action be completed by?")
 
