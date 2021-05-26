@@ -35,7 +35,7 @@ class ResidentSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Resident
-        fields = ['first_name', 'last_name', 'phone', 'phone_secondary', 'email',
+        fields = ['id', 'first_name', 'last_name', 'phone', 'phone_secondary', 'email',
         'notes', 'address_line_1', 'address_line_2', 'address_line_3', 'postcode',
         'internet_access', 'smart_device', 'confident_online_shopping', 'requested_actions',
         'confident_online_comms', 'shielded', 'time_received', 'data_consent_date']
