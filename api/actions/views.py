@@ -12,9 +12,9 @@ from rest_framework.decorators import action
 
 from core.views import BaseToFroViewSet, IsInMixin
 
-from .models import Action, ActionStatus, ActionFeedback
+from .models import Action, ActionStatus, ActionFeedback, Referral, Organisation
 from .forms import ActionFeedbackForm, ActionCancellationForm
-from .serializer import ActionSerializer
+from .serializer import ActionSerializer, ReferralSerializer, OrganisationSerializer
 
 from django.core.exceptions import ValidationError
 from datetime import datetime
@@ -58,6 +58,16 @@ LIST_DEFINITIONS = {
 class ActionViewSet(IsInMixin, mixins.UpdateModelMixin, BaseToFroViewSet):
     queryset = Action.objects.all()
     serializer_class = ActionSerializer
+
+
+class ReferralViewSet(mixins.UpdateModelMixin, BaseToFroViewSet):
+    queryset = Referral.objects.all()
+    serializer_class = ReferralSerializer
+
+
+class OrganisationViewSet(mixins.UpdateModelMixin, BaseToFroViewSet):
+    queryset = Organisation.objects.all()
+    serializer_class = OrganisationSerializer
 
 
 class ActionsListView(generic.ListView):
