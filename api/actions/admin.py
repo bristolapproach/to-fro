@@ -1,4 +1,5 @@
 from .models import Action, ActionPriority, ActionStatus, ActionFeedback
+from .models import Referral, Organisation
 from categories.models import HelpType
 
 # Register our models with the admin site.
@@ -319,5 +320,14 @@ class ActionFeedbackAdmin(ModelAdminWithDefaultPagination, ModelAdminWithExtraCo
     resident.admin_order_field = 'action__resident'
 
 
+class ReferralAdmin(ModelAdminWithDefaultPagination):
+    list_display = ('id', 'resident', 'referral_organisation', 'referral_type', 'referral_status',
+                    'coordinator', 'added_by', 'completed_date')
+
+class OrganisationAdmin(ModelAdminWithDefaultPagination):
+    list_display = ('name', 'address_line_1', 'postcode', 'contact_name', 'email', 'phone_number')
+
+admin.site.register(Referral, ReferralAdmin)
+admin.site.register(Organisation, OrganisationAdmin)
 admin.site.register(Action, ActionAdmin)
 admin.site.register(ActionFeedback, ActionFeedbackAdmin)

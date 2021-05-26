@@ -1,4 +1,4 @@
-from categories.models import HelpType, Requirement
+from categories.models import HelpType, Requirement, ReferralType
 from users import models as user_models
 from django.db import models, transaction
 from django.utils import timezone
@@ -31,6 +31,13 @@ class ActionStatus:
         (NO_LONGER_NEEDED, 'No longer needed')
     ]
 
+class ReferralStatus:
+    CHOSEN, CONTACTED, COMPLETED = '1', '2', '3'
+    STATUSES = [
+        (CHOSEN, 'Referral org. chosen '),
+        (CONTACTED, 'Referral org. contacted'),
+        (COMPLETED, 'Referral complete')
+    ]
 
 class Action(models.Model):
 
@@ -274,3 +281,52 @@ class ActionFeedback(models.Model):
         return f"Feedback {self.id} - Action {self.action.id}"
 
 
+class Referral(models.Model):
+    external_referal_id = models.CharField( max_length=50, null=True, blank=True,
+                                            help_text="The ID of the referral in an external system")
+    added_by = models.ForeignKey(user_models.Coordinator, related_name='referral_added_by',
+                                 on_delete=models.PROTECT, help_text="What's your name?")
+    coordinator = models.ForeignKey(user_models.Coordinator, related_name='referral_coordinator',
+                                    on_delete=models.PROTECT, help_text="Who will mediate this referral?")
+    created_datetime = models.DateTimeField(auto_now_add=True)
+    resident = models.ForeignKey(user_models.Resident, on_delete=models.PROTECT, null=True,
+                                 help_text="Who made the request?",
+                                 related_name='requested_referrals')
+    referral_status = models.CharField(max_length=1, choices=ReferralStatus.STATUSES,
+                      default=ActionStatus.PENDING, help_text="What's the status of this action?")
+    completed_date = models.DateTimeField(null=True, blank=True, verbose_name="Completed on")
+    notes = models.TextField(null=True, blank=True, help_text="Notes describing referral")
+    referral_type = models.ForeignKey(ReferralType, on_delete=models.PROTECT, null=True,
+                                  help_text="Which kind of referral is needed")
+    referral_organisation = models.ForeignKey('Organisation', on_delete=models.PROTECT, null=True,
+                                  help_text="What organisation are you referring to?")
+
+    def __str__(self):
+        if self.resident:
+            return f"Referral {self.id} - {self.resident.full_name}"
+        else:
+            return f"Referral {self.id} - No resident"
+
+class Organisation(models.Model):
+    name = models.CharField(
+        max_length=100, help_text="Name of  organisation.")
+    address_line_1 = models.CharField(
+        max_length=100, help_text="First line of their address.")
+    address_line_2 = models.CharField(
+        max_length=100, null=True, blank=True, help_text="Second line of their address.")
+    address_line_3 = models.CharField(
+        max_length=100, null=True, blank=True, help_text="Third line of their address.")
+    postcode = models.CharField(
+        max_length=10, help_text="Address postcode.")
+    email = models.CharField(
+        max_length=50, null=True, blank=True, help_text="Main email for organisation contact.")
+    notes = models.TextField(
+        null=True, blank=True, help_text="Any other notes?")
+    contact_name = models.CharField(max_length=100, null=True, blank=True,
+        help_text="Name of  organisation contact.")
+    phone_number = models.CharField(
+        max_length=20, null=True, blank=True, help_text="Main phone number for organisation contact.")
+    created_datetime = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.name

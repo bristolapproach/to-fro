@@ -32,9 +32,17 @@ class HelpType(models.Model):
     maximum_volunteers = models.SmallIntegerField(
         default=1, help_text="maximum number of volunteers required for action")
 
-
     def __str__(self):
         return f"{self.name}"
 
     class Meta:
         verbose_name = _('action type')
+
+
+class ReferralType(models.Model):
+    name = models.CharField(max_length=50, null=True)
+    icon_name = models.CharField(
+        max_length=50, blank=True, null=True, help_text="Name of the fontawesome icon used to represent this type of referal (among the 'free' ones: https://fontawesome.com/icons?d=gallery&m=free)")
+
+    def __str__(self):
+        return f"{self.name}"

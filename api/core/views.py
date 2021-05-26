@@ -13,6 +13,10 @@ class BaseToFroViewSet(mixins.CreateModelMixin,
     pass
 
 class IsInMixin():
+    """
+    A Django Rest Framework Viewset mixin that allows a list of pks to be passed and that lists only
+    items with pks in that list
+    """
     @action(methods=['get'], detail=False, url_path='isin/(?P<pks>[0-9,]+)')
     def isin(self, request, pks=None):
         pks = pks.split(',')

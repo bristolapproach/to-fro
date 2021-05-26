@@ -1,6 +1,6 @@
 from django import forms
 from django.contrib import admin
-from .models import Ward, HelpType, Requirement
+from .models import Ward, HelpType, Requirement, ReferralType
 
 from core.admin import ModelAdminWithDefaultPagination
 from django.utils.translation import gettext as _
@@ -40,5 +40,15 @@ class HelpTypeAdmin(ModelAdminWithDefaultPagination):
     )
     filter_horizontal = ('requirements',)
 
+class ReferralTypeForm(HelpTypeForm):
+    class Meta:
+        model = ReferralType
+        fields = '__all__'
+
+
+class ReferralTypeAdmin(ModelAdminWithDefaultPagination):
+    form = ReferralTypeForm
+
 
 admin.site.register(HelpType, HelpTypeAdmin)
+admin.site.register(ReferralType, ReferralTypeAdmin)
