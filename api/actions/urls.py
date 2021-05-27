@@ -15,6 +15,7 @@ urlpatterns = [
          name="available"),
     path('completed/', views.ActionsListView.as_view(list_type='completed'),
          name="completed"),
+    path('coordinator', views.CoordinatorActionView.as_view(), name="coordinate_actions"),
     path('ongoing/', views.ActionsListView.as_view(
         list_type='ongoing'), name="ongoing"),
     path('<action_uuid>/complete/', views.action_feedback, name="complete"),

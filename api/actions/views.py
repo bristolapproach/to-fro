@@ -10,6 +10,8 @@ from django.urls import reverse
 from rest_framework import viewsets, mixins
 from rest_framework.decorators import action
 
+from django.contrib.auth.mixins import UserPassesTestMixin, AccessMixin
+
 from core.views import BaseToFroViewSet, IsInMixin
 
 from .models import Action, ActionStatus, ActionFeedback, Referral, Organisation
@@ -68,6 +70,19 @@ class ReferralViewSet(mixins.UpdateModelMixin, BaseToFroViewSet):
 class OrganisationViewSet(mixins.UpdateModelMixin, BaseToFroViewSet):
     queryset = Organisation.objects.all()
     serializer_class = OrganisationSerializer
+
+
+class CoordinatorActionView(UserPassesTestMixin, AccessMixin, generic.TemplateView):
+    template_name = 'actions/coordinator.html'
+
+    def test_func(self):
+        return self.request.user.is_staff
+
+    def get_context_data(self, **kwargs):
+        # Call the base implementation first to get a context
+        context = super().get_context_data(**kwargs)
+        return context
+
 
 
 class ActionsListView(generic.ListView):
