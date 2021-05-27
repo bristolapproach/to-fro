@@ -185,7 +185,8 @@ class VolunteerAdminAutocomplete(ModelAdminWithDefaultPagination):
             interested_volunteer_ids = Volunteer.objects.filter(
                 actions_interested_in__id=action_id).values_list('id', flat=True)
             volunteers_who_helped_resident_ids = Volunteer.objects.filter(
-                action__resident__action__id=action_id
+                #action__resident__action__id=action_id
+                actions_assigned_to__resident__requested_actions__id = action_id
             ).distinct().values_list('id', flat=True)
 
             # Add a couple of extra information to the query

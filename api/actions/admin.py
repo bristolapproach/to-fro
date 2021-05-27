@@ -317,7 +317,7 @@ class ActionFeedbackAdmin(ModelAdminWithDefaultPagination, ModelAdminWithExtraCo
     def resident(self, af):
         return af.action.resident
     resident.short_description = 'Resident'
-    resident.admin_order_field = 'action__resident'
+    resident.admin_order_field = 'actions_assigned_to__resident'
 
 
 class ReferralAdmin(ModelAdminWithDefaultPagination):

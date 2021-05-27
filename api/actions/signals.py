@@ -30,7 +30,7 @@ def update_totals(feedback):
                       feedback_queryset=feedback.action.actionfeedback_set)
     update_time_total(feedback.action.resident, total_attr='time_received',
                       feedback_queryset=ActionFeedback.objects.filter(
-                          action__resident=feedback.action.resident))
+                          actions_assigned_to__resident=feedback.action.resident))
 
 
 def update_time_total(instance, total_attr='', feedback_queryset=''):
