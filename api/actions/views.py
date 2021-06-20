@@ -84,6 +84,18 @@ class CoordinatorActionView(UserPassesTestMixin, AccessMixin, generic.TemplateVi
         return context
 
 
+class CoordinatorCreateActionReferralView(UserPassesTestMixin, AccessMixin, generic.TemplateView):
+    template_name = 'actions/create_action_referral.html'
+
+    def test_func(self):
+        return self.request.user.is_staff
+
+    def get_context_data(self, **kwargs):
+        # Call the base implementation first to get a context
+        context = super().get_context_data(**kwargs)
+        return context
+
+
 
 class ActionsListView(generic.ListView):
     template_name = 'actions/index.html'
