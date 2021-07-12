@@ -16,7 +16,8 @@ urlpatterns = [
     path('completed/', views.ActionsListView.as_view(list_type='completed'),
          name="completed"),
     path('coordinator/', views.CoordinatorActionView.as_view(), name="coordinate_actions"),
-    path('coordinator/add/', views.CoordinatorCreateActionReferralView.as_view(), name="coordinate_actions"),
+    path('coordinator/add/', views.CoordinatorCreateActionReferralView.as_view(), name="add_actions"),
+    path('coordinator/action/', views.CoordinatorSingleActionView.as_view(), name="single_action"),
     path('ongoing/', views.ActionsListView.as_view(
         list_type='ongoing'), name="ongoing"),
     path('<action_uuid>/complete/', views.action_feedback, name="complete"),

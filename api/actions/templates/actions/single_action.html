@@ -1,0 +1,12 @@
+{% extends 'layouts/application.html' %}
+
+{% load humanize %}
+{% load actions %}
+{% load static %}
+
+
+{% block 'content' %}
+<div id="singleActionView"></div>
+<script type="text/javascript" src="{% static '/vue/dist/js/chunk-vendors.js' %}"></script>
+        <script type="text/javascript" src="{% static 'vue/dist/js/app.js' %}"></script>
+{% endblock %}
