@@ -11,15 +11,18 @@
 
    # Install Ansible
    pip install ansible
+   
+   # De-activate the Ansible virtual environment
+   deactivate
    ```
 
 2. Clone the repository
 
-   `git clone git@github.com:cgillions/to-fro.git`
+   `git clone git@github.com:bristolapproach/to-fro.git`
 
 3. Move into the directory
 
-   `cd tofro/deployment`
+   `cd to-fro/deployment`
 
 4. Install the Ansible requirements
 
@@ -34,6 +37,12 @@
 5. Get the `vault_password` file from the project administrator
 
    This file contains a password that's used to encrypt sensitive information in the Playbook
+   
+   Copy this password into a new vault_password file ex.
+   
+   ```
+   nano ~/to-fro/deployment/vault_password 
+   ```
 
 6. Run the Playbook, specifying the development inventory file
 
