@@ -14,15 +14,18 @@ class ActionSerializer(serializers.ModelSerializer):
         if not kwargs['context']['view'].detail:
             self.fields.pop('potential_volunteer_ids')
             self.fields.pop('actionfeedback_set')
+            self.fields.pop('requirements')
+            self.fields.pop('interested_volunteers')
 
     class Meta:
         model = Action
         fields = ['id', 'external_action_id', 'added_by', 'coordinator', 'call_datetime',
-                  'call_duration', 'resident_id', 'requested_datetime', 'assigned_volunteers',
+                  'call_duration', 'resident', 'requested_datetime', 'assigned_volunteers',
                   'action_status', 'action_priority', 'public_description', 'private_description',
-                  'help_type_id', 'volunteer_made_contact_on', 'assigned_date', 'completed_date',
+                  'help_type', 'volunteer_made_contact_on', 'assigned_date', 'completed_date',
                   'action_uuid', 'time_taken', 'minimum_volunteers', 'maximum_volunteers',
-                  'potential_volunteer_ids', 'actionfeedback_set']
+                  'potential_volunteer_ids', 'actionfeedback_set', 'requirements',
+                  'interested_volunteers']
 
 
 class ReferralSerializer(serializers.ModelSerializer):
@@ -32,9 +35,17 @@ class ReferralSerializer(serializers.ModelSerializer):
 
 
 class OrganisationSerializer(serializers.ModelSerializer):
+    def __init__( self, *args, **kwargs ):
+        super(OrganisationSerializer, self).__init__(*args, **kwargs)
+        if not kwargs['context']['view'].detail:
+            self.fields.pop('organisation_referrals')
+            self.fields.pop('referred_residents')
+
     class Meta:
         model = Organisation
-        fields = '__all__'
+        fields = ['id', 'name', 'address_line_1', 'address_line_2', 'address_line_3', 'postcode',
+                  'email', 'notes', 'contact_name', 'phone_number', 'organisation_referrals',
+                  'referred_residents']
 
 
 

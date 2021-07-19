@@ -125,6 +125,11 @@ class Resident(Person):
             self.address_line_1, self.address_line_2, self.address_line_3, self.postcode) if line]
         return join_char.join(filled_lines)
 
+    @property
+    def assigned_volunteers(self):
+        qs = self.requested_actions.values_list('assigned_volunteers', flat=True).distinct()
+        return [pk for pk in qs if pk]
+
 
 class Volunteer(UserProfileMixin, Person):
     """Concrete class for those who can offer help."""

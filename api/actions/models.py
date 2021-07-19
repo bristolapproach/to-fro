@@ -299,7 +299,8 @@ class Referral(models.Model):
     referral_type = models.ForeignKey(ReferralType, on_delete=models.PROTECT, null=True,
                                   help_text="Which kind of referral is needed")
     referral_organisation = models.ForeignKey('Organisation', on_delete=models.PROTECT, null=True,
-                                  help_text="What organisation are you referring to?")
+                                  help_text="What organisation are you referring to?",
+                                  related_name='organisation_referrals')
 
     def __str__(self):
         if self.resident:
@@ -327,6 +328,12 @@ class Organisation(models.Model):
     phone_number = models.CharField(
         max_length=20, null=True, blank=True, help_text="Main phone number for organisation contact.")
     created_datetime = models.DateTimeField(auto_now_add=True)
+
+    @property
+    def referred_residents(self):
+        qs = self.organisation_referrals.values_list('resident', flat=True).distinct()
+        return [pk for pk in qs if pk]
+
 
     def __str__(self):
         return self.name

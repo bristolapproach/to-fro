@@ -31,6 +31,8 @@ class ResidentSerializer(serializers.ModelSerializer):
         super(ResidentSerializer, self).__init__(*args, **kwargs)
         if not kwargs['context']['view'].detail:
             self.fields.pop('requested_actions')
+            self.fields.pop('assigned_volunteers')
+            self.fields.pop('requested_referrals')
 
 
     class Meta:
@@ -38,6 +40,7 @@ class ResidentSerializer(serializers.ModelSerializer):
         fields = ['id', 'first_name', 'last_name', 'phone', 'phone_secondary', 'email',
         'notes', 'address_line_1', 'address_line_2', 'address_line_3', 'postcode',
         'internet_access', 'smart_device', 'confident_online_shopping', 'requested_actions',
-        'confident_online_comms', 'shielded', 'time_received', 'data_consent_date', 'ward']
+        'confident_online_comms', 'shielded', 'time_received', 'data_consent_date', 'ward',
+        'assigned_volunteers', 'requested_referrals']
 
 
