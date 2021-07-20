@@ -1,6 +1,7 @@
 from categories.models import HelpType, Requirement, ReferralType
 from users import models as user_models
 from django.db import models, transaction
+from django.db.models import Q, Count
 from django.utils import timezone
 from model_utils import FieldTracker
 import uuid
@@ -225,15 +226,26 @@ class Action(models.Model):
         return self.action_status == ActionStatus.ASSIGNED or self.action_status == ActionStatus.ONGOING
 
     @property
-    def potential_volunteers(self):
+    def potential_volunteers_old(self):
         return user_models.Volunteer.objects \
             .filter(wards__id=self.ward.id) \
             .filter(help_types__id=self.help_type.id) \
             .all()
+    @property
+    def potential_volunteers(self):
+        target = self.requirements.all().count()
+        qs = user_models.Volunteer.objects \
+            .filter(wards__id=self.ward.id) \
+            .filter(help_types__id=self.help_type.id) \
+            .annotate(matched_requirements=Count('requirements',
+                filter=Q(requirements__in=self.requirements.all()))) \
+            .filter(matched_requirements=target)
+        return qs
 
     @property
     def potential_volunteer_ids(self):
-        return [v.pk for v in self.potential_volunteers]
+        qs = self.potential_volunteers
+        return [v.pk for v in qs]
 
     @property
     def checkin_required(self):
