@@ -20,7 +20,7 @@ from tofro.views import LoginView, LogoutView, PasswordResetConfirmView, homepag
 from tofro.lib import login_required
 from users.views import UserSettingsView
 from actions.views import ActionViewSet, ReferralViewSet, OrganisationViewSet
-from users.views import VolunteerViewSet, CoordinatorViewSet, ResidentViewSet
+from users.views import VolunteerViewSet, CoordinatorViewSet, ResidentViewSet, CurrentCoordinatorViewSet
 from categories.views import HelpTypeViewSet, RequirementViewSet, WardViewSet, ReferralTypeViewSet
 
 router2 = routers.SimpleRouter()
@@ -29,6 +29,7 @@ router2.register(r'referrals', ReferralViewSet)
 router2.register(r'organisations', OrganisationViewSet)
 router2.register(r'volunteers', VolunteerViewSet)
 router2.register(r'coordinators', CoordinatorViewSet)
+router2.register(r'current_coordinator', CurrentCoordinatorViewSet, basename='CurrentCoordinator')
 router2.register(r'residents', ResidentViewSet)
 router2.register(r'helptypes', HelpTypeViewSet)
 router2.register(r'referraltypes', ReferralTypeViewSet)
