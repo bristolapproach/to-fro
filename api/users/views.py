@@ -1,7 +1,7 @@
 from django.contrib import messages
 from django.urls import reverse, reverse_lazy
 from django.views.generic.edit import FormView
-from rest_framework import mixins
+from rest_framework import mixins, viewsets, response
 from .models import Resident, Volunteer, Coordinator
 from .serializers import  ResidentSerializer, VolunteerSerializer, CoordinatorSerializer
 from core.views import BaseToFroViewSet, IsInMixin
@@ -21,6 +21,15 @@ class VolunteerViewSet(IsInMixin, BaseToFroViewSet):
 class CoordinatorViewSet(BaseToFroViewSet):
     queryset = Coordinator.objects.all()
     serializer_class = CoordinatorSerializer
+
+class CurrentCoordinatorViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
+    queryset = Coordinator.objects.all()
+    serializer_class = CoordinatorSerializer
+
+    def list(self, request):
+        queryset = Coordinator.objects.filter(user=request.user)
+        serializer = self.get_serializer(queryset, many=True)
+        return response.Response(serializer.data)
 
 
 class UserSettingsView(FormView):
