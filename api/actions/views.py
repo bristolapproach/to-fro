@@ -71,8 +71,18 @@ class OrganisationViewSet(mixins.UpdateModelMixin, BaseToFroViewSet):
     queryset = Organisation.objects.all()
     serializer_class = OrganisationSerializer
 
+class CoordinatorDashboardView(UserPassesTestMixin, AccessMixin, generic.TemplateView):
+    template_name = 'actions/dashboard.html'
 
-class CoordinatorActionView(UserPassesTestMixin, AccessMixin, generic.TemplateView):
+    def test_func(self):
+        return self.request.user.is_staff
+
+    def get_context_data(self, **kwargs):
+        # Call the base implementation first to get a context
+        context = super().get_context_data(**kwargs)
+        return context
+
+class CoordinatorCallView(UserPassesTestMixin, AccessMixin, generic.TemplateView):
     template_name = 'actions/coordinator.html'
 
     def test_func(self):
