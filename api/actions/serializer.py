@@ -1,5 +1,5 @@
 from django.urls import path, include
-from .models import Action, Referral, Organisation
+from .models import Action, Referral, Organisation, ActionFeedback
 #from users.serializers import VolunteerSerializer
 from rest_framework import serializers
 
@@ -27,6 +27,11 @@ class ActionSerializer(serializers.ModelSerializer):
                   'potential_volunteer_ids', 'actionfeedback_set', 'requirements',
                   'interested_volunteers']
 
+
+class ActionFeedbackSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ActionFeedback
+        fields = ['id', 'action', 'volunteer', 'time_taken', 'notes', 'created_date_time']
 
 class ReferralSerializer(serializers.ModelSerializer):
     class Meta:

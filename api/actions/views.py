@@ -16,7 +16,7 @@ from core.views import BaseToFroViewSet, IsInMixin
 
 from .models import Action, ActionStatus, ActionFeedback, Referral, Organisation
 from .forms import ActionFeedbackForm, ActionCancellationForm
-from .serializer import ActionSerializer, ReferralSerializer, OrganisationSerializer
+from .serializer import ActionSerializer, ReferralSerializer, OrganisationSerializer, ActionFeedbackSerializer
 
 from django.core.exceptions import ValidationError
 from datetime import datetime
@@ -60,16 +60,33 @@ LIST_DEFINITIONS = {
 class ActionViewSet(IsInMixin, mixins.UpdateModelMixin, BaseToFroViewSet):
     queryset = Action.objects.all()
     serializer_class = ActionSerializer
+    ordering = '-pk'
+
+
+class ActionFeedbackViewSet(IsInMixin, BaseToFroViewSet):
+    queryset = ActionFeedback.objects.all()
+    serializer_class = ActionFeedbackSerializer
+    ordering = '-pk'
+
+    @action(methods=['get'], detail=False, url_path='volunteerin/(?P<pks>[0-9,]+)')
+    def volunteerin( self, request, pks=None ):
+        pks = pks.split(',')
+        pks = [int(pk) for pk in pks]
+        self.queryset = self.queryset.filter(volunteer__in=pks)
+        #print(self.queryset.count())
+        return self.list(request)
 
 
 class ReferralViewSet(mixins.UpdateModelMixin, BaseToFroViewSet):
     queryset = Referral.objects.all()
     serializer_class = ReferralSerializer
+    ordering = '-pk'
 
 
 class OrganisationViewSet(mixins.UpdateModelMixin, BaseToFroViewSet):
     queryset = Organisation.objects.all()
     serializer_class = OrganisationSerializer
+    ordering = 'name'
 
 
 class CoordinatorActionView(UserPassesTestMixin, AccessMixin, generic.TemplateView):
