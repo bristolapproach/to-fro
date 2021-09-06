@@ -4,9 +4,12 @@
 {% load actions %}
 {% load static %}
 
-
+{% block 'title' %}
+  <h1 class="text-center container-fluid">Coordinator Dashboard<a href="./call" class="btn btn-lg btn-primary float-right">Start Call</a></h1>
+  
+{% endblock %}
 {% block 'content' %}
-<div class="row">
+<div class="row no-gutters">
   <div id="sideMenu" class="nav flex-column">
     <a class="nav-link" href="/actions/coordinator/actions/">Actions</a>
     <a class="nav-link" href="/admin/actions/referral/">Referrals</a>
@@ -16,7 +19,9 @@
     <a class="nav-link" href="/admin/">Admin</a>
   </div>
   <div class="col">
-    <div id="dashboard"></div>
+    <div class="row no-gutters">
+      <div id="dashboard"></div>
+    </div>    
   </div>
   
 </div>
