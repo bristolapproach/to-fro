@@ -1,0 +1,2 @@
+[tofro_server]
+10.20.51.147 ansible_user=centos
