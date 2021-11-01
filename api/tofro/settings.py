@@ -99,7 +99,7 @@ if DEBUG:
     # ensures whitenoise is used in development, as recommended:
     # http://whitenoise.evans.io/en/stable/django.html#using-whitenoise-in-development
     INSTALLED_APPS.insert(0, 'whitenoise.runserver_nostatic')
-    INSTALLED_APPS.insert(0, 'django_werkzeug')
+    #INSTALLED_APPS.insert(0, 'django_werkzeug')
 
 
 MIDDLEWARE = [
@@ -118,6 +118,7 @@ SITE_ID = 1
 
 # Add the debug toolbar.
 if DEBUG:
+    pass
     INSTALLED_APPS = INSTALLED_APPS + ['debug_toolbar']
     MIDDLEWARE = [
         'debug_toolbar.middleware.DebugToolbarMiddleware'] + MIDDLEWARE
@@ -128,7 +129,7 @@ DEBUG_TOOLBAR_CONFIG = {
 
 # Used by debug_toolbar.
 INTERNAL_IPS = [
-    '172.30.0.1'  # This is the Docker container's private IP address...
+    '172.30.0.1',  # This is the Docker container's private IP address...
 ]
 
 ROOT_URLCONF = 'tofro.urls'
@@ -180,6 +181,12 @@ RQ_QUEUES = {
         'DEFAULT_TIMEOUT': 500
     }
 }
+# Sessions
+
+SESSION_COOKIE_AGE = 1800
+if not DEBUG:
+    SESSION_COOKIE_SECURE = True
+    SECURE_HSTS_SECONDS = 60
 
 
 # Password validation
@@ -295,8 +302,13 @@ REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': ['rest_framework.permissions.IsAdminUser'],
     'DEFAULT_PAGINATION_CLASS': 'core.pagination.ToFroPagination',
     'DEFAULT_SCHEMA_CLASS':'rest_framework.schemas.coreapi.AutoSchema',
-    'PAGE_SIZE': 10
+    'PAGE_SIZE': 50
 
 }
+
+
+
+
+DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
 # Require authentication
 
