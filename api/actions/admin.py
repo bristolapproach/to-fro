@@ -121,7 +121,7 @@ class AssignedVolunteerAutocompleteSelect(AutocompleteSelectMultiple):
     """
 
     def __init__(self, existing_widget, model_instance):
-        self.rel = existing_widget.rel
+        self.field = existing_widget.field
         self.admin_site = existing_widget.admin_site
         self.db = existing_widget.db
         self.choices = existing_widget.choices
