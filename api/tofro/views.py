@@ -8,7 +8,8 @@ from django.http import HttpResponse
 from django.shortcuts import resolve_url
 from whitenoise.middleware import WhiteNoiseMiddleware
 
-from actions.views import ActionsListView
+from actions.views import ActionsListView, CoordinatorDashboardView
+from users.models import volunteer_check, coordinator_check
 from .lib import has_permission
 from .forms import SetFirstPasswordForm
 
@@ -26,7 +27,9 @@ class LoginRedirection:
         Pick where to redirect the user depending on 
         the profiles they have
         """
-        if user.is_volunteer:
+        if user.is_coordinator:
+            return reverse('actions:coordinator_dashboard')
+        elif user.is_volunteer:
             return reverse('home')
 
         return reverse('admin:index')
@@ -102,10 +105,14 @@ def homepage(request):
     Custom hopepage view that'll delegate its rendering to 
     specific views depending if the user is a Volunteer
     """
-    if (has_permission(request.user)):
-        return ActionsListView.as_view(list_type='mine')(request)
-    else:
-        return LoginView.as_view()(request)
+
+    if request.user.is_authenticated:
+        if coordinator_check(request.user):
+            return CoordinatorDashboardView.as_view()(request)
+        elif volunteer_check(request.user):
+            return ActionsListView.as_view(list_type='mine')(request)
+
+    return LoginView.as_view()(request)
 
 
 def _is_logged_in_admin(user):

@@ -290,6 +290,14 @@ User.is_volunteer = is_volunteer
 User.is_coordinator = is_coordinator
 
 
+def volunteer_check(user):
+    return user.is_volunteer
+
+
+def coordinator_check(user):
+    return user.is_coordinator
+
+
 class Settings(models.Model):
     """
     A profile to store extra info that's not related to
