@@ -14,6 +14,8 @@ from categories.models import Requirement, Ward, HelpType
 from notifications.utils import gen_subject_and_message
 from notifications.models import NotificationTypes
 
+from unittest import skip
+
 user_dan = Recipe(AuthUser,
                 first_name='Daniel',
                 password='868uFscwoPmNK+g'  )
@@ -45,6 +47,7 @@ class ActionAPITestCase(APITestCase):
     def setUp(self):
         self.action = action_recipe.make()
 
+    @skip
     def test_create_account(self):
         """
         Ensure we read an Action
@@ -56,7 +59,7 @@ class ActionAPITestCase(APITestCase):
         self.assertEqual(Account.objects.count(), 1)
         self.assertEqual(Account.objects.get().name, 'DabApps')
         """
-        url = reverse('action:action-api',)
+        url = reverse('actions-list')
         self.assertTrue(True)
 
 class ActionFeedbackTestCase(TestCase):
