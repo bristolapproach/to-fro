@@ -10,7 +10,7 @@ done
 # Build the front-end assets
 npm install
 npm install -g parcel-bundler
-# npm run build  # todo: removed
+npm run build  # todo: removed
 
 # Set up the data migrations.
 python3 manage.py makemigrations
