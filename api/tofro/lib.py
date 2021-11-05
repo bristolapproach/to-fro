@@ -26,7 +26,7 @@ def login_required(function=None, redirect_field_name=REDIRECT_FIELD_NAME, login
 
 
 def has_permission(user):
-    return user.is_authenticated and user.is_volunteer
+    return user.is_authenticated and (user.is_volunteer or user.is_coordinator)
 
 
 def login_not_required(f):
