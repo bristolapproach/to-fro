@@ -11,8 +11,10 @@ from rest_framework import viewsets, mixins
 from rest_framework.decorators import action
 
 from django.contrib.auth.mixins import UserPassesTestMixin, AccessMixin
+from django.contrib.auth.decorators import user_passes_test
 
 from core.views import BaseToFroViewSet, IsInMixin
+from users.models import volunteer_check
 
 from .models import Action, ActionStatus, ActionFeedback, Referral, Organisation
 from .forms import ActionFeedbackForm, ActionCancellationForm
@@ -56,6 +58,8 @@ LIST_DEFINITIONS = {
     }
 }
 
+def volunteer_check(user):
+    return user.is_volunteer
 
 class ActionViewSet(IsInMixin, mixins.UpdateModelMixin, BaseToFroViewSet):
     queryset = Action.objects.all()
@@ -144,10 +148,18 @@ class CoordinatorSingleActionView(UserPassesTestMixin, AccessMixin, generic.Temp
         context = super().get_context_data(**kwargs)
         return context
 
-class ActionsListView(generic.ListView):
+class ActionsListView(UserPassesTestMixin, AccessMixin, generic.ListView):
+
+    def test_func(self):
+        return volunteer_check(self.request.user)
+
+    def get_permission_denied_message(self):
+        return "You do not have permission to view that page"
+
     template_name = 'actions/index.html'
     context_object_name = 'actions'
     list_type = 'available'
+
     paginate_by = 20
 
     def get_queryset(self):
@@ -180,12 +192,12 @@ def back_url(action, volunteer):
 
     return reverse('actions:available')
 
-
+@user_passes_test(volunteer_check)
 def pkdetail(request, action_pk):
     action = get_object_or_404(Action, pk=action_pk)
     return redirect(action, permanent=True)
 
-
+@user_passes_test(volunteer_check)
 def detail(request, action_uuid):
     volunteer = request.user.volunteer
     try:
@@ -235,14 +247,14 @@ def detail(request, action_uuid):
 
     return render(request, 'actions/detail.html', context)
 
-
+@user_passes_test(volunteer_check)
 def stop_ongoing(request, action_uuid):
     return action_feedback(request, action_uuid, template_name="actions/stop_ongoing.html", Form=ActionCancellationForm, extra_context={
         'title': 'Your collaboration is stopping',
         'heading': 'Your collaboration is stopping'
     })
 
-
+@user_passes_test(volunteer_check)
 def action_feedback(request, action_uuid, template_name='actions/complete.html', Form=ActionFeedbackForm, extra_context={}):
     volunteer = request.user.volunteer
     try:
