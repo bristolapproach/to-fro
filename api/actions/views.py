@@ -23,6 +23,8 @@ from .serializer import ActionSerializer, ReferralSerializer, OrganisationSerial
 from django.core.exceptions import ValidationError
 from datetime import datetime
 
+import logging
+logger = logging.getLogger(__name__)
 
 LIST_DEFINITIONS = {
     'available': {

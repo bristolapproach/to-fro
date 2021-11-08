@@ -93,6 +93,7 @@ INSTALLED_APPS = [
     'django.contrib.flatpages',
     'admin_overrides',
     'rest_framework',
+    'axes',
 
 ]
 if DEBUG:
@@ -111,7 +112,9 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'axes.middleware.AxesMiddleware',
 ]
+
 
 # Necessary for Flatpage
 SITE_ID = 1
@@ -207,7 +210,10 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-AUTHENTICATION_BACKENDS = ['core.backends.EmailBackend']
+AUTHENTICATION_BACKENDS = [
+    'axes.backends.AxesBackend',
+    'core.backends.EmailBackend',
+]
 
 
 # Internationalization
@@ -306,9 +312,11 @@ REST_FRAMEWORK = {
 
 }
 
-
-
-
 DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
 # Require authentication
+
+AXES_FAILURE_LIMIT = 5
+AXES_COOLOFF_TIME = 1
+AXES_ONLY_USER_FAILURES = True
+AXES_VERBOSE = False
 

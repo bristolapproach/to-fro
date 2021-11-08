@@ -12,6 +12,9 @@ npm install
 npm install -g parcel-bundler
 npm run build  # todo: removed
 
+# Check settings
+python3 manage.py check
+
 # Set up the data migrations.
 python3 manage.py makemigrations
 python3 manage.py migrate

@@ -5,11 +5,18 @@ from django.db import transaction
 import django_rq
 import datetime
 
+from axes.signals import user_locked_out
+from rest_framework.exceptions import PermissionDenied
+
 @receiver(m2m_changed, sender=Action.assigned_volunteers.through, dispatch_uid="AssignedtoInterestedVolunteers")
 def post_m2m_action(sender, instance, using=None, action=None, pk_set=[], **kwargs):
     if action == 'post_add':
         assigned = [vol for vol in instance.assigned_volunteers.all()]
         instance.interested_volunteers.add(*assigned)
+
+@receiver(user_locked_out)
+def raise_permission_denied(*args, **kwargs):
+    raise PermissionDenied("Too many failed login attempts")
 
 
 @receiver(post_save, sender=ActionFeedback, dispatch_uid="UpdateTimeAfterSave")
