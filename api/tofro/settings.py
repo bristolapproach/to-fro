@@ -112,6 +112,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'csp.middleware.CSPMiddleware',
     'axes.middleware.AxesMiddleware',
 ]
 
@@ -319,4 +320,23 @@ AXES_FAILURE_LIMIT = 5
 AXES_COOLOFF_TIME = 1
 AXES_ONLY_USER_FAILURES = True
 AXES_VERBOSE = False
+
+CSP_SCRIPT_SRC = [
+    "'self'",
+    "cdn.jsdelivr.net",
+    "code.jquery.com",
+    "cdnjs.cloudflare.com",
+    "kit.fontawesome.com"
+]
+
+CSP_STYLE_SRC = [
+    "'self'",
+    "cdn.jsdelivr.net",
+    #"ka-f.fontawesome.com",
+]
+
+CSP_CONNECT_SRC = [
+    "'self'",
+    "ka-f.fontawesome.com",
+]
 

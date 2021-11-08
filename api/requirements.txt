@@ -13,6 +13,7 @@ django-admin-list-filter-dropdown==1.0.3
 django-apptemplates==1.5
 django-celery-results==2.2.0
 django-crispy-forms==1.12.0
+django-csp==3.7
 django-debug-toolbar==3.2.2
 django-decorator-include==3.0
 django-invitations==1.9.3
