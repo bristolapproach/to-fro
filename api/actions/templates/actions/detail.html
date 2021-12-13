@@ -30,13 +30,13 @@
     {# FIXED assigned_volunteer #}
     {% if action.private_description %}
     <div class="border-bottom p-3 space-3">
-      {{action.private_description|markdown|heading_level:3}}
+      {{action.private_description|escape|markdown|heading_level:3}}
     </div>
     {% endif %}
   {% endif %}
   {% if action.public_description %}
     <div class="p-3">
-      {{action.public_description|markdown|heading_level:3}}
+      {{action.public_description|escape|markdown|heading_level:3}}
     </div>
   {% endif %}
     {% if not action.is_fully_assigned %}
