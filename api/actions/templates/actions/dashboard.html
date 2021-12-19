@@ -3,6 +3,7 @@
 {% load humanize %}
 {% load actions %}
 {% load static %}
+{% load admin_urls %}
 
 {% block 'title' %}
   <h1 class="text-center container-fluid">Coordinator Dashboard<a href="./call" class="btn btn-lg btn-primary float-right">Start Call</a></h1>
@@ -11,12 +12,12 @@
 {% block 'content' %}
 <div class="row no-gutters">
   <div id="sideMenu" class="nav flex-column">
-    <a class="nav-link" href="/actions/coordinator/actions/">Actions</a>
-    <a class="nav-link" href="/admin/actions/referral/">Referrals</a>
-    <a class="nav-link" href="/admin/users/resident/">Residents</a>
-    <a class="nav-link" href="/admin/users/volunteer/">Volunteers</a>
-    <a class="nav-link" href="/admin/actions/organisation/">Organisations</a>
-    <a class="nav-link" href="/admin/">Admin</a>
+    <a class="nav-link" href="{% url 'actions:coordinator_actions' %}">Actions</a>
+    <a class="nav-link" href="{% url 'admin:actions_referral_changelist' %}">Referrals</a>
+    <a class="nav-link" href="{% url 'admin:users_resident_changelist' %}">Residents</a>
+    <a class="nav-link" href="{% url 'admin:users_volunteer_changelist' %}">Volunteers</a>
+    <a class="nav-link" href="{% url 'admin:actions_organisation_changelist' %}">Organisations</a>
+    <a class="nav-link" href="{% url 'admin:index' %}">Admin</a>
   </div>
   <div class="col">
     <div class="row no-gutters">
