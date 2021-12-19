@@ -16,7 +16,7 @@ from rest_framework import routers
 from rest_framework.documentation import include_docs_urls
 
 
-from tofro.views import LoginView, LogoutView, PasswordResetConfirmView, homepage, resolve_static_path_view
+from tofro.views import LoginView, LogoutView, PasswordResetConfirmView, ToFroPasswordResetView, homepage, resolve_static_path_view
 from tofro.lib import login_required
 from users.views import UserSettingsView
 from actions.views import ActionViewSet, ReferralViewSet, OrganisationViewSet, ActionFeedbackViewSet
@@ -37,13 +37,17 @@ router2.register(r'referraltypes', ReferralTypeViewSet)
 router2.register(r'requirements', RequirementViewSet)
 router2.register(r'wards', WardViewSet)
 
+admin_path = settings.DJANGO_ADMIN_LOCATION + '/'
+
 urlpatterns = [
     path('', homepage, name="home"),
     re_path(r'static-path/(?P<path>.+)', resolve_static_path_view),
-    path('admin/', admin.site.urls, name="admin"),
+    path(admin_path, admin.site.urls, name="admin"),
     # Take over the password reset confirmation with our own view
     path('accounts/reset/<uidb64>/<token>/',
          PasswordResetConfirmView.as_view(), name='password_reset_confirm'),
+    path('accounts/password_reset/',
+         ToFroPasswordResetView.as_view(), name='password_reset'),
     path('api-auth/', include('rest_framework.urls')),
     path('api/', include((router2.urls, 'app_name'))),
     path('accounts/', include('django.contrib.auth.urls')),
