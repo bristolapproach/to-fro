@@ -29,6 +29,8 @@ REDIS_PORT = os.getenv('REDIS_PORT', '6379')
 DEBUG = os.getenv("DEBUG", "True") == "True"
 RUN_ENV = os.getenv('RUN_ENV', None)
 
+DJANGO_ADMIN_LOCATION = os.getenv("DJANGO_ADMIN_LOCATION", "admin")
+
 # ensure
 if not RUN_ENV:
     print('warning: RUN_ENV is not set')
@@ -100,6 +102,8 @@ if DEBUG:
     # ensures whitenoise is used in development, as recommended:
     # http://whitenoise.evans.io/en/stable/django.html#using-whitenoise-in-development
     INSTALLED_APPS.insert(0, 'whitenoise.runserver_nostatic')
+    INSTALLED_APPS.insert(-1, 'django_extensions')
+
     #INSTALLED_APPS.insert(0, 'django_werkzeug')
 
 
@@ -166,7 +170,8 @@ WSGI_APPLICATION = 'tofro.wsgi.application'
 # https://docs.djangoproject.com/en/3.0/ref/settings/#databases
 DATABASES = {
     'default': {
-        'ENGINE': 'django.contrib.gis.db.backends.postgis',
+#        'ENGINE': 'django.contrib.gis.db.backends.postgis',
+        'ENGINE': 'django.db.backends.postgresql',
         'NAME': POSTGRES_DB,
         'USER': POSTGRES_USER,
         'PASSWORD': POSTGRES_PASSWORD,
@@ -187,10 +192,10 @@ RQ_QUEUES = {
 }
 # Sessions
 
-SESSION_COOKIE_AGE = 1800
+SESSION_COOKIE_AGE = 1200
 if not DEBUG:
     SESSION_COOKIE_SECURE = True
-    SECURE_HSTS_SECONDS = 60
+    SECURE_HSTS_SECONDS = 600
 
 
 # Password validation
@@ -215,6 +220,7 @@ AUTHENTICATION_BACKENDS = [
     'axes.backends.AxesBackend',
     'core.backends.EmailBackend',
 ]
+# N.B. This is set in tofro.views.PasswordResetConfirmView
 
 
 # Internationalization
