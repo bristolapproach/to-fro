@@ -11,7 +11,7 @@ from whitenoise.middleware import WhiteNoiseMiddleware
 from actions.views import ActionsListView, CoordinatorDashboardView
 from users.models import volunteer_check, coordinator_check
 from .lib import has_permission
-from .forms import SetFirstPasswordForm
+from .forms import SetFirstPasswordForm, ToFroPasswordResetForm
 
 import logging
 logger = logging.getLogger(__name__)
@@ -57,6 +57,11 @@ class LoginView(LoginRedirection, views.LoginView):
         return url or self.get_redirect_url_for_user(self.request.user) or resolve_url(settings.LOGIN_REDIRECT_URL)
 
 
+class ToFroPasswordResetView(views.PasswordResetView):
+    form_class = ToFroPasswordResetForm
+
+
+
 class PasswordResetConfirmView(LoginRedirection, views.PasswordResetConfirmView):
     """
     Custom password reset view to display a more welcoming page
@@ -64,6 +69,7 @@ class PasswordResetConfirmView(LoginRedirection, views.PasswordResetConfirmView)
     """
     # Save the user some time by logging them in automatically
     post_reset_login = True
+    post_reset_login_backend = 'core.backends.EmailBackend'
 
     def get_success_url(self):
         return self.get_redirect_url_for_user(self.user)

@@ -1,7 +1,8 @@
 from django.forms import BooleanField
-from django.contrib.auth.forms import SetPasswordForm
+from django.contrib.auth.forms import SetPasswordForm, PasswordResetForm
 
 from django.utils import timezone
+import django_rq
 
 
 class SetFirstPasswordForm(SetPasswordForm):
@@ -19,3 +20,21 @@ class SetFirstPasswordForm(SetPasswordForm):
             user.settings.save()
         # And don't forget to return the user
         return user
+
+
+class ToFroPasswordResetForm(PasswordResetForm):
+    """
+    Override PasswordResetForm so that email can be sent asychronously
+    """
+    def send_mail(self, subject_template_name, email_template_name, context,
+                  from_email, to_email, html_email_template_name=None):
+
+        '''
+        super().send_mail(subject_template_name,
+        email_template_name, context, from_email, to_email,
+        html_email_template_name)
+        '''
+        django_rq.enqueue(PasswordResetForm().send_mail, subject_template_name,
+                 email_template_name, context, from_email, to_email,
+                 html_email_template_name)
+
