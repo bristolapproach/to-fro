@@ -161,13 +161,13 @@ class ActionAdminForm(forms.ModelForm):
 
     def clean(self):
         super().clean()
-        if self.cleaned_data.get('assigned_volunteers', EmptyQuerySet).count()  \
-                > self.cleaned_data['maximum_volunteers']:
+        if self.cleaned_data.get('assigned_volunteers') and \
+          len(self.cleaned_data['assigned_volunteers']) > self.cleaned_data['maximum_volunteers']:
             raise forms.ValidationError(
                 _("You have assigned more than the maximum number of volunteers")
             )
 
-        if (not self.cleaned_data['assigned_volunteers']
+        if (not self.cleaned_data.get('assigned_volunteers')
                 # FIXED assigned_volunteer
                 and self.cleaned_data['action_status'] not in Action.STATUSES_WITHOUT_ASSIGNED_VOLUNTEER + (ActionStatus.NO_LONGER_NEEDED,)):
             raise forms.ValidationError(
