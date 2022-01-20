@@ -15,9 +15,12 @@ services:
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
       - POSTGRES_BCC_USER=${POSTGRES_BCC_USER}
       - POSTGRES_BCC_PASSWORD=${POSTGRES_BCC_PASSWORD}
+      - POSTGRES_HOST_AUTH_METHOD=${POSTGRES_HOST_AUTH_METHOD}
+      - POSTGRES_INITDB_ARGS=${POSTGRES_INITDB_ARGS}
     volumes:
-      - data_volume:/var/lib/postgresql/data
-  
+      - data_volume_nogis:/var/lib/postgresql/data
+      #- data_volume:/var/lib/postgresql/data
+
   pgadmin:
     image: dpage/pgadmin4
     container_name: tofro-pgadmin
@@ -106,6 +109,7 @@ services:
       - DJANGO_ADMIN_FIRSTNAME=${DJANGO_ADMIN_FIRSTNAME}
       - DJANGO_ADMIN_LASTNAME=${DJANGO_ADMIN_LASTNAME}
       - DJANGO_ADMIN_PASSWORD=${DJANGO_ADMIN_PASSWORD}
+      - DJANGO_ADMIN_LOCATION=${DJANGO_ADMIN_LOCATION}
       - DJANGO_ALLOWED_HOSTS=${DJANGO_ALLOWED_HOSTS}
       - DJANGO_CSRF_TRUSTED_ORIGINS=${DJANGO_CSRF_TRUSTED_ORIGINS}
       - DJANGO_SECRET_KEY=${DJANGO_SECRET_KEY}
@@ -138,5 +142,6 @@ services:
       - redis-scheduler
 
 volumes:
-  data_volume:
+  #data_volume:
+  data_volume_nogis:
   redis_volume:

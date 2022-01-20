@@ -11,9 +11,9 @@
     dest: "{{ src_destination }}"
   become: yes
 
-- name: Start the Docker applications
+- name: Build the Docker applications
   command: 
-    cmd: /usr/local/bin/docker-compose up --build -d
+    cmd: /usr/local/bin/docker-compose build --no-cache --pull
     chdir: "{{ src_destination }}"
     
   environment:
@@ -50,3 +50,45 @@
 
     DJANGO_HTTPS: "{{ django_https }}"
     HOSTNAME: "{{ hostname }}"
+
+- name: Start the Docker applications
+  command:
+    cmd: /usr/local/bin/docker-compose up --detach
+    chdir: "{{ src_destination }}"
+
+  environment:
+    DJANGO_ADMIN_FIRSTNAME: "{{ django_admin_firstname }}"
+    DJANGO_ADMIN_LASTNAME: "{{ django_admin_lastname }}"
+    DJANGO_ADMIN_PASSWORD: "{{ django_admin_password }}"
+    DJANGO_ALLOWED_HOSTS: "{{ django_allowed_hosts }}"
+    DJANGO_CSRF_TRUSTED_ORIGINS: "{{ django_csrf_trusted_origins }}"
+    DJANGO_SECRET_KEY: "{{ django_secret_key }}"
+    DJANGO_PORT: "{{ django_port }}"
+    DEBUG: "{{ django_debug }}"
+    RUN_ENV: "{{ run_env }}"
+
+    SITE_URL: "{{ site_url }}"
+
+    POSTGRES_USER: "{{ postgres_user }}"
+    POSTGRES_DB: "{{ postgres_db }}"
+    POSTGRES_PASSWORD: "{{ postgres_password }}"
+    POSTGRES_BCC_USER: "{{ postgres_bcc_user }}"
+    POSTGRES_BCC_PASSWORD: "{{ postgres_bcc_password }}"
+    DATABASE_HOST: "{{ database_host }}"
+    DATABASE_PORT: "{{ database_port }}"
+
+    EMAIL_HOST: "{{ email_host }}"
+    EMAIL_PORT: "{{ email_port }}"
+    EMAIL_HOST_USER: "{{ email_host_user }}"
+    EMAIL_HOST_PASSWORD: "{{ email_host_password }}"
+    NOTIFICATIONS_FROM: "{{ notifications_from }}"
+    COORDINATOR_EMAIL: "{{ coordinator_email }}"
+    PG_ADMIN_PASSWORD: "{{ pg_admin_password }}"
+
+    VOLUNTEER_DIGEST_HOUR: "{{ volunteer_digest_hour }}"
+    VOLUNTEER_DIGEST_MINUTE: "{{ volunteer_digest_minute }}"
+
+    DJANGO_HTTPS: "{{ django_https }}"
+    HOSTNAME: "{{ hostname }}"
+
+
