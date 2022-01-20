@@ -29,12 +29,7 @@ class ToFroPasswordResetForm(PasswordResetForm):
     def send_mail(self, subject_template_name, email_template_name, context,
                   from_email, to_email, html_email_template_name=None):
 
-        '''
-        super().send_mail(subject_template_name,
-        email_template_name, context, from_email, to_email,
-        html_email_template_name)
-        '''
-        django_rq.enqueue(PasswordResetForm().send_mail, subject_template_name,
+         django_rq.enqueue(PasswordResetForm().send_mail, subject_template_name,
                  email_template_name, context, from_email, to_email,
                  html_email_template_name)
 
