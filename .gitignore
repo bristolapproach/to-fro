@@ -154,3 +154,4 @@ deployment/vault_password_dev
 docker_compose_run.sh
 .env
 .idea/
+/deployment/centosk
