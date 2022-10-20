@@ -1,6 +1,7 @@
 from django.contrib import messages
 from django.urls import reverse, reverse_lazy
 from django.views.generic.edit import FormView
+from django.contrib.auth.mixins import UserPassesTestMixin
 from rest_framework import mixins, viewsets, response
 from .models import Resident, Volunteer, Coordinator
 from .serializers import  ResidentSerializer, VolunteerSerializer, CoordinatorSerializer
@@ -32,7 +33,7 @@ class CurrentCoordinatorViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
         return response.Response(serializer.data)
 
 
-class UserSettingsView(FormView):
+class UserSettingsView(UserPassesTestMixin, FormView):
     template_name = 'users/user_settings.html'
     form_class = UserSettingsForm
 
@@ -56,6 +57,9 @@ class UserSettingsView(FormView):
 
         if volunteer_updated:
             volunteer_obj.save()
+
+    def test_func(self):
+        return self.request.user.is_authenticated and self.request.user.is_volunteer
 
     def form_valid(self, form):
         form_data = form.cleaned_data
