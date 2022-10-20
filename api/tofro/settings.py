@@ -196,6 +196,7 @@ SESSION_COOKIE_AGE = 1200
 if not DEBUG:
     SESSION_COOKIE_SECURE = True
     SECURE_HSTS_SECONDS = 86400
+    CSRF_COOKIE_SECURE = True
 
 
 # Password validation
