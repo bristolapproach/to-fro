@@ -18,11 +18,12 @@
   },
   "homepage": "https://github.com/cgillions/to-fro#readme",
   "devDependencies": {
-    "bootstrap": "^4.5.0",
-    "parcel": "^1.12.4",
-    "sass": "^1.26.5"
+    "bootstrap": ">=4.5.0",
+    "parcel": ">=2.7.0",
+    "sass": ">=1.26.5"
   },
   "dependencies": {
-    "@fortawesome/fontawesome-free": "^5.13.0"
+    "@fortawesome/fontawesome-free": ">=5.13.0",
+    "lodash": ">=4.17.21"
   }
 }
